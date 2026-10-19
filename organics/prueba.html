@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Organics One: prueba de conexión</title>
+<meta name="theme-color" content="#2E9E5B">
+<style>
+  :root { --verde:#2E9E5B; --verde-osc:#1F6E3F; --fondo:#F2F6F0; --tarjeta:#fff; --texto:#1E2A22; --suave:#5F6F64; --borde:#D9E3DB; --rojo:#C0392B; --ambar:#B9770E; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; background:var(--fondo); color:var(--texto); font-size:15px; }
+  header { background:var(--verde); color:#fff; padding:14px 16px; }
+  header h1 { margin:0; font-size:18px; font-weight:600; }
+  header p { margin:2px 0 0; font-size:13px; opacity:.9; }
+  main { max-width:760px; margin:0 auto; padding:12px 16px 40px; }
+  section { background:var(--tarjeta); border:1px solid var(--borde); border-radius:12px; padding:12px 14px; margin-bottom:12px; }
+  h2 { font-size:13px; letter-spacing:.06em; text-transform:uppercase; color:var(--suave); margin:0 0 10px; font-weight:600; }
+  label { display:block; font-size:13px; color:var(--suave); margin:8px 0 3px; }
+  input, select, textarea { width:100%; padding:9px 10px; border:1px solid var(--borde); border-radius:8px; font:inherit; background:#fff; color:var(--texto); }
+  textarea { min-height:110px; font-family:ui-monospace,Menlo,Consolas,monospace; font-size:12px; }
+  button { font:inherit; padding:8px 12px; border-radius:8px; border:1px solid var(--verde); background:#fff; color:var(--verde-osc); cursor:pointer; }
+  button.prim { background:var(--verde); color:#fff; }
+  button:disabled { opacity:.5; cursor:default; }
+  .fila { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+  .fila > * { flex:0 0 auto; }
+  .estado { display:flex; gap:8px; flex-wrap:wrap; }
+  .pill { font-size:13px; padding:4px 10px; border-radius:999px; background:#EEF3EF; color:var(--suave); }
+  .pill.ok { background:#DFF2E6; color:var(--verde-osc); }
+  .pill.mal { background:#FBE3E0; color:var(--rojo); }
+  .pill.aviso { background:#FCEFD9; color:var(--ambar); }
+  .grilla { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:8px; }
+  .dato { border:1px solid var(--borde); border-radius:10px; padding:8px 10px; }
+  .dato .n { font-size:12px; color:var(--suave); }
+  .dato .v { font-size:20px; font-weight:600; margin-top:2px; }
+  .zona { border:1px solid var(--borde); border-radius:10px; padding:10px; margin-bottom:8px; }
+  .zona .t { font-weight:600; }
+  .sub { font-size:13px; color:var(--suave); }
+  .error { color:var(--rojo); font-size:13px; min-height:18px; margin-top:6px; }
+  table { width:100%; border-collapse:collapse; font-size:12px; }
+  td { border-bottom:1px solid var(--borde); padding:4px 4px; vertical-align:top; word-break:break-all; }
+  td:first-child { color:var(--suave); width:46%; }
+  #registro { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:12px; max-height:220px; overflow:auto; white-space:pre-wrap; }
+  .oculto { display:none; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Organics One: prueba de conexión</h1>
+  <p>Muestra en vivo lo que publica la tarjeta y le envía órdenes (contrato v1.0)</p>
+</header>
+<main>
+  <section id="secConexion">
+    <h2>Conexión</h2>
+    <label for="servidor">Servidor (host de EMQX o URL wss:// completa)</label>
+    <input id="servidor" placeholder="abc123.ala.us-east-1.emqxsl.com" autocomplete="off" autocapitalize="off">
+    <div class="fila" style="gap:10px">
+      <div style="flex:1 1 140px"><label for="usuario">Usuario</label><input id="usuario" value="app" autocomplete="username" autocapitalize="off"></div>
+      <div style="flex:1 1 140px"><label for="clave">Clave</label><input id="clave" type="password" autocomplete="current-password"></div>
+      <div style="flex:1 1 140px"><label for="invernadero">Invernadero</label><input id="invernadero" value="invernadero1" autocapitalize="off"></div>
+    </div>
+    <div class="fila" style="margin-top:10px">
+      <button class="prim" id="btnConectar">Conectar</button>
+      <button id="btnDesconectar" disabled>Desconectar</button>
+      <button id="btnOlvidar">Olvidar datos</button>
+    </div>
+    <div class="error" id="errConexion"></div>
+    <div class="estado" id="estado"></div>
+  </section>
+
+  <section>
+    <h2>Ambiente</h2>
+    <div class="grilla" id="ambiente"></div>
+  </section>
+
+  <section>
+    <h2>Zonas de riego</h2>
+    <div id="zonas" class="sub">Sin datos todavía.</div>
+    <div class="error" id="errZonas"></div>
+  </section>
+
+  <section>
+    <h2>Agua y bomba</h2>
+    <div class="grilla" id="agua"></div>
+    <div class="fila" style="margin-top:8px"><button id="btnRearmar">Rearmar bomba</button></div>
+    <div class="error" id="errAgua"></div>
+  </section>
+
+  <section>
+    <h2>Ventanas y salidas</h2>
+    <div id="ventanas" class="sub">Sin datos todavía.</div>
+    <div class="fila" id="salidas" style="margin-top:8px"></div>
+    <div class="error" id="errVentanas"></div>
+  </section>
+
+  <section>
+    <h2>Alarmas activas</h2>
+    <div class="estado" id="alarmas"><span class="pill">Sin datos</span></div>
+  </section>
+
+  <section>
+    <h2>Reglas automáticas</h2>
+    <textarea id="reglas" spellcheck="false" placeholder='{"vent":{"on":1,"open_c":28,"close_c":25}}'></textarea>
+    <div class="fila" style="margin-top:8px">
+      <button id="btnCargarReglas">Cargar reglas actuales</button>
+      <button class="prim" id="btnEnviarReglas">Enviar cambios</button>
+    </div>
+    <div class="error" id="errReglas"></div>
+  </section>
+
+  <section id="secAudio" class="oculto">
+    <h2>Audio ambiental (opcional)</h2>
+    <div class="estado" id="audioEstado"></div>
+    <div class="fila" style="margin-top:8px">
+      <button id="btnAudioPlay">Reproducir</button>
+      <button id="btnAudioStop">Detener</button>
+      <button id="btnAudioOn">Habilitar</button>
+      <button id="btnAudioOff">Deshabilitar</button>
+    </div>
+    <div class="error" id="errAudio"></div>
+  </section>
+
+  <section>
+    <h2>Eventos</h2>
+    <div id="registro" class="sub">Aquí aparecen las acciones automáticas, ratones y movimiento.</div>
+  </section>
+
+  <section>
+    <h2>Todos los datos recibidos</h2>
+    <table id="todos"><tbody></tbody></table>
+    <div class="fila" style="margin-top:8px"><button id="btnRefrescar">Pedir todo de nuevo</button></div>
+  </section>
+</main>
+
+<script src="conexion.js"></script>
+<script>
+(function () {
+  var O = window.OrganicsOne;
+  var $ = function (id) { return document.getElementById(id); };
+  var NOMBRES_SALIDA = { extractor:'Extractor', fan:'Ventilador', grow_light:'Luz de cultivo', work_light:'Luz de trabajo', spare:'Reserva' };
+  var NOMBRES_ALARMA = { pod_offline:'Pod ambiental sin respuesta', adc:'Falla de entradas analógicas', pump_dry_run:'Bomba en seco',
+    pump_overcurrent:'Sobrecorriente de bomba', tank_low:'Tanque bajo', irrigation_stop:'Paro de riego activado', tamper:'Gabinete abierto',
+    io_outputs:'Falla de salidas', io_inputs:'Falla de entradas', clock:'Sin hora de internet' };
+  function nombreAlarma(a) {
+    var m = /^zone(\d+)_(offline|auto_limit)$/.exec(a);
+    if (m) return 'Zona ' + m[1] + (m[2] === 'offline' ? ' sin respuesta' : ': tope diario de riego automático');
+    return NOMBRES_ALARMA[a] || a;
+  }
+  function fmt(v, dec, unidad) { return v === null || v === undefined ? '-' : (dec === null ? v : v.toFixed(dec)) + (unidad || ''); }
+  function hora(ms) { return ms ? new Date(ms).toLocaleTimeString('es-CL', { hour12:false }) : '-'; }
+  function mostrarError(id, e) { $(id).textContent = e ? (e.message || String(e)) : ''; }
+  function accion(id, promesa) { mostrarError(id, null); promesa.then(function () { mostrarError(id, null); }, function (e) { mostrarError(id, e); }); }
+
+  /* ---- formulario ---- */
+  var g = O.configuracionGuardada();
+  if (g) { $('servidor').value = g.servidor || ''; $('usuario').value = g.usuario || 'app'; $('invernadero').value = g.invernadero || 'invernadero1'; }
+
+  $('btnConectar').onclick = function () {
+    mostrarError('errConexion', null);
+    $('btnConectar').disabled = true;
+    O.conectar({ servidor:$('servidor').value, usuario:$('usuario').value, clave:$('clave').value, invernadero:$('invernadero').value })
+      .then(function () { $('btnDesconectar').disabled = false; },
+            function (e) { mostrarError('errConexion', e); $('btnConectar').disabled = false; });
+  };
+  $('btnDesconectar').onclick = function () { O.desconectar(); $('btnConectar').disabled = false; $('btnDesconectar').disabled = true; };
+  $('btnOlvidar').onclick = function () { O.olvidarConfiguracion(); $('clave').value = ''; mostrarError('errConexion', null); };
+
+  /* ---- estado de conexión ---- */
+  function pintarEstado(st) {
+    var p = [];
+    p.push('<span class="pill ' + (st.conectado ? 'ok' : 'mal') + '">' + (st.conectado ? 'Servidor conectado' : 'Sin servidor') + '</span>');
+    if (st.conectado) {
+      p.push('<span class="pill ' + (st.tarjetaEnLinea ? 'ok' : 'mal') + '">' + (st.tarjetaEnLinea ? 'Tarjeta en línea' : 'Tarjeta desconectada') + '</span>');
+      if (st.fwGateway) p.push('<span class="pill ' + (st.compatible ? 'ok' : 'aviso') + '">Firmware ' + st.fwGateway + (st.compatible ? '' : ': actualizar') + '</span>');
+      p.push('<span class="pill">Último dato ' + hora(st.ultimaActualizacion) + '</span>');
+    }
+    if (st.error) p.push('<span class="pill mal">' + st.error + '</span>');
+    $('estado').innerHTML = p.join('');
+    $('secAudio').classList.toggle('oculto', !st.audioEnLinea && !O.valor('audio/status'));
+  }
+  O.onConexion(pintarEstado);
+  pintarEstado(O.info());
+
+  /* ---- vistas (se repintan al llegar datos, como máximo 4 veces por segundo) ---- */
+  var pendiente = false;
+  function repintar() { if (pendiente) return; pendiente = true; setTimeout(function () { pendiente = false; pintarTodo(); }, 250); }
+  O.on('*', function (v, sub) {
+    repintar();
+    if (sub === 'auto/event' || /^rodent\/\d+\/event$/.test(sub) || sub === 'audio/motion/event') {
+      var r = $('registro');
+      if (r.dataset.vacio !== 'no') { r.textContent = ''; r.dataset.vacio = 'no'; }
+      r.textContent = hora(Date.now()) + '  ' + sub + '  ' + v + '\n' + r.textContent;
+    }
+  });
+
+  function pintarTodo() {
+    var a = O.ambiente();
+    $('ambiente').innerHTML = [
+      ['Temperatura', fmt(a.temperatura, 1, ' °C')], ['Humedad', fmt(a.humedad, 0, ' %')], ['VPD', fmt(a.vpd, 2, ' kPa')],
+      ['CO2', fmt(a.co2, 0, ' ppm')], ['Luz', fmt(a.luz, 0, ' lx')], ['Hoja mojada', fmt(a.hojaMojada, 0, ' %')]
+    ].map(function (d) { return '<div class="dato"><div class="n">' + d[0] + '</div><div class="v">' + d[1] + '</div></div>'; }).join('');
+
+    var zs = O.zonas();
+    $('zonas').innerHTML = zs.length ? zs.map(function (z) {
+      var r = z.riego || {};
+      var estadoRiego = r.state === 'open' ? 'Regando, quedan ' + Math.ceil((r.remaining_s || 0) / 60) + ' min'
+        : r.state === 'queued' ? 'En cola' : 'Sin riego';
+      return '<div class="zona"><div class="fila" style="justify-content:space-between">' +
+        '<span class="t">Zona ' + z.zona + '</span><span class="pill ' + (z.enLinea ? 'ok' : 'mal') + '">' + (z.enLinea ? 'en línea' : 'sin respuesta') + '</span></div>' +
+        '<div class="sub">Suelo ' + fmt(z.suelo, 1, ' %') + ' (sensores ' + fmt(z.suelo1, 1, '') + ' / ' + fmt(z.suelo2, 1, '') + ') · ' +
+        'válvula ' + (z.valvulaAbierta ? 'abierta' : 'cerrada') + ' · ' + estadoRiego + ' · caudal ' + fmt(z.caudal, 2, ' L/min') +
+        (z.topeAutomatico ? ' · <b>tope diario automático</b>' : '') + '</div>' +
+        '<div class="fila" style="margin-top:6px"><button data-z="' + z.zona + '" data-s="60">Regar 1 min</button>' +
+        '<button data-z="' + z.zona + '" data-s="600">Regar 10 min</button><button data-z="' + z.zona + '" data-s="0">Detener</button></div></div>';
+    }).join('') : 'Sin datos todavía.';
+
+    var w = O.agua();
+    $('agua').innerHTML = [
+      ['Tanque', fmt(w.tanque, 0, ' %')], ['Flotador', w.flotador === 'low' ? 'BAJO' : (w.flotador || '-')], ['Bomba', w.bomba || '-'],
+      ['Corriente', fmt(w.corrienteBomba, 2, ' A')], ['Caudal', fmt(w.caudal, 2, ' L/min')], ['Volumen', fmt(w.volumen, 1, ' L')]
+    ].map(function (d) { return '<div class="dato"><div class="n">' + d[0] + '</div><div class="v">' + d[1] + '</div></div>'; }).join('');
+
+    var vs = O.ventanas();
+    var est = { stopped:'detenida', opening:'abriendo', closing:'cerrando' };
+    $('ventanas').innerHTML = vs.length ? vs.map(function (v) {
+      return '<div class="fila" style="margin-bottom:6px"><span style="min-width:120px">Ventana ' + v.ventana + ': ' + fmt(v.posicion, null, ' %') +
+        ' ' + (est[v.estado] || '') + (v.alarma && v.alarma !== 'none' ? ' (' + v.alarma + ')' : '') + '</span>' +
+        '<button data-v="' + v.ventana + '" data-a="open">Abrir</button><button data-v="' + v.ventana + '" data-a="close">Cerrar</button>' +
+        '<button data-v="' + v.ventana + '" data-a="stop">Detener</button></div>';
+    }).join('') : 'Sin datos todavía.';
+
+    var s = O.salidas();
+    $('salidas').innerHTML = Object.keys(s).map(function (k) {
+      return '<button data-o="' + k + '" data-on="' + (s[k] ? '0' : '1') + '">' + (NOMBRES_SALIDA[k] || k) + ': ' + (s[k] ? 'encendido' : 'apagado') + '</button>';
+    }).join('');
+
+    var al = O.alarmasActivas();
+    $('alarmas').innerHTML = al.length ? al.map(function (x) { return '<span class="pill mal">' + nombreAlarma(x) + '</span>'; }).join('')
+      : '<span class="pill ok">Ninguna</span>';
+
+    var au = O.audio.estado();
+    $('audioEstado').innerHTML = '<span class="pill ' + (au.enLinea ? 'ok' : 'mal') + '">' + (au.enLinea ? 'en línea' : 'desconectado') + '</span>' +
+      '<span class="pill">' + (au.sonando ? 'sonando ' + au.pista : 'en silencio') + '</span>' +
+      '<span class="pill">' + (au.habilitado ? 'habilitado' : 'deshabilitado') + '</span><span class="pill">volumen ' + fmt(au.volumen, null, '') + '</span>' +
+      (au.error ? '<span class="pill mal">' + au.error + '</span>' : '');
+
+    var t = O.todos();
+    $('todos').tBodies[0].innerHTML = Object.keys(t).map(function (k) {
+      var v = String(t[k].valor).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+      return '<tr><td>' + k + '</td><td>' + v + '</td></tr>';
+    }).join('');
+  }
+
+  /* ---- botones (delegados) ---- */
+  document.addEventListener('click', function (ev) {
+    var b = ev.target.closest('button'); if (!b) return;
+    if (b.dataset.z) accion('errZonas', O.regar(Number(b.dataset.z), Number(b.dataset.s)));
+    else if (b.dataset.v) accion('errVentanas', O.ventana(Number(b.dataset.v), b.dataset.a));
+    else if (b.dataset.o) accion('errVentanas', O.salida(b.dataset.o, b.dataset.on === '1'));
+  });
+  $('btnRearmar').onclick = function () { accion('errAgua', O.rearmarBomba()); };
+  $('btnRefrescar').onclick = function () { O.refrescar().catch(function () {}); };
+  $('btnCargarReglas').onclick = function () {
+    var r = O.reglasAutomaticas();
+    $('reglas').value = r ? JSON.stringify(r, null, 2) : '';
+    mostrarError('errReglas', r ? null : new Error('La tarjeta aún no publicó sus reglas'));
+  };
+  $('btnEnviarReglas').onclick = function () {
+    var obj;
+    try { obj = JSON.parse($('reglas').value); } catch (e) { mostrarError('errReglas', new Error('El texto no es JSON válido')); return; }
+    $('errReglas').textContent = 'Enviando…';
+    O.cambiarReglas(obj).then(function () { $('errReglas').textContent = ''; $('btnCargarReglas').onclick(); },
+                               function (e) { mostrarError('errReglas', e); });
+  };
+  $('btnAudioPlay').onclick = function () { accion('errAudio', O.audio.reproducir()); };
+  $('btnAudioStop').onclick = function () { accion('errAudio', O.audio.detener()); };
+  $('btnAudioOn').onclick = function () { accion('errAudio', O.audio.habilitar(true)); };
+  $('btnAudioOff').onclick = function () { accion('errAudio', O.audio.habilitar(false)); };
+
+  pintarTodo();
+})();
+</script>
+</body>
+</html>
