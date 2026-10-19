@@ -1,0 +1,1783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Greenhouse</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2E9E5B">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Greenhouse">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #F2F6F0; --bg-warm: #EDEFE6; --pine: #26433A; --pine-soft: #5C7268; --pine-dark: #1C2E27;
+    --soil: #8A6E4E; --soil-dark: #6B5339; --soil-line: #D9D1BE; --amber: #E8A33D; --amber-dark: #C9861F;
+    --green-accent:#2E9E5B; --green-bg:#E6F4EA; --red-accent:#C1453A; --red-bg:#FBEAE8;
+    --blue-accent:#3A6FC1; --blue-bg:#E9F0FB; --orange-accent:#C97A1F; --orange-bg:#FBEED9;
+    --white: #FFFFFF; --card-shadow: 0 2px 8px rgba(38,67,58,0.08), 0 1px 2px rgba(38,67,58,0.06); --radius: 16px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{ background: var(--bg); font-family:'Public Sans', sans-serif; color: var(--pine); min-height:100vh; }
+  body.dragging, body.dragging *{ user-select:none; -webkit-user-select:none; }
+  .app{ max-width: 1280px; margin: 0 auto; padding: 22px 20px 56px; }
+
+  header.top{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:22px; flex-wrap:wrap; }
+  .brand{display:flex; align-items:center; gap:11px;}
+  .brand .logo{ width:40px; height:40px; border-radius:12px; background: var(--green-accent); display:flex; align-items:center; justify-content:center; font-size:19px; flex-shrink:0; box-shadow: 0 3px 8px rgba(46,158,91,0.35); }
+  .brand h1{ font-weight:800; font-size: 21px; margin:0; letter-spacing: -0.01em; line-height:1.1; }
+  .brand p{ margin:3px 0 0; font-size:12px; color: var(--pine-soft); font-weight:500; }
+  .header-right{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .planted-pill{ background: var(--green-bg); color: var(--green-accent); font-weight:700; font-size:12.5px; padding:8px 14px; border-radius:999px; display:flex; align-items:center; gap:6px; }
+  .ready-pill-header{ background: var(--orange-bg); color: var(--amber-dark); font-weight:700; font-size:12.5px; padding:8px 14px; border-radius:999px; }
+  .lang-switch{ display:flex; align-items:center; gap:5px; background: var(--white); border-radius:999px; padding:6px 12px; box-shadow: var(--card-shadow); }
+  .lang-switch select{ border:none; background:transparent; font-weight:700; font-size:11.5px; cursor:pointer; color: var(--pine-soft); font-family:'Public Sans', sans-serif; outline:none; }
+  .globe{ font-size:13px; padding:0 2px; }
+
+  .eyebrow{ font-size:11px; text-transform:uppercase; letter-spacing:.08em; font-weight:800; color: var(--pine-soft); }
+  .panel-head{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:12px; }
+  .panel{ background: var(--white); border-radius: var(--radius); box-shadow: var(--card-shadow); padding: 16px; }
+
+  .collapse-btn{ border:none; background: var(--bg-warm); color: var(--pine-soft); width:28px; height:28px; border-radius:50%; font-size:12px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .collapse-btn:hover{ background: var(--soil-line); }
+  .collapse-btn .arrow{ display:inline-block; transition: transform .2s; }
+  .collapse-btn.open .arrow{ transform: rotate(180deg); }
+  .icon-btn{ border:none; background: var(--bg-warm); color: var(--pine-soft); width:30px; height:30px; border-radius:50%; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition: transform .3s, background .15s; }
+  .icon-btn:hover{ background: var(--soil-line); }
+  .icon-btn.spin:active{ transform: rotate(180deg); }
+  .icon-btn.light{ background: rgba(255,255,255,0.12); color:#fff; }
+  .icon-btn.light:hover{ background: rgba(255,255,255,0.2); }
+
+  /* Layout: desktop 3-col grid, mobile stacked with forced order */
+  .layout{ display:grid; grid-template-columns: 290px 1fr 300px; grid-template-areas: "library room env" "settings room env"; gap:18px; align-items:start; }
+  #libraryPanel{ grid-area: library; }
+  #gridSettingsPanel{ grid-area: settings; }
+  #roomPanel{ grid-area: room; }
+  #envPanel{ grid-area: env; }
+  @media (max-width: 980px){
+    .layout{ display:flex; flex-direction:column; gap:18px; }
+    #envPanel{ order:1; }
+    #roomPanel{ order:2; }
+    #libraryPanel{ order:3; }
+    #gridSettingsPanel{ order:4; }
+  }
+
+  /* Add Plant */
+  .btn-add-plant-row{ width:100%; padding:10px; border-radius:12px; border:1.5px solid var(--soil-line); background: var(--white); color: var(--pine); font-weight:700; font-size:12.5px; cursor:pointer; margin-bottom:12px; transition: border-color .15s, background .15s; }
+  .btn-add-plant-row:hover{ border-color: var(--amber); background: var(--bg-warm); }
+  .add-veg-form{ display:none; flex-direction:column; gap:8px; margin-bottom:12px; background: var(--bg-warm); border-radius:12px; padding:10px; }
+  .add-veg-form.show{ display:flex; }
+  .add-veg-form input{ padding:8px 10px; border-radius:8px; border:1.5px solid var(--soil-line); font-size:13px; font-family:'Public Sans', sans-serif; outline:none; background: var(--white); }
+  .add-veg-form input:focus{ border-color: var(--amber); }
+  .add-veg-form .hint-text{ font-size:10.5px; color: var(--pine-soft); }
+  .add-veg-form .actions{ display:flex; gap:8px; }
+  .add-veg-form .actions button{ flex:1; padding:9px; border-radius:8px; border:none; font-weight:600; font-size:12.5px; cursor:pointer; font-family:'Public Sans', sans-serif; }
+  .btn-generate{ background: var(--amber); color:#4A3411; }
+  .btn-generate:hover{ background: var(--amber-dark); }
+  .btn-generate:disabled{ opacity:.6; cursor:default; }
+  .btn-cancel-add{ background: var(--white); color: var(--pine-soft); }
+  .btn-cancel-add:hover{ background: var(--soil-line); }
+
+  .search-wrap{ position:relative; margin-bottom:10px; }
+  .search-wrap input{ width:100%; padding: 9px 12px 9px 32px; border-radius:10px; border:1.5px solid var(--soil-line); font-family:'Public Sans', sans-serif; font-size:13px; background: var(--bg-warm); color: var(--pine); outline:none; transition: border-color .15s; }
+  .search-wrap input:focus{ border-color: var(--amber); background: var(--white); }
+  .search-wrap .icon{ position:absolute; left:10px; top:50%; transform:translateY(-50%); font-size:13px; opacity:.6; pointer-events:none; }
+
+  .cat-pills{ display:flex; gap:6px; overflow-x:auto; padding-bottom:8px; margin-bottom:10px; }
+  .cat-pills::-webkit-scrollbar{ height:4px; }
+  .cat-pills::-webkit-scrollbar-thumb{ background: var(--soil-line); border-radius:3px; }
+  .cat-pill{ flex-shrink:0; border:none; background: var(--bg-warm); color: var(--pine-soft); padding:7px 13px; border-radius:999px; font-size:11.5px; font-weight:700; cursor:pointer; white-space:nowrap; }
+  .cat-pill.active{ background: var(--pine); color:#fff; }
+
+  .no-results{ font-size:12.5px; color: var(--pine-soft); text-align:center; padding: 16px 8px; grid-column: 1 / -1; }
+
+  .veg-grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(62px, 1fr)); gap:8px; max-height: 400px; overflow-y:auto; padding: 2px 2px 4px; }
+  .veg-grid::-webkit-scrollbar{ width:6px; }
+  .veg-grid::-webkit-scrollbar-thumb{ background: var(--soil-line); border-radius:3px; }
+
+  .veg-card{ position:relative; display:flex; flex-direction:column; align-items:center; gap:5px; padding: 9px 4px; border-radius: 14px; cursor:pointer; border: 2px solid transparent; background: var(--bg-warm); transition: border-color .15s, transform .1s; }
+  .veg-card:hover{ transform: translateY(-1px); }
+  .veg-card.active{ border-color: var(--amber); background: #FBF0DC; }
+  .veg-card .icon-tile{ width:38px; height:38px; border-radius:11px; display:flex; align-items:center; justify-content:center; font-size:25px; line-height:1; }
+  .veg-card .name{ font-size:10.5px; font-weight:700; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%; }
+  .veg-card .custom-dot{ position:absolute; top:3px; left:3px; font-size:8px; }
+
+  .veg-tooltip{ position:fixed; z-index:150; background: var(--pine-dark); color:#fff; padding:9px 11px; border-radius:9px; font-size:11.5px; line-height:1.6; box-shadow:0 8px 20px rgba(0,0,0,0.3); pointer-events:none; display:none; max-width:200px; }
+  .veg-tooltip.show{ display:block; }
+  .veg-tooltip .tt-name{ font-weight:700; margin-bottom:3px; font-size:12.5px; }
+
+  .selected-hint{ margin-top:10px; padding:10px 12px; border-radius:12px; background: var(--pine); color: #fff; font-size:12px; line-height:1.4; display:none; }
+  .selected-hint.show{ display:block; }
+  .selected-hint b{ color: var(--amber); }
+  .clear-select{ background:none; border:none; color:#cfe3da; text-decoration:underline; cursor:pointer; font-size:11.5px; padding:0; margin-top:6px; }
+
+  /* Grid settings */
+  #gridSettingsPanel .panel-head{ margin-bottom:0; cursor:pointer; }
+  .gear-wrap{ display:flex; align-items:center; gap:9px; }
+  .gear-icon{ width:32px; height:32px; border-radius:10px; background: var(--bg-warm); display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
+  .dim-summary{ font-size:12px; color: var(--pine-soft); font-weight:600; margin-top:1px; }
+  #gridSettingsBody{ margin-top:12px; }
+  .dim-row{ display:flex; align-items:center; justify-content:space-between; padding: 9px 0; border-bottom: 1px solid var(--bg-warm); }
+  .dim-row:last-child{ border-bottom:none; }
+  .dim-row span{ font-size:13px; font-weight:600; color: var(--pine-soft); }
+  .stepper{display:flex; align-items:center; gap:8px;}
+  .stepper button{ width:28px; height:28px; border-radius:50%; border:none; background: var(--bg-warm); color: var(--pine); font-size:15px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; transition: background .15s, transform .1s; }
+  .stepper button:hover{ background: var(--soil-line); }
+  .stepper button:active{ transform: scale(0.92); }
+  .stepper .val{ font-family:'JetBrains Mono', monospace; font-weight:500; font-size:13.5px; width: 26px; text-align:center; }
+
+  /* Room */
+  .room-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; gap:8px; flex-wrap:wrap; }
+  .room-header-right{ display:flex; align-items:center; gap:8px; }
+  .grid-size-label{ font-size:11.5px; color: var(--pine-soft); font-weight:600; }
+  .legend{ font-size:11px; color: var(--pine-soft); margin-top:10px; }
+
+  .room{ display:grid; gap:0; width:100%; padding: 8px; border-radius: 12px; overflow:hidden; touch-action:none; background: var(--bg-warm); }
+  .cell{ position:relative; cursor:pointer; display:flex; align-items:center; justify-content:center; overflow:hidden; background: var(--bg); transition: transform .08s ease; box-sizing:border-box; }
+  .cell:not(.planted){ box-shadow: inset 0 0 0 1px rgba(38,67,58,0.09); }
+  .cell:hover{ transform: scale(1.04); z-index:2; }
+  .cell.planted{
+    background-color: var(--soil);
+    background-image:
+      radial-gradient(circle at 22% 28%, rgba(0,0,0,0.14) 1px, transparent 1.6px),
+      radial-gradient(circle at 68% 52%, rgba(0,0,0,0.11) 1px, transparent 1.6px),
+      radial-gradient(circle at 42% 78%, rgba(255,255,255,0.10) 1px, transparent 1.6px),
+      radial-gradient(circle at 85% 22%, rgba(0,0,0,0.10) 1px, transparent 1.6px),
+      radial-gradient(circle at 15% 70%, rgba(0,0,0,0.08) 1px, transparent 1.6px);
+    background-size: 13px 13px;
+  }
+  .cell.planted .inner{ width:100%; height:100%; background: transparent; display:flex; align-items:center; justify-content:center; font-size: clamp(14px, 5vw, 24px); position:relative; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4)); }
+  .cell.planted .prog-track{ position:absolute; left:14%; right:14%; bottom:9%; height:3px; border-radius:3px; background: rgba(0,0,0,0.25); overflow:hidden; }
+  .cell.planted .prog-fill{ height:100%; background: var(--ring-color); }
+  .cell-empty-mark{ font-size: clamp(8px, 2.6vw, 13px); color: rgba(38,67,58,0.15); }
+
+  /* Environment */
+  .env-panel .panel-head{ margin-bottom:6px; }
+  .location-row{ display:flex; align-items:center; gap:5px; font-size:12.5px; color: var(--pine-soft); font-weight:600; margin-bottom:10px; }
+  .weather-icon{ font-size:12.5px; width:22px; height:22px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .location-edit-link{ border:none; background:none; cursor:pointer; font-size:11px; padding:2px 4px; opacity:.6; }
+  .location-edit-link:hover{ opacity:1; }
+  .manual-location-form{ display:none; gap:6px; margin-bottom:12px; }
+  .manual-location-form.show{ display:flex; }
+  .manual-location-form input{ flex:1; min-width:0; padding:7px 10px; border-radius:8px; border:1.5px solid var(--soil-line); font-size:12px; font-family:'Public Sans', sans-serif; outline:none; background: var(--bg-warm); }
+  .manual-location-form input:focus{ border-color: var(--amber); background: var(--white); }
+  .manual-location-form button{ border:none; border-radius:8px; padding:7px 10px; font-size:11.5px; font-weight:700; cursor:pointer; flex-shrink:0; }
+  .manual-location-form #manualLocationGo{ background: var(--amber); color:#4A3411; }
+  .manual-location-form #manualLocationCancel{ background: var(--bg-warm); color: var(--pine-soft); }
+  .use-auto-location{ display:none; background:none; border:none; color: var(--pine-soft); text-decoration:underline; font-size:10.5px; cursor:pointer; padding:0; margin: -6px 0 12px; }
+  .use-auto-location.show{ display:inline-block; }
+
+  .env-metric-big{ display:flex; align-items:center; justify-content:space-between; background: var(--green-bg); border-radius:14px; padding: 12px 14px; margin-bottom:10px; gap:8px; }
+  .env-metric-big .left{ display:flex; align-items:center; gap:10px; min-width:0; }
+  .env-metric-big .emoji{ width:32px; height:32px; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0; }
+  .env-metric-big .label{ font-size:10.5px; color: var(--green-accent); font-weight:800; text-transform:uppercase; letter-spacing:.03em; }
+  .env-metric-big .value{ font-family:'Fraunces', serif; font-size:21px; font-weight:700; color: var(--pine); line-height:1.1; }
+  .env-metric-big .range{ text-align:right; flex-shrink:0; }
+  .env-metric-big .rlabel{ font-size:9.5px; color: var(--pine-soft); font-weight:700; text-transform:uppercase; }
+  .env-metric-big .rvalue{ font-size:12.5px; font-weight:700; color: var(--pine); font-family:'JetBrains Mono', monospace; }
+
+  .env-grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:9px; margin-bottom:10px; }
+  .env-chip{ background: var(--bg-warm); border-radius:12px; padding:11px; }
+  .env-chip .chiphead{ display:flex; align-items:center; gap:5px; font-size:10.5px; font-weight:800; margin-bottom:6px; text-transform:uppercase; letter-spacing:.02em; }
+  .env-chip.temp .chiphead{ color: var(--red-accent); }
+  .env-chip.humidity .chiphead{ color: var(--blue-accent); }
+  .env-chip.sunset .chiphead{ color: var(--orange-accent); }
+  .env-chip.lights .chiphead{ color: var(--green-accent); }
+  .env-chip .val{ font-size:17px; font-weight:700; color: var(--pine); font-family:'JetBrains Mono', monospace; }
+  .env-chip .sub{ font-size:10px; color: var(--pine-soft); margin-top:2px; line-height:1.3; }
+
+  .weather-desc{ font-size:11.5px; color: var(--pine-soft); background: var(--bg-warm); border-radius:10px; padding:9px 11px; margin-bottom:14px; display:flex; align-items:center; gap:7px; }
+  .env-loading, .env-error{ font-size:12px; color: var(--pine-soft); padding: 10px 0; line-height:1.5; }
+  .env-error button{ margin-top:8px; background: var(--bg-warm); border:1px solid var(--soil-line); color: var(--pine); padding:6px 10px; border-radius:8px; font-size:11.5px; cursor:pointer; font-family:'Public Sans', sans-serif; }
+  .range-status{ font-size:10.5px; margin: -2px 0 10px; padding:7px 9px; border-radius:9px; line-height:1.5; }
+  .range-status.ok{ background: var(--green-bg); color: var(--green-accent); }
+  .range-status.warn{ background: var(--orange-bg); color: var(--amber-dark); }
+
+  .alerts-title-row{ display:flex; align-items:center; justify-content:space-between; margin-bottom:9px; }
+  .alert-badge{ background: var(--amber); color:#fff; font-size:10.5px; font-weight:800; width:19px; height:19px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+  .alert-row{ display:flex; align-items:center; justify-content:space-between; padding:9px 10px; border-radius:12px; background: var(--bg-warm); margin-bottom:7px; cursor:pointer; transition: background .15s; gap:8px; }
+  .alert-row:hover{ background: var(--soil-line); }
+  .alert-row .aleft{ display:flex; align-items:center; gap:9px; min-width:0; }
+  .alert-row .icon-tile-sm{ width:30px; height:30px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:15px; background:#fff; flex-shrink:0; }
+  .alert-row .an{ font-size:12px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .alert-row .ad{ font-size:10px; color: var(--pine-soft); font-family:'JetBrains Mono', monospace; }
+  .ready-tag{ background: var(--green-bg); color: var(--green-accent); font-size:10px; font-weight:800; padding:4px 9px; border-radius:999px; flex-shrink:0; }
+  .soon-tag{ background: var(--orange-bg); color: var(--amber-dark); font-size:10px; font-weight:800; padding:4px 9px; border-radius:999px; flex-shrink:0; }
+  .no-alerts{ font-size:11.5px; color: var(--pine-soft); padding: 4px 0 0; line-height:1.5; }
+  .estimate-note{ font-size:9.5px; color: var(--pine-soft); margin-top:10px; line-height:1.4; opacity:.8; }
+
+  .overlay{ position:fixed; inset:0; background: rgba(38,67,58,0.45); display:none; align-items:center; justify-content:center; z-index: 100; padding: 16px; }
+  .overlay.show{ display:flex; }
+  .modal{ background: var(--white); border-radius: 18px; max-width: 360px; width:100%; padding: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.25); animation: pop .18s ease; }
+  @keyframes pop{ from{ transform: scale(0.94); opacity:0; } to{ transform:scale(1); opacity:1; } }
+  .modal .head{ display:flex; align-items:center; gap:12px; margin-bottom: 14px; }
+  .modal .head .icon-badge{ width:52px; height:52px; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:28px; }
+  .modal .head h3{ font-family:'Fraunces', serif; font-size:20px; margin:0; }
+  .modal .head .block-pos{ font-size:11.5px; color: var(--pine-soft); font-family:'JetBrains Mono', monospace; }
+  .modal .row{ display:flex; justify-content:space-between; font-size:13px; padding: 8px 0; border-bottom: 1px solid var(--bg-warm); }
+  .modal .row .k{ color: var(--pine-soft); }
+  .modal .row .v{ font-weight:600; font-family:'JetBrains Mono', monospace; font-size:12.5px; }
+  .progress-track{ height:8px; border-radius:6px; background: var(--bg-warm); margin: 14px 0 6px; overflow:hidden; }
+  .progress-fill{ height:100%; border-radius:6px; transition: width .3s; }
+  .progress-label{ font-size:12px; color: var(--pine-soft); text-align:center; margin-bottom: 16px; }
+  .progress-label.ready{ color: var(--amber-dark); font-weight:700; }
+  .modal-actions{ display:flex; gap:10px; }
+  .modal-actions button{ flex:1; padding: 10px 12px; border-radius:10px; border:none; font-weight:600; font-size:13px; cursor:pointer; font-family:'Public Sans', sans-serif; }
+  .btn-clear{ background: #F5E4E1; color:#A0413A; }
+  .btn-clear:hover{ background:#F0D2CD; }
+  .btn-close{ background: var(--pine); color:#fff; }
+  .btn-close:hover{ background: var(--pine-soft); }
+
+  .toast{ position:fixed; bottom: 24px; left:50%; transform: translateX(-50%) translateY(20px); background: var(--pine); color:#fff; padding: 12px 18px; border-radius: 10px; font-size:13.5px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); opacity:0; pointer-events:none; transition: opacity .2s, transform .2s; z-index: 200; max-width:88vw; text-align:center; }
+  .toast.show{ opacity:1; transform: translateX(-50%) translateY(0); }
+
+  footer.credit{ text-align:center; font-size:11.5px; color: var(--pine-soft); margin-top: 24px; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="top">
+    <div class="brand">
+      <div class="logo">🌱</div>
+      <div>
+        <h1 id="brandTitle">My Greenhouse</h1>
+        <p id="brandSubtitle">Plan your garden visually</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="planted-pill" id="plantedPill">✨ 0 planted</div>
+      <div class="lang-switch">
+        <span class="globe">🌐</span>
+        <select id="langSelect" aria-label="Language">
+          <option value="en">English</option>
+          <option value="es">Español</option>
+          <option value="it">Italiano</option>
+          <option value="fr">Français</option>
+          <option value="pt">Português</option>
+          <option value="de">Deutsch</option>
+          <option value="zh">中文</option>
+          <option value="hi">हिन्दी</option>
+          <option value="ar">العربية</option>
+          <option value="ru">Русский</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout" id="layout">
+
+    <!-- Plant library -->
+    <div class="panel" id="libraryPanel">
+      <div class="panel-head">
+        <span class="eyebrow" id="libraryTitle">PLANT LIBRARY</span>
+        <button class="collapse-btn" id="libraryToggle"><span class="arrow">▾</span></button>
+      </div>
+      <div id="libraryBody">
+        <button class="btn-add-plant-row" id="addVegToggle">+ Add Plant</button>
+        <div class="add-veg-form" id="addVegForm">
+          <input id="newVegName" type="text" placeholder="Plant name (e.g. Chives)" maxlength="30">
+          <input id="newVegDays" type="number" min="1" max="400" placeholder="Days to harvest (optional)">
+          <div class="hint-text" id="addHintText">We'll generate a matching icon, color, and temperature range automatically.</div>
+          <div class="actions">
+            <button class="btn-cancel-add" id="cancelAddVeg">Cancel</button>
+            <button class="btn-generate" id="submitAddVeg">Generate & add</button>
+          </div>
+        </div>
+        <div class="search-wrap">
+          <span class="icon">🔍</span>
+          <input id="searchInput" type="text" placeholder="Search plants…">
+        </div>
+        <div class="cat-pills" id="catPills"></div>
+        <div class="veg-grid" id="vegList"></div>
+        <div class="selected-hint" id="selectedHint"></div>
+      </div>
+    </div>
+
+    <!-- Grid settings -->
+    <div class="panel" id="gridSettingsPanel">
+      <div class="panel-head" id="gridSettingsHead">
+        <div class="gear-wrap">
+          <div class="gear-icon">⚙️</div>
+          <div>
+            <div class="eyebrow" id="gridSettingsTitle">GRID SETTINGS</div>
+            <div class="dim-summary" id="dimSummary">6 × 6</div>
+          </div>
+        </div>
+        <button class="collapse-btn" id="gridSettingsToggle"><span class="arrow">▾</span></button>
+      </div>
+      <div id="gridSettingsBody" style="display:none;">
+        <div class="dim-row">
+          <span id="heightLabel">Height</span>
+          <div class="stepper"><button id="rowsDown">−</button><div class="val" id="rowsVal">6</div><button id="rowsUp">+</button></div>
+        </div>
+        <div class="dim-row">
+          <span id="widthLabel">Width</span>
+          <div class="stepper"><button id="colsDown">−</button><div class="val" id="colsVal">6</div><button id="colsUp">+</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Greenhouse layout -->
+    <div class="panel" id="roomPanel">
+      <div class="room-header">
+        <span class="eyebrow" id="roomTitle">GREENHOUSE LAYOUT</span>
+        <div class="room-header-right">
+          <button class="icon-btn" id="rotateRoomBtn" title="Rotate 90°">⟳</button>
+          <button class="icon-btn spin" id="refreshRoomBtn" title="Refresh">↻</button>
+          <span class="grid-size-label" id="gridSizeLabel">6 × 6 grid</span>
+        </div>
+      </div>
+      <div class="room" id="room"></div>
+      <div class="legend" id="roomLegend">🟫 empty block · tap a planted block for details · drag to plant a row</div>
+    </div>
+
+    <!-- Environment -->
+    <div class="panel env-panel" id="envPanel">
+      <div class="panel-head">
+        <span class="eyebrow" id="envTitle">ENVIRONMENT</span>
+        <button class="icon-btn spin" id="envRefreshBtn" title="Refresh">↻</button>
+      </div>
+      <div class="location-row">📍 <span id="locationName">—</span><span class="weather-icon" id="weatherIcon"></span><button class="location-edit-link" id="locationEditLink">✏️</button></div>
+      <div class="manual-location-form" id="manualLocationForm">
+        <input type="text" id="manualLocationInput" placeholder="City name…">
+        <button id="manualLocationGo">Go</button>
+        <button id="manualLocationCancel">✕</button>
+      </div>
+      <button class="use-auto-location" id="useAutoLocationBtn">📍 Use automatic location</button>
+      <div id="envConditions"><div class="env-loading">…</div></div>
+      <div class="weather-desc" id="weatherDesc" style="display:none;"></div>
+      <div class="alerts-title-row">
+        <span class="eyebrow" id="alertsTitleText">HARVEST ALERTS</span>
+        <span class="alert-badge" id="alertBadge" style="display:none;">0</span>
+      </div>
+      <div id="envAlerts"><div class="no-alerts">…</div></div>
+      <div class="estimate-note" id="estimateNote">⚠️ Dates are estimates based on typical grow times — always confirm by eye before harvesting.</div>
+    </div>
+
+  </div>
+
+  <footer class="credit" id="footerCredit">Your layout saves automatically on this device.</footer>
+</div>
+
+<div class="overlay" id="overlay"><div class="modal" id="modalContent"></div></div>
+<div class="toast" id="toast"></div>
+<div class="veg-tooltip" id="vegTooltip"></div>
+
+<script>
+// Outside claude.ai, window.storage doesn't exist — fall back to localStorage
+// so saving/loading the layout still works when installed as a standalone app.
+if(!window.storage){
+  window.storage = {
+    async get(key){
+      const raw = localStorage.getItem(key);
+      if(raw === null){ const err = new Error('key not found'); throw err; }
+      return { key, value: raw, shared:false };
+    },
+    async set(key, value){
+      try{ localStorage.setItem(key, value); return { key, value, shared:false }; }
+      catch(e){ return null; }
+    },
+    async delete(key){
+      try{ localStorage.removeItem(key); return { key, deleted:true, shared:false }; }
+      catch(e){ return null; }
+    },
+    async list(prefix){
+      const keys = [];
+      for(let i=0;i<localStorage.length;i++){
+        const k = localStorage.key(i);
+        if(!prefix || (k && k.startsWith(prefix))) keys.push(k);
+      }
+      return { keys, prefix, shared:false };
+    }
+  };
+}
+</script>
+
+<script>
+/* ---------- Translations ---------- */
+const TRANSLATIONS = {
+  en: {
+    appTitle:'My Greenhouse', appSubtitle:'Plan your garden visually',
+    plantedPill:'✨ {n} planted', readyPillHeader:'🌟 {n} ready',
+    libraryTitle:'PLANT LIBRARY', addPlantBtn:'+ Add Plant', addVegClose:'− Close',
+    searchPlaceholder:'Search plants…', noResults:'No plants match', tryAdd:'Try "+ Add Plant" above.',
+    catAll:'All', catFruit:'Fruits', catBerry:'Berries', catLeafy:'Leafy', catHerb:'Herbs', catRoot:'Roots',
+    selectedHintPrefix:'Planting', selectedHintSuffix:'— tap or drag across empty blocks.', cancelSelection:'cancel selection',
+    newVegNamePlaceholder:'Plant name (e.g. Chives)', newVegDaysPlaceholder:'Days to harvest (optional)',
+    addHintText:"We'll generate a matching icon, color, and temperature range automatically.",
+    cancelBtn:'Cancel', generateBtn:'Generate & add', generatingBtn:'Generating icon…',
+    roomTitle:'GREENHOUSE LAYOUT', roomLegend:'🟫 empty block · tap a planted block for details · drag to plant a row',
+    gridLabel:'{r} × {c} grid', refreshedToast:'Refreshed',
+    gridSettingsTitle:'GRID SETTINGS', heightLabel:'Height', widthLabel:'Width',
+    envTitle:'ENVIRONMENT', envLoading:'Locating…',
+    envNoLocation:"Couldn't determine your location automatically.",
+    envFetchError:"Couldn't load weather data right now.",
+    retryBtn:'Retry',
+    manualLocationPlaceholder:'City name…', manualLocationNotFound:'City not found — try another search',
+    useAutoLocation:'📍 Use automatic location', locationManualLabel:'Manual location',
+    locationApprox:'Approximate location', locationPrecise:'Precise location',
+    sensorCardLabel:'GREENHOUSE (SENSOR)', idealRangeLabel:'IDEAL RANGE',
+    outdoorTemp:'TEMPERATURE', humidityLabel:'HUMIDITY', sunsetLabelSub:'SUNSET', lightsLabelSub:'LIGHTS',
+    lightsNatural:'Natural light', lightsOn:'Grow lights on',
+    lightsPast:'Past sunset', lightsSoon:'Sunset soon', hoursUntilSunset:'{h}h until dark',
+    withinRange:'✅ Within range for your plants', outOfRange:'⚠️ Outside optimal range for: {names}',
+    alertsTitle:'HARVEST ALERTS', noAlerts:'Nothing ripening in the next few days.',
+    readyTag:'Ready!', soonTag:'{d}d',
+    estimateNote:'⚠️ Dates are estimates based on typical grow times — always confirm by eye before harvesting.',
+    footerCredit:'Your layout saves automatically on this device.',
+    modalPlantedOn:'Planted on', modalDaysGrowing:'Days growing', modalExpectedHarvest:'Expected harvest',
+    modalReady:'🎉 Ready to harvest!', modalClear:'Clear block', modalDone:'Done',
+    daysToHarvestLabel:'days to harvest', idealTemp:'Ideal temp', customTag:'yours',
+    toastPickPlant:'Pick a plant from the library first 🌱',
+    toastPlanted:'Planted {name} in block {r}-{c}', toastPlantedMulti:'Planted {name} in {n} blocks',
+    toastCleared:'Block cleared',
+    toastMaxHeight:'Maximum height is 12 blocks', toastMinHeight:'Minimum height is 2 blocks',
+    toastMaxWidth:'Maximum width is 12 blocks', toastMinWidth:'Minimum width is 2 blocks',
+    toastGiveName:'Give your plant a name first', toastAlreadyLibrary:'{name} is already in your library — selected it for you',
+    toastAdded:'Added {name} to your library {icon}', toastSaveFail:"Couldn't save — your changes may not persist.",
+    grown:'grown', toGo:'to go', day:'day', days:'days',
+    weatherClear:'Clear skies', weatherPartly:'Partly cloudy', weatherCloudy:'Cloudy',
+    weatherFog:'Foggy', weatherDrizzle:'Light drizzle', weatherRain:'Cloudy with a chance of rain',
+    weatherSnow:'Snowy', weatherShowers:'Scattered showers', weatherStorm:'Thunderstorms'
+  },
+  es: {
+    appTitle:'Mi Invernadero', appSubtitle:'Diseña tu jardín visualmente',
+    plantedPill:'✨ {n} plantados', readyPillHeader:'🌟 {n} listos',
+    libraryTitle:'BIBLIOTECA DE PLANTAS', addPlantBtn:'+ Añadir planta', addVegClose:'− Cerrar',
+    searchPlaceholder:'Buscar plantas…', noResults:'No hay plantas que coincidan con', tryAdd:'Prueba "+ Añadir planta" arriba.',
+    catAll:'Todo', catFruit:'Frutas', catBerry:'Bayas', catLeafy:'Hojas', catHerb:'Hierbas', catRoot:'Raíces',
+    selectedHintPrefix:'Plantando', selectedHintSuffix:'— toca o arrastra sobre bloques vacíos.', cancelSelection:'cancelar selección',
+    newVegNamePlaceholder:'Nombre de la planta (ej. Cebollino)', newVegDaysPlaceholder:'Días hasta la cosecha (opcional)',
+    addHintText:'Generaremos automáticamente un icono, color y rango de temperatura adecuados.',
+    cancelBtn:'Cancelar', generateBtn:'Generar y añadir', generatingBtn:'Generando icono…',
+    roomTitle:'DISEÑO DEL INVERNADERO', roomLegend:'🟫 bloque vacío · toca un bloque plantado para ver detalles · arrastra para plantar una fila',
+    gridLabel:'cuadrícula {r} × {c}', refreshedToast:'Actualizado',
+    gridSettingsTitle:'AJUSTES DE LA CUADRÍCULA', heightLabel:'Alto', widthLabel:'Ancho',
+    envTitle:'ENTORNO', envLoading:'Localizando…',
+    envNoLocation:'No se pudo determinar tu ubicación automáticamente.',
+    envFetchError:'No se pudieron cargar los datos meteorológicos.',
+    retryBtn:'Reintentar',
+    manualLocationPlaceholder:'Nombre de la ciudad…', manualLocationNotFound:'Ciudad no encontrada — prueba otra búsqueda',
+    useAutoLocation:'📍 Usar ubicación automática', locationManualLabel:'Ubicación manual',
+    locationApprox:'Ubicación aproximada', locationPrecise:'Ubicación precisa',
+    sensorCardLabel:'INVERNADERO (SENSOR)', idealRangeLabel:'RANGO IDEAL',
+    outdoorTemp:'TEMPERATURA', humidityLabel:'HUMEDAD', sunsetLabelSub:'PUESTA DE SOL', lightsLabelSub:'LUCES',
+    lightsNatural:'Luz natural', lightsOn:'Luces encendidas',
+    lightsPast:'Ya anocheció', lightsSoon:'Anochece pronto', hoursUntilSunset:'{h}h hasta el anochecer',
+    withinRange:'✅ Dentro del rango para tus plantas', outOfRange:'⚠️ Fuera del rango óptimo para: {names}',
+    alertsTitle:'ALERTAS DE COSECHA', noAlerts:'Nada madurará en los próximos días.',
+    readyTag:'¡Listo!', soonTag:'{d}d',
+    estimateNote:'⚠️ Las fechas son estimaciones basadas en tiempos de crecimiento típicos — confirma siempre visualmente antes de cosechar.',
+    footerCredit:'Tu diseño se guarda automáticamente en este dispositivo.',
+    modalPlantedOn:'Plantado el', modalDaysGrowing:'Días creciendo', modalExpectedHarvest:'Cosecha esperada',
+    modalReady:'🎉 ¡Listo para cosechar!', modalClear:'Vaciar bloque', modalDone:'Listo',
+    daysToHarvestLabel:'días hasta la cosecha', idealTemp:'Temp. ideal', customTag:'tuya',
+    toastPickPlant:'Primero elige una planta de la biblioteca 🌱',
+    toastPlanted:'Plantado {name} en el bloque {r}-{c}', toastPlantedMulti:'Plantado {name} en {n} bloques',
+    toastCleared:'Bloque vaciado',
+    toastMaxHeight:'La altura máxima es 12 bloques', toastMinHeight:'La altura mínima es 2 bloques',
+    toastMaxWidth:'El ancho máximo es 12 bloques', toastMinWidth:'El ancho mínimo es 2 bloques',
+    toastGiveName:'Primero dale un nombre a tu planta', toastAlreadyLibrary:'{name} ya está en tu biblioteca — la seleccionamos por ti',
+    toastAdded:'Se añadió {name} a tu biblioteca {icon}', toastSaveFail:'No se pudo guardar — es posible que tus cambios no persistan.',
+    grown:'crecido', toGo:'restantes', day:'día', days:'días',
+    weatherClear:'Cielos despejados', weatherPartly:'Parcialmente nublado', weatherCloudy:'Nublado',
+    weatherFog:'Neblina', weatherDrizzle:'Llovizna ligera', weatherRain:'Nublado con posibilidad de lluvia',
+    weatherSnow:'Nevado', weatherShowers:'Chubascos dispersos', weatherStorm:'Tormentas eléctricas'
+  },
+  fr: {
+    appTitle:'Ma Serre', appSubtitle:'Planifiez votre jardin visuellement',
+    plantedPill:'✨ {n} plantés', readyPillHeader:'🌟 {n} prêts',
+    libraryTitle:'BIBLIOTHÈQUE DE PLANTES', addPlantBtn:'+ Ajouter une plante', addVegClose:'− Fermer',
+    searchPlaceholder:'Rechercher des plantes…', noResults:'Aucune plante ne correspond à', tryAdd:'Essayez « + Ajouter une plante » ci-dessus.',
+    catAll:'Tout', catFruit:'Fruits', catBerry:'Baies', catLeafy:'Feuilles', catHerb:'Herbes', catRoot:'Racines',
+    selectedHintPrefix:'Plantation de', selectedHintSuffix:'— touchez ou glissez sur les blocs vides.', cancelSelection:'annuler la sélection',
+    newVegNamePlaceholder:"Nom de la plante (ex. Ciboulette)", newVegDaysPlaceholder:"Jours jusqu'à la récolte (optionnel)",
+    addHintText:"Nous générerons automatiquement une icône, une couleur et une plage de température adaptées.",
+    cancelBtn:'Annuler', generateBtn:'Générer et ajouter', generatingBtn:"Génération de l'icône…",
+    roomTitle:'PLAN DE LA SERRE', roomLegend:'🟫 bloc vide · touchez un bloc planté pour les détails · glissez pour planter une rangée',
+    gridLabel:'grille {r} × {c}', refreshedToast:'Actualisé',
+    gridSettingsTitle:'PARAMÈTRES DE LA GRILLE', heightLabel:'Hauteur', widthLabel:'Largeur',
+    envTitle:'ENVIRONNEMENT', envLoading:'Localisation…',
+    envNoLocation:"Impossible de déterminer votre position automatiquement.",
+    envFetchError:"Impossible de charger les données météo pour le moment.",
+    retryBtn:'Réessayer',
+    manualLocationPlaceholder:'Nom de la ville…', manualLocationNotFound:'Ville introuvable — essayez une autre recherche',
+    useAutoLocation:'📍 Utiliser la position automatique', locationManualLabel:'Position manuelle',
+    locationApprox:'Position approximative', locationPrecise:'Position précise',
+    sensorCardLabel:'SERRE (CAPTEUR)', idealRangeLabel:'PLAGE IDÉALE',
+    outdoorTemp:'TEMPÉRATURE', humidityLabel:'HUMIDITÉ', sunsetLabelSub:'COUCHER DU SOLEIL', lightsLabelSub:'LUMIÈRES',
+    lightsNatural:'Lumière naturelle', lightsOn:'Lampes de croissance allumées',
+    lightsPast:'Après le coucher du soleil', lightsSoon:'Coucher du soleil bientôt', hoursUntilSunset:'{h}h avant la nuit',
+    withinRange:'✅ Dans la plage idéale pour vos plantes', outOfRange:'⚠️ Hors de la plage optimale pour : {names}',
+    alertsTitle:'ALERTES DE RÉCOLTE', noAlerts:'Rien ne mûrit dans les prochains jours.',
+    readyTag:'Prêt !', soonTag:'{d}j',
+    estimateNote:'⚠️ Les dates sont des estimations basées sur des durées de croissance typiques — vérifiez toujours visuellement avant la récolte.',
+    footerCredit:'Votre plan est enregistré automatiquement sur cet appareil.',
+    modalPlantedOn:'Planté le', modalDaysGrowing:'Jours de croissance', modalExpectedHarvest:'Récolte prévue',
+    modalReady:'🎉 Prêt à récolter !', modalClear:'Vider le bloc', modalDone:'Terminé',
+    daysToHarvestLabel:"jours jusqu'à la récolte", idealTemp:'Temp. idéale', customTag:'la vôtre',
+    toastPickPlant:"Choisissez d'abord une plante dans la bibliothèque 🌱",
+    toastPlanted:'{name} planté dans le bloc {r}-{c}', toastPlantedMulti:'{name} planté dans {n} blocs',
+    toastCleared:'Bloc vidé',
+    toastMaxHeight:'La hauteur maximale est de 12 blocs', toastMinHeight:'La hauteur minimale est de 2 blocs',
+    toastMaxWidth:'La largeur maximale est de 12 blocs', toastMinWidth:'La largeur minimale est de 2 blocs',
+    toastGiveName:"Donnez d'abord un nom à votre plante", toastAlreadyLibrary:'{name} est déjà dans votre bibliothèque — sélectionnée pour vous',
+    toastAdded:'{name} ajouté à votre bibliothèque {icon}', toastSaveFail:"Impossible d'enregistrer — vos modifications pourraient ne pas être conservées.",
+    grown:'poussé', toGo:'restants', day:'jour', days:'jours',
+    weatherClear:'Ciel dégagé', weatherPartly:'Partiellement nuageux', weatherCloudy:'Nuageux',
+    weatherFog:'Brouillard', weatherDrizzle:'Bruine légère', weatherRain:'Nuageux avec risque de pluie',
+    weatherSnow:'Neigeux', weatherShowers:'Averses éparses', weatherStorm:'Orages'
+  },
+  pt: {
+    appTitle:'Minha Estufa', appSubtitle:'Planeje seu jardim visualmente',
+    plantedPill:'✨ {n} plantados', readyPillHeader:'🌟 {n} prontos',
+    libraryTitle:'BIBLIOTECA DE PLANTAS', addPlantBtn:'+ Adicionar planta', addVegClose:'− Fechar',
+    searchPlaceholder:'Buscar plantas…', noResults:'Nenhuma planta corresponde a', tryAdd:'Tente "+ Adicionar planta" acima.',
+    catAll:'Todas', catFruit:'Frutas', catBerry:'Frutas silvestres', catLeafy:'Folhosas', catHerb:'Ervas', catRoot:'Raízes',
+    selectedHintPrefix:'Plantando', selectedHintSuffix:'— toque ou arraste sobre blocos vazios.', cancelSelection:'cancelar seleção',
+    newVegNamePlaceholder:'Nome da planta (ex. Cebolinha)', newVegDaysPlaceholder:'Dias até a colheita (opcional)',
+    addHintText:'Geraremos automaticamente um ícone, cor e faixa de temperatura adequados.',
+    cancelBtn:'Cancelar', generateBtn:'Gerar e adicionar', generatingBtn:'Gerando ícone…',
+    roomTitle:'LAYOUT DA ESTUFA', roomLegend:'🟫 bloco vazio · toque em um bloco plantado para detalhes · arraste para plantar uma fileira',
+    gridLabel:'grade {r} × {c}', refreshedToast:'Atualizado',
+    gridSettingsTitle:'CONFIGURAÇÕES DA GRADE', heightLabel:'Altura', widthLabel:'Largura',
+    envTitle:'AMBIENTE', envLoading:'Localizando…',
+    envNoLocation:'Não foi possível determinar sua localização automaticamente.',
+    envFetchError:'Não foi possível carregar os dados do clima agora.',
+    retryBtn:'Tentar novamente',
+    manualLocationPlaceholder:'Nome da cidade…', manualLocationNotFound:'Cidade não encontrada — tente outra busca',
+    useAutoLocation:'📍 Usar localização automática', locationManualLabel:'Localização manual',
+    locationApprox:'Localização aproximada', locationPrecise:'Localização precisa',
+    sensorCardLabel:'ESTUFA (SENSOR)', idealRangeLabel:'FAIXA IDEAL',
+    outdoorTemp:'TEMPERATURA', humidityLabel:'UMIDADE', sunsetLabelSub:'PÔR DO SOL', lightsLabelSub:'LUZES',
+    lightsNatural:'Luz natural', lightsOn:'Luzes de cultivo ligadas',
+    lightsPast:'Após o pôr do sol', lightsSoon:'Pôr do sol em breve', hoursUntilSunset:'{h}h até escurecer',
+    withinRange:'✅ Dentro da faixa ideal para suas plantas', outOfRange:'⚠️ Fora da faixa ideal para: {names}',
+    alertsTitle:'ALERTAS DE COLHEITA', noAlerts:'Nada vai amadurecer nos próximos dias.',
+    readyTag:'Pronto!', soonTag:'{d}d',
+    estimateNote:'⚠️ As datas são estimativas baseadas em tempos de crescimento típicos — sempre confirme visualmente antes de colher.',
+    footerCredit:'Seu layout é salvo automaticamente neste dispositivo.',
+    modalPlantedOn:'Plantado em', modalDaysGrowing:'Dias crescendo', modalExpectedHarvest:'Colheita esperada',
+    modalReady:'🎉 Pronto para colher!', modalClear:'Limpar bloco', modalDone:'Concluído',
+    daysToHarvestLabel:'dias até a colheita', idealTemp:'Temp. ideal', customTag:'sua',
+    toastPickPlant:'Escolha uma planta da biblioteca primeiro 🌱',
+    toastPlanted:'{name} plantado no bloco {r}-{c}', toastPlantedMulti:'{name} plantado em {n} blocos',
+    toastCleared:'Bloco limpo',
+    toastMaxHeight:'A altura máxima é 12 blocos', toastMinHeight:'A altura mínima é 2 blocos',
+    toastMaxWidth:'A largura máxima é 12 blocos', toastMinWidth:'A largura mínima é 2 blocos',
+    toastGiveName:'Dê um nome à sua planta primeiro', toastAlreadyLibrary:'{name} já está na sua biblioteca — selecionamos para você',
+    toastAdded:'{name} adicionado à sua biblioteca {icon}', toastSaveFail:'Não foi possível salvar — suas alterações podem não persistir.',
+    grown:'crescido', toGo:'restantes', day:'dia', days:'dias',
+    weatherClear:'Céu limpo', weatherPartly:'Parcialmente nublado', weatherCloudy:'Nublado',
+    weatherFog:'Neblina', weatherDrizzle:'Garoa leve', weatherRain:'Nublado com chance de chuva',
+    weatherSnow:'Nevando', weatherShowers:'Pancadas dispersas', weatherStorm:'Tempestades'
+  },
+  de: {
+    appTitle:'Mein Gewächshaus', appSubtitle:'Plane deinen Garten visuell',
+    plantedPill:'✨ {n} gepflanzt', readyPillHeader:'🌟 {n} bereit',
+    libraryTitle:'PFLANZENBIBLIOTHEK', addPlantBtn:'+ Pflanze hinzufügen', addVegClose:'− Schließen',
+    searchPlaceholder:'Pflanzen suchen…', noResults:'Keine Pflanzen gefunden für', tryAdd:'Versuche „+ Pflanze hinzufügen" oben.',
+    catAll:'Alle', catFruit:'Früchte', catBerry:'Beeren', catLeafy:'Blattgemüse', catHerb:'Kräuter', catRoot:'Wurzeln',
+    selectedHintPrefix:'Pflanze', selectedHintSuffix:'— tippe oder ziehe über leere Felder.', cancelSelection:'Auswahl abbrechen',
+    newVegNamePlaceholder:'Pflanzenname (z. B. Schnittlauch)', newVegDaysPlaceholder:'Tage bis zur Ernte (optional)',
+    addHintText:'Wir erstellen automatisch ein passendes Symbol, eine Farbe und einen Temperaturbereich.',
+    cancelBtn:'Abbrechen', generateBtn:'Erstellen & hinzufügen', generatingBtn:'Symbol wird erstellt…',
+    roomTitle:'GEWÄCHSHAUS-LAYOUT', roomLegend:'🟫 leeres Feld · tippe auf ein bepflanztes Feld für Details · ziehen, um eine Reihe zu bepflanzen',
+    gridLabel:'{r} × {c} Raster', refreshedToast:'Aktualisiert',
+    gridSettingsTitle:'RASTEREINSTELLUNGEN', heightLabel:'Höhe', widthLabel:'Breite',
+    envTitle:'UMGEBUNG', envLoading:'Standort wird ermittelt…',
+    envNoLocation:'Dein Standort konnte nicht automatisch ermittelt werden.',
+    envFetchError:'Wetterdaten konnten gerade nicht geladen werden.',
+    retryBtn:'Erneut versuchen',
+    manualLocationPlaceholder:'Stadtname…', manualLocationNotFound:'Stadt nicht gefunden — versuche eine andere Suche',
+    useAutoLocation:'📍 Automatischen Standort verwenden', locationManualLabel:'Manueller Standort',
+    locationApprox:'Ungefährer Standort', locationPrecise:'Genauer Standort',
+    sensorCardLabel:'GEWÄCHSHAUS (SENSOR)', idealRangeLabel:'IDEALER BEREICH',
+    outdoorTemp:'TEMPERATUR', humidityLabel:'LUFTFEUCHTIGKEIT', sunsetLabelSub:'SONNENUNTERGANG', lightsLabelSub:'BELEUCHTUNG',
+    lightsNatural:'Natürliches Licht', lightsOn:'Wachstumslicht an',
+    lightsPast:'Nach Sonnenuntergang', lightsSoon:'Sonnenuntergang bald', hoursUntilSunset:'{h}Std. bis Dunkelheit',
+    withinRange:'✅ Im idealen Bereich für deine Pflanzen', outOfRange:'⚠️ Außerhalb des optimalen Bereichs für: {names}',
+    alertsTitle:'ERNTEHINWEISE', noAlerts:'In den nächsten Tagen wird nichts reif.',
+    readyTag:'Bereit!', soonTag:'{d}T',
+    estimateNote:'⚠️ Die Daten sind Schätzungen basierend auf typischen Wachstumszeiten — vor der Ernte immer optisch prüfen.',
+    footerCredit:'Dein Layout wird automatisch auf diesem Gerät gespeichert.',
+    modalPlantedOn:'Gepflanzt am', modalDaysGrowing:'Tage gewachsen', modalExpectedHarvest:'Erwartete Ernte',
+    modalReady:'🎉 Bereit zur Ernte!', modalClear:'Feld leeren', modalDone:'Fertig',
+    daysToHarvestLabel:'Tage bis zur Ernte', idealTemp:'Ideale Temp.', customTag:'deine',
+    toastPickPlant:'Wähle zuerst eine Pflanze aus der Bibliothek 🌱',
+    toastPlanted:'{name} in Feld {r}-{c} gepflanzt', toastPlantedMulti:'{name} in {n} Feldern gepflanzt',
+    toastCleared:'Feld geleert',
+    toastMaxHeight:'Maximale Höhe ist 12 Felder', toastMinHeight:'Minimale Höhe ist 2 Felder',
+    toastMaxWidth:'Maximale Breite ist 12 Felder', toastMinWidth:'Minimale Breite ist 2 Felder',
+    toastGiveName:'Gib deiner Pflanze zuerst einen Namen', toastAlreadyLibrary:'{name} ist bereits in deiner Bibliothek — für dich ausgewählt',
+    toastAdded:'{name} zu deiner Bibliothek hinzugefügt {icon}', toastSaveFail:'Speichern fehlgeschlagen — deine Änderungen bleiben möglicherweise nicht erhalten.',
+    grown:'gewachsen', toGo:'verbleibend', day:'Tag', days:'Tage',
+    weatherClear:'Klarer Himmel', weatherPartly:'Teilweise bewölkt', weatherCloudy:'Bewölkt',
+    weatherFog:'Neblig', weatherDrizzle:'Leichter Nieselregen', weatherRain:'Bewölkt mit Regenwahrscheinlichkeit',
+    weatherSnow:'Schneefall', weatherShowers:'Vereinzelte Schauer', weatherStorm:'Gewitter'
+  },
+  zh: {
+    appTitle:'我的温室', appSubtitle:'直观规划你的花园',
+    plantedPill:'✨ 已种植 {n} 个', readyPillHeader:'🌟 {n} 个待收获',
+    libraryTitle:'植物库', addPlantBtn:'+ 添加植物', addVegClose:'− 关闭',
+    searchPlaceholder:'搜索植物…', noResults:'没有匹配的植物：', tryAdd:'试试上方的"+ 添加植物"。',
+    catAll:'全部', catFruit:'水果', catBerry:'浆果', catLeafy:'叶菜', catHerb:'香草', catRoot:'根茎',
+    selectedHintPrefix:'正在种植', selectedHintSuffix:'— 点击或拖动经过空格。', cancelSelection:'取消选择',
+    newVegNamePlaceholder:'植物名称（例如：香葱）', newVegDaysPlaceholder:'成熟天数（可选）',
+    addHintText:'我们会自动生成匹配的图标、颜色和温度范围。',
+    cancelBtn:'取消', generateBtn:'生成并添加', generatingBtn:'正在生成图标…',
+    roomTitle:'温室布局', roomLegend:'🟫 空格 · 点击已种植的格子查看详情 · 拖动可整行种植',
+    gridLabel:'{r} × {c} 网格', refreshedToast:'已刷新',
+    gridSettingsTitle:'网格设置', heightLabel:'高度', widthLabel:'宽度',
+    envTitle:'环境', envLoading:'正在定位…',
+    envNoLocation:'无法自动确定您的位置。',
+    envFetchError:'暂时无法加载天气数据。',
+    retryBtn:'重试',
+    manualLocationPlaceholder:'城市名称…', manualLocationNotFound:'未找到该城市 — 请尝试其他搜索',
+    useAutoLocation:'📍 使用自动定位', locationManualLabel:'手动位置',
+    locationApprox:'大致位置', locationPrecise:'精确位置',
+    sensorCardLabel:'温室（传感器）', idealRangeLabel:'理想范围',
+    outdoorTemp:'温度', humidityLabel:'湿度', sunsetLabelSub:'日落', lightsLabelSub:'灯光',
+    lightsNatural:'自然光', lightsOn:'补光灯已开启',
+    lightsPast:'已过日落', lightsSoon:'即将日落', hoursUntilSunset:'{h}小时后天黑',
+    withinRange:'✅ 在您植物的适宜范围内', outOfRange:'⚠️ 超出以下植物的最佳范围：{names}',
+    alertsTitle:'收获提醒', noAlerts:'未来几天没有即将成熟的作物。',
+    readyTag:'已成熟！', soonTag:'{d}天',
+    estimateNote:'⚠️ 日期为基于典型生长周期的估算 — 收获前请务必目测确认。',
+    footerCredit:'您的布局会自动保存在此设备上。',
+    modalPlantedOn:'种植日期', modalDaysGrowing:'已生长天数', modalExpectedHarvest:'预计收获日期',
+    modalReady:'🎉 可以收获了！', modalClear:'清空格子', modalDone:'完成',
+    daysToHarvestLabel:'天成熟', idealTemp:'理想温度', customTag:'自定义',
+    toastPickPlant:'请先从植物库中选择一种植物 🌱',
+    toastPlanted:'已在 {r}-{c} 格种植{name}', toastPlantedMulti:'已在 {n} 个格子种植{name}',
+    toastCleared:'格子已清空',
+    toastMaxHeight:'最大高度为 12 格', toastMinHeight:'最小高度为 2 格',
+    toastMaxWidth:'最大宽度为 12 格', toastMinWidth:'最小宽度为 2 格',
+    toastGiveName:'请先为您的植物命名', toastAlreadyLibrary:'{name} 已在您的植物库中 — 已为您选中',
+    toastAdded:'已将 {name} 添加到您的植物库 {icon}', toastSaveFail:'保存失败 — 您的更改可能不会保留。',
+    grown:'已生长', toGo:'剩余', day:'天', days:'天',
+    weatherClear:'晴朗', weatherPartly:'局部多云', weatherCloudy:'多云',
+    weatherFog:'有雾', weatherDrizzle:'小雨', weatherRain:'多云有雨',
+    weatherSnow:'下雪', weatherShowers:'阵雨', weatherStorm:'雷暴'
+  },
+  hi: {
+    appTitle:'मेरा ग्रीनहाउस', appSubtitle:'अपने बगीचे की योजना विज़ुअली बनाएं',
+    plantedPill:'✨ {n} लगाए गए', readyPillHeader:'🌟 {n} तैयार',
+    libraryTitle:'पौध पुस्तकालय', addPlantBtn:'+ पौधा जोड़ें', addVegClose:'− बंद करें',
+    searchPlaceholder:'पौधे खोजें…', noResults:'कोई पौधा मेल नहीं खाता', tryAdd:'ऊपर "+ पौधा जोड़ें" आज़माएं।',
+    catAll:'सभी', catFruit:'फल', catBerry:'बेरीज़', catLeafy:'पत्तेदार', catHerb:'जड़ी-बूटियाँ', catRoot:'जड़ वाली सब्जियाँ',
+    selectedHintPrefix:'रोपण', selectedHintSuffix:'— खाली ब्लॉक पर टैप या खींचें।', cancelSelection:'चयन रद्द करें',
+    newVegNamePlaceholder:'पौधे का नाम (जैसे चाइव्स)', newVegDaysPlaceholder:'कटाई तक दिन (वैकल्पिक)',
+    addHintText:'हम स्वचालित रूप से एक उपयुक्त आइकन, रंग और तापमान सीमा बनाएंगे।',
+    cancelBtn:'रद्द करें', generateBtn:'बनाएं और जोड़ें', generatingBtn:'आइकन बनाया जा रहा है…',
+    roomTitle:'ग्रीनहाउस लेआउट', roomLegend:'🟫 खाली ब्लॉक · विवरण के लिए लगाए गए ब्लॉक पर टैप करें · पंक्ति में लगाने के लिए खींचें',
+    gridLabel:'{r} × {c} ग्रिड', refreshedToast:'ताज़ा किया गया',
+    gridSettingsTitle:'ग्रिड सेटिंग्स', heightLabel:'ऊँचाई', widthLabel:'चौड़ाई',
+    envTitle:'वातावरण', envLoading:'स्थान खोजा जा रहा है…',
+    envNoLocation:'आपका स्थान स्वचालित रूप से निर्धारित नहीं किया जा सका।',
+    envFetchError:'अभी मौसम डेटा लोड नहीं हो सका।',
+    retryBtn:'पुनः प्रयास करें',
+    manualLocationPlaceholder:'शहर का नाम…', manualLocationNotFound:'शहर नहीं मिला — दूसरी खोज आज़माएं',
+    useAutoLocation:'📍 स्वचालित स्थान का उपयोग करें', locationManualLabel:'मैन्युअल स्थान',
+    locationApprox:'अनुमानित स्थान', locationPrecise:'सटीक स्थान',
+    sensorCardLabel:'ग्रीनहाउस (सेंसर)', idealRangeLabel:'आदर्श सीमा',
+    outdoorTemp:'तापमान', humidityLabel:'आर्द्रता', sunsetLabelSub:'सूर्यास्त', lightsLabelSub:'लाइट्स',
+    lightsNatural:'प्राकृतिक रोशनी', lightsOn:'ग्रो लाइट्स चालू',
+    lightsPast:'सूर्यास्त हो चुका', lightsSoon:'सूर्यास्त जल्द', hoursUntilSunset:'अंधेरा होने में {h} घंटे',
+    withinRange:'✅ आपके पौधों के लिए उपयुक्त सीमा में', outOfRange:'⚠️ इनके लिए इष्टतम सीमा से बाहर: {names}',
+    alertsTitle:'फसल अलर्ट', noAlerts:'अगले कुछ दिनों में कुछ भी पकने वाला नहीं है।',
+    readyTag:'तैयार!', soonTag:'{d}दि',
+    estimateNote:'⚠️ तारीखें सामान्य वृद्धि समय पर आधारित अनुमान हैं — कटाई से पहले हमेशा नज़र से जांचें।',
+    footerCredit:'आपका लेआउट इस डिवाइस पर स्वचालित रूप से सेव हो जाता है।',
+    modalPlantedOn:'रोपण तिथि', modalDaysGrowing:'बढ़ते दिन', modalExpectedHarvest:'अपेक्षित फसल',
+    modalReady:'🎉 कटाई के लिए तैयार!', modalClear:'ब्लॉक खाली करें', modalDone:'हो गया',
+    daysToHarvestLabel:'दिनों में कटाई', idealTemp:'आदर्श तापमान', customTag:'आपका',
+    toastPickPlant:'पहले पुस्तकालय से एक पौधा चुनें 🌱',
+    toastPlanted:'ब्लॉक {r}-{c} में {name} लगाया गया', toastPlantedMulti:'{n} ब्लॉक में {name} लगाया गया',
+    toastCleared:'ब्लॉक खाली किया गया',
+    toastMaxHeight:'अधिकतम ऊँचाई 12 ब्लॉक है', toastMinHeight:'न्यूनतम ऊँचाई 2 ब्लॉक है',
+    toastMaxWidth:'अधिकतम चौड़ाई 12 ब्लॉक है', toastMinWidth:'न्यूनतम चौड़ाई 2 ब्लॉक है',
+    toastGiveName:'पहले अपने पौधे को नाम दें', toastAlreadyLibrary:'{name} पहले से आपकी लाइब्रेरी में है — आपके लिए चुन लिया गया',
+    toastAdded:'{name} आपकी लाइब्रेरी में जोड़ा गया {icon}', toastSaveFail:'सेव नहीं हो सका — आपके बदलाव सुरक्षित नहीं रह सकते।',
+    grown:'विकसित', toGo:'शेष', day:'दिन', days:'दिन',
+    weatherClear:'साफ आसमान', weatherPartly:'आंशिक रूप से बादल', weatherCloudy:'बादल छाए',
+    weatherFog:'कोहरा', weatherDrizzle:'हल्की बूंदाबांदी', weatherRain:'बादल छाए और बारिश की संभावना',
+    weatherSnow:'बर्फबारी', weatherShowers:'छिटपुट बौछारें', weatherStorm:'आंधी-तूफान'
+  },
+  ar: {
+    appTitle:'دفيئتي', appSubtitle:'خطّط لحديقتك بصريًا',
+    plantedPill:'✨ {n} مزروع', readyPillHeader:'🌟 {n} جاهز',
+    libraryTitle:'مكتبة النباتات', addPlantBtn:'+ إضافة نبتة', addVegClose:'− إغلاق',
+    searchPlaceholder:'ابحث عن النباتات…', noResults:'لا توجد نباتات مطابقة لـ', tryAdd:'جرّب "+ إضافة نبتة" أعلاه.',
+    catAll:'الكل', catFruit:'فواكه', catBerry:'توت', catLeafy:'ورقيات', catHerb:'أعشاب', catRoot:'جذريات',
+    selectedHintPrefix:'زراعة', selectedHintSuffix:'— اضغط أو اسحب فوق المربعات الفارغة.', cancelSelection:'إلغاء التحديد',
+    newVegNamePlaceholder:'اسم النبتة (مثال: ثوم معمر)', newVegDaysPlaceholder:'الأيام حتى الحصاد (اختياري)',
+    addHintText:'سنقوم تلقائيًا بإنشاء أيقونة ولون ونطاق حرارة مناسب.',
+    cancelBtn:'إلغاء', generateBtn:'إنشاء وإضافة', generatingBtn:'جارٍ إنشاء الأيقونة…',
+    roomTitle:'تخطيط الدفيئة', roomLegend:'🟫 مربع فارغ · اضغط على مربع مزروع لعرض التفاصيل · اسحب لزراعة صف كامل',
+    gridLabel:'شبكة {r} × {c}', refreshedToast:'تم التحديث',
+    gridSettingsTitle:'إعدادات الشبكة', heightLabel:'الارتفاع', widthLabel:'العرض',
+    envTitle:'البيئة', envLoading:'جارٍ تحديد الموقع…',
+    envNoLocation:'تعذّر تحديد موقعك تلقائيًا.',
+    envFetchError:'تعذّر تحميل بيانات الطقس الآن.',
+    retryBtn:'إعادة المحاولة',
+    manualLocationPlaceholder:'اسم المدينة…', manualLocationNotFound:'لم يتم العثور على المدينة — جرّب بحثًا آخر',
+    useAutoLocation:'📍 استخدام الموقع التلقائي', locationManualLabel:'موقع يدوي',
+    locationApprox:'موقع تقريبي', locationPrecise:'موقع دقيق',
+    sensorCardLabel:'الدفيئة (المستشعر)', idealRangeLabel:'النطاق المثالي',
+    outdoorTemp:'درجة الحرارة', humidityLabel:'الرطوبة', sunsetLabelSub:'غروب الشمس', lightsLabelSub:'الإضاءة',
+    lightsNatural:'ضوء طبيعي', lightsOn:'أضواء النمو مُشغّلة',
+    lightsPast:'بعد الغروب', lightsSoon:'الغروب قريبًا', hoursUntilSunset:'{h} ساعة حتى حلول الظلام',
+    withinRange:'✅ ضمن النطاق المناسب لنباتاتك', outOfRange:'⚠️ خارج النطاق الأمثل لـ: {names}',
+    alertsTitle:'تنبيهات الحصاد', noAlerts:'لا شيء سينضج في الأيام القليلة القادمة.',
+    readyTag:'جاهز!', soonTag:'{d}ي',
+    estimateNote:'⚠️ التواريخ تقديرية استنادًا إلى أوقات نمو نموذجية — تحقق دائمًا بصريًا قبل الحصاد.',
+    footerCredit:'يُحفظ تخطيطك تلقائيًا على هذا الجهاز.',
+    modalPlantedOn:'تاريخ الزراعة', modalDaysGrowing:'أيام النمو', modalExpectedHarvest:'الحصاد المتوقع',
+    modalReady:'🎉 جاهز للحصاد!', modalClear:'إفراغ المربع', modalDone:'تم',
+    daysToHarvestLabel:'أيام حتى الحصاد', idealTemp:'الحرارة المثالية', customTag:'نبتتك',
+    toastPickPlant:'اختر نبتة من المكتبة أولاً 🌱',
+    toastPlanted:'تمت زراعة {name} في المربع {r}-{c}', toastPlantedMulti:'تمت زراعة {name} في {n} مربعات',
+    toastCleared:'تم إفراغ المربع',
+    toastMaxHeight:'الحد الأقصى للارتفاع هو 12 مربعًا', toastMinHeight:'الحد الأدنى للارتفاع هو 2 مربع',
+    toastMaxWidth:'الحد الأقصى للعرض هو 12 مربعًا', toastMinWidth:'الحد الأدنى للعرض هو 2 مربع',
+    toastGiveName:'أعطِ نبتتك اسمًا أولاً', toastAlreadyLibrary:'{name} موجودة بالفعل في مكتبتك — تم اختيارها لك',
+    toastAdded:'تمت إضافة {name} إلى مكتبتك {icon}', toastSaveFail:'تعذّر الحفظ — قد لا تُحفظ تغييراتك.',
+    grown:'نما', toGo:'متبقٍ', day:'يوم', days:'أيام',
+    weatherClear:'سماء صافية', weatherPartly:'غائم جزئيًا', weatherCloudy:'غائم',
+    weatherFog:'ضبابي', weatherDrizzle:'رذاذ خفيف', weatherRain:'غائم مع احتمال مطر',
+    weatherSnow:'ثلجي', weatherShowers:'زخات متفرقة', weatherStorm:'عواصف رعدية'
+  },
+  it: {
+    appTitle:'La Mia Serra', appSubtitle:'Pianifica il tuo giardino visivamente',
+    plantedPill:'✨ {n} piantati', readyPillHeader:'🌟 {n} pronti',
+    libraryTitle:'LIBRERIA DELLE PIANTE', addPlantBtn:'+ Aggiungi pianta', addVegClose:'− Chiudi',
+    searchPlaceholder:'Cerca piante…', noResults:'Nessuna pianta corrisponde a', tryAdd:'Prova "+ Aggiungi pianta" sopra.',
+    catAll:'Tutte', catFruit:'Frutti', catBerry:'Bacche', catLeafy:'Foglie', catHerb:'Erbe', catRoot:'Radici',
+    selectedHintPrefix:'Semina di', selectedHintSuffix:'— tocca o trascina sui blocchi vuoti.', cancelSelection:'annulla selezione',
+    newVegNamePlaceholder:'Nome della pianta (es. Erba cipollina)', newVegDaysPlaceholder:'Giorni al raccolto (opzionale)',
+    addHintText:"Genereremo automaticamente un'icona, un colore e un intervallo di temperatura adatti.",
+    cancelBtn:'Annulla', generateBtn:'Genera e aggiungi', generatingBtn:'Generazione icona…',
+    roomTitle:'LAYOUT DELLA SERRA', roomLegend:'🟫 blocco vuoto · tocca un blocco piantato per i dettagli · trascina per piantare una fila',
+    gridLabel:'griglia {r} × {c}', refreshedToast:'Aggiornato',
+    gridSettingsTitle:'IMPOSTAZIONI GRIGLIA', heightLabel:'Altezza', widthLabel:'Larghezza',
+    envTitle:'AMBIENTE', envLoading:'Localizzazione…',
+    envNoLocation:'Impossibile determinare automaticamente la tua posizione.',
+    envFetchError:'Impossibile caricare i dati meteo al momento.',
+    retryBtn:'Riprova',
+    manualLocationPlaceholder:'Nome della città…', manualLocationNotFound:"Città non trovata — prova un'altra ricerca",
+    useAutoLocation:'📍 Usa posizione automatica', locationManualLabel:'Posizione manuale',
+    locationApprox:'Posizione approssimativa', locationPrecise:'Posizione precisa',
+    sensorCardLabel:'SERRA (SENSORE)', idealRangeLabel:'INTERVALLO IDEALE',
+    outdoorTemp:'TEMPERATURA', humidityLabel:'UMIDITÀ', sunsetLabelSub:'TRAMONTO', lightsLabelSub:'LUCI',
+    lightsNatural:'Luce naturale', lightsOn:'Luci di crescita accese',
+    lightsPast:'Dopo il tramonto', lightsSoon:'Tramonto a breve', hoursUntilSunset:'{h}h al buio',
+    withinRange:"✅ Nell'intervallo ideale per le tue piante", outOfRange:"⚠️ Fuori dall'intervallo ottimale per: {names}",
+    alertsTitle:'AVVISI DI RACCOLTA', noAlerts:'Niente maturerà nei prossimi giorni.',
+    readyTag:'Pronto!', soonTag:'{d}g',
+    estimateNote:'⚠️ Le date sono stime basate su tempi di crescita tipici — verifica sempre visivamente prima di raccogliere.',
+    footerCredit:'Il tuo layout viene salvato automaticamente su questo dispositivo.',
+    modalPlantedOn:'Piantato il', modalDaysGrowing:'Giorni di crescita', modalExpectedHarvest:'Raccolto previsto',
+    modalReady:'🎉 Pronto per il raccolto!', modalClear:'Svuota blocco', modalDone:'Fatto',
+    daysToHarvestLabel:'giorni al raccolto', idealTemp:'Temp. ideale', customTag:'tua',
+    toastPickPlant:'Scegli prima una pianta dalla libreria 🌱',
+    toastPlanted:'{name} piantato nel blocco {r}-{c}', toastPlantedMulti:'{name} piantato in {n} blocchi',
+    toastCleared:'Blocco svuotato',
+    toastMaxHeight:"L'altezza massima è 12 blocchi", toastMinHeight:"L'altezza minima è 2 blocchi",
+    toastMaxWidth:'La larghezza massima è 12 blocchi', toastMinWidth:'La larghezza minima è 2 blocchi',
+    toastGiveName:'Dai prima un nome alla tua pianta', toastAlreadyLibrary:'{name} è già nella tua libreria — selezionata per te',
+    toastAdded:'{name} aggiunta alla tua libreria {icon}', toastSaveFail:'Impossibile salvare — le modifiche potrebbero non essere mantenute.',
+    grown:'cresciuto', toGo:'rimanenti', day:'giorno', days:'giorni',
+    weatherClear:'Cielo sereno', weatherPartly:'Parzialmente nuvoloso', weatherCloudy:'Nuvoloso',
+    weatherFog:'Nebbia', weatherDrizzle:'Pioggerella leggera', weatherRain:'Nuvoloso con possibilità di pioggia',
+    weatherSnow:'Neve', weatherShowers:'Rovesci sparsi', weatherStorm:'Temporali'
+  },
+  ru: {
+    appTitle:'Моя теплица', appSubtitle:'Планируйте сад наглядно',
+    plantedPill:'✨ Посажено: {n}', readyPillHeader:'🌟 Готово: {n}',
+    libraryTitle:'БИБЛИОТЕКА РАСТЕНИЙ', addPlantBtn:'+ Добавить растение', addVegClose:'− Закрыть',
+    searchPlaceholder:'Поиск растений…', noResults:'Нет совпадений для', tryAdd:'Попробуйте «+ Добавить растение» выше.',
+    catAll:'Все', catFruit:'Овощи', catBerry:'Ягоды', catLeafy:'Листовые', catHerb:'Травы', catRoot:'Корнеплоды',
+    selectedHintPrefix:'Посадка', selectedHintSuffix:'— нажмите или проведите по пустым клеткам.', cancelSelection:'отменить выбор',
+    newVegNamePlaceholder:'Название растения (напр. Лук-резанец)', newVegDaysPlaceholder:'Дней до сбора урожая (необязательно)',
+    addHintText:'Мы автоматически подберём подходящую иконку, цвет и диапазон температуры.',
+    cancelBtn:'Отмена', generateBtn:'Создать и добавить', generatingBtn:'Создание иконки…',
+    roomTitle:'ПЛАН ТЕПЛИЦЫ', roomLegend:'🟫 пустая клетка · нажмите на посаженную клетку для подробностей · перетащите, чтобы засадить ряд',
+    gridLabel:'сетка {r} × {c}', refreshedToast:'Обновлено',
+    gridSettingsTitle:'НАСТРОЙКИ СЕТКИ', heightLabel:'Высота', widthLabel:'Ширина',
+    envTitle:'СРЕДА', envLoading:'Определение местоположения…',
+    envNoLocation:'Не удалось автоматически определить ваше местоположение.',
+    envFetchError:'Не удалось загрузить данные о погоде.',
+    retryBtn:'Повторить',
+    manualLocationPlaceholder:'Название города…', manualLocationNotFound:'Город не найден — попробуйте другой запрос',
+    useAutoLocation:'📍 Использовать автоопределение', locationManualLabel:'Ручное местоположение',
+    locationApprox:'Приблизительное местоположение', locationPrecise:'Точное местоположение',
+    sensorCardLabel:'ТЕПЛИЦА (ДАТЧИК)', idealRangeLabel:'ИДЕАЛЬНЫЙ ДИАПАЗОН',
+    outdoorTemp:'ТЕМПЕРАТУРА', humidityLabel:'ВЛАЖНОСТЬ', sunsetLabelSub:'ЗАКАТ', lightsLabelSub:'ОСВЕЩЕНИЕ',
+    lightsNatural:'Естественный свет', lightsOn:'Фитолампы включены',
+    lightsPast:'После заката', lightsSoon:'Скоро закат', hoursUntilSunset:'{h}ч до темноты',
+    withinRange:'✅ В пределах нормы для ваших растений', outOfRange:'⚠️ Вне оптимального диапазона для: {names}',
+    alertsTitle:'ОПОВЕЩЕНИЯ О СБОРЕ', noAlerts:'В ближайшие дни ничего не созреет.',
+    readyTag:'Готово!', soonTag:'{d}д',
+    estimateNote:'⚠️ Даты являются приблизительными на основе типичного времени роста — всегда проверяйте визуально перед сбором урожая.',
+    footerCredit:'Ваша планировка автоматически сохраняется на этом устройстве.',
+    modalPlantedOn:'Дата посадки', modalDaysGrowing:'Дней роста', modalExpectedHarvest:'Ожидаемый урожай',
+    modalReady:'🎉 Готово к сбору!', modalClear:'Очистить клетку', modalDone:'Готово',
+    daysToHarvestLabel:'дней до урожая', idealTemp:'Идеальная темп.', customTag:'ваше',
+    toastPickPlant:'Сначала выберите растение из библиотеки 🌱',
+    toastPlanted:'{name} посажено в клетке {r}-{c}', toastPlantedMulti:'{name} посажено в {n} клетках',
+    toastCleared:'Клетка очищена',
+    toastMaxHeight:'Максимальная высота — 12 клеток', toastMinHeight:'Минимальная высота — 2 клетки',
+    toastMaxWidth:'Максимальная ширина — 12 клеток', toastMinWidth:'Минимальная ширина — 2 клетки',
+    toastGiveName:'Сначала дайте название вашему растению', toastAlreadyLibrary:'{name} уже есть в вашей библиотеке — выбрано для вас',
+    toastAdded:'{name} добавлено в вашу библиотеку {icon}', toastSaveFail:'Не удалось сохранить — изменения могут не сохраниться.',
+    grown:'выросло', toGo:'осталось', day:'день', days:'дней',
+    weatherClear:'Ясное небо', weatherPartly:'Переменная облачность', weatherCloudy:'Облачно',
+    weatherFog:'Туман', weatherDrizzle:'Легкая морось', weatherRain:'Облачно с вероятностью дождя',
+    weatherSnow:'Снег', weatherShowers:'Местами дожди', weatherStorm:'Грозы'
+  }
+};
+let lang = 'en';
+function t(key, vars){
+  let str = (TRANSLATIONS[lang] && TRANSLATIONS[lang][key]) || TRANSLATIONS.en[key] || key;
+  if(vars) Object.keys(vars).forEach(k => { str = str.replace(new RegExp('\\{'+k+'\\}','g'), vars[k]); });
+  return str;
+}
+function getVegName(veg){ const key = 'name_' + lang; return veg[key] || veg.name; }
+
+/* ---------- Data ---------- */
+const BASE_VEGETABLES = [
+  { id:'tomato', name:'Tomato', name_es:'Tomate', icon:'🍅', days:75, color:'#D9503F', light:'#FBE2DE', tMin:18, tMax:27, category:'fruit' },
+  { id:'carrot', name:'Carrot', name_es:'Zanahoria', icon:'🥕', days:70, color:'#E5822A', light:'#FCE6D2', tMin:16, tMax:21, category:'root' },
+  { id:'lettuce', name:'Lettuce', name_es:'Lechuga', icon:'🥬', days:55, color:'#5C9A4C', light:'#E1F0DA', tMin:15, tMax:20, category:'leafy' },
+  { id:'pepper', name:'Bell Pepper', name_es:'Pimiento', icon:'🫑', days:70, color:'#4C9A5B', light:'#DDF0E0', tMin:20, tMax:28, category:'fruit' },
+  { id:'cucumber', name:'Cucumber', name_es:'Pepino', icon:'🥒', days:55, color:'#4A9B4E', light:'#DCF0DD', tMin:20, tMax:28, category:'fruit' },
+  { id:'zucchini', name:'Zucchini', name_es:'Calabacín', icon:'🥒', days:50, color:'#3E8A4E', light:'#DCEEDD', tMin:18, tMax:27, category:'fruit' },
+  { id:'eggplant', name:'Eggplant', name_es:'Berenjena', icon:'🍆', days:80, color:'#6E4C8A', light:'#E7DEF0', tMin:21, tMax:29, category:'fruit' },
+  { id:'potato', name:'Potato', name_es:'Patata', icon:'🥔', days:90, color:'#A9793F', light:'#F1E4D2', tMin:15, tMax:20, category:'root' },
+  { id:'sweetpotato', name:'Sweet Potato', name_es:'Boniato', icon:'🍠', days:100, color:'#C1622A', light:'#F5DFCC', tMin:21, tMax:29, category:'root' },
+  { id:'onion', name:'Onion', name_es:'Cebolla', icon:'🧅', days:100, color:'#B0698A', light:'#F3E0EB', tMin:13, tMax:24, category:'root' },
+  { id:'leek', name:'Leek', name_es:'Puerro', icon:'🌱', days:100, color:'#6E9A6E', light:'#E3EEE1', tMin:13, tMax:24, category:'root' },
+  { id:'corn', name:'Corn', name_es:'Maíz', icon:'🌽', days:75, color:'#E0B02A', light:'#FBF0CD', tMin:18, tMax:27, category:'fruit' },
+  { id:'pumpkin', name:'Pumpkin', name_es:'Calabaza', icon:'🎃', days:100, color:'#DB7A24', light:'#FBE4CC', tMin:18, tMax:27, category:'fruit' },
+  { id:'broccoli', name:'Broccoli', name_es:'Brócoli', icon:'🥦', days:65, color:'#3F8A55', light:'#D9EEDE', tMin:15, tMax:21, category:'leafy' },
+  { id:'cauliflower', name:'Cauliflower', name_es:'Coliflor', icon:'🥦', days:75, color:'#C8C2A8', light:'#F5F3EA', tMin:15, tMax:21, category:'leafy' },
+  { id:'spinach', name:'Spinach', name_es:'Espinaca', icon:'🍃', days:40, color:'#4B9450', light:'#DCEEDD', tMin:10, tMax:20, category:'leafy' },
+  { id:'kale', name:'Kale', name_es:'Col rizada', icon:'🍃', days:60, color:'#37704A', light:'#D8E7DD', tMin:13, tMax:21, category:'leafy' },
+  { id:'cabbage', name:'Cabbage', name_es:'Repollo', icon:'🥬', days:70, color:'#6E9A5C', light:'#E4EFDD', tMin:13, tMax:21, category:'leafy' },
+  { id:'arugula', name:'Arugula', name_es:'Rúcula', icon:'🍃', days:40, color:'#5D9B4B', light:'#E1EFDA', tMin:10, tMax:20, category:'leafy' },
+  { id:'chard', name:'Swiss Chard', name_es:'Acelga', icon:'🍃', days:55, color:'#B0463F', light:'#F3DBD9', tMin:13, tMax:24, category:'leafy' },
+  { id:'celery', name:'Celery', name_es:'Apio', icon:'🌱', days:100, color:'#7FAE5E', light:'#E5F0DA', tMin:16, tMax:21, category:'root' },
+  { id:'asparagus', name:'Asparagus', name_es:'Espárrago', icon:'🌱', days:90, color:'#5C9A6A', light:'#E1F0E2', tMin:16, tMax:24, category:'root' },
+  { id:'garlic', name:'Garlic', name_es:'Ajo', icon:'🧄', days:150, color:'#B7A98C', light:'#F2EFE6', tMin:13, tMax:24, category:'root' },
+  { id:'chili', name:'Chili Pepper', name_es:'Chile picante', icon:'🌶️', days:70, color:'#C93A2E', light:'#F9DCD9', tMin:21, tMax:29, category:'fruit' },
+  { id:'peas', name:'Peas', name_es:'Guisantes', icon:'🫛', days:60, color:'#5FA84E', light:'#E0F0DA', tMin:13, tMax:18, category:'fruit' },
+  { id:'okra', name:'Okra', name_es:'Quingombó', icon:'🫛', days:60, color:'#6E8A3F', light:'#E5EBD8', tMin:24, tMax:32, category:'fruit' },
+  { id:'radish', name:'Radish', name_es:'Rábano', icon:'🔴', days:28, color:'#C13B3B', light:'#F7D9D9', tMin:10, tMax:18, category:'root' },
+  { id:'beet', name:'Beet', name_es:'Remolacha', icon:'🟣', days:60, color:'#7A4A8A', light:'#E7DDEE', tMin:13, tMax:21, category:'root' },
+  { id:'turnip', name:'Turnip', name_es:'Nabo', icon:'⚪', days:55, color:'#B7B09E', light:'#F3F1EB', tMin:13, tMax:18, category:'root' },
+  { id:'watermelon', name:'Watermelon', name_es:'Sandía', icon:'🍉', days:85, color:'#3F9E5C', light:'#DBF0E0', tMin:22, tMax:30, category:'fruit' },
+  { id:'strawberry', name:'Strawberry', name_es:'Fresa', icon:'🍓', days:60, color:'#D9436B', light:'#FADCE4', tMin:15, tMax:26, category:'berry' },
+  { id:'blueberry', name:'Blueberry', name_es:'Arándano azul', icon:'🫐', days:90, color:'#4A5E9E', light:'#DEE2F0', tMin:13, tMax:24, category:'berry' },
+  { id:'raspberry', name:'Raspberry', name_es:'Frambuesa', icon:'🫐', days:65, color:'#C13F6E', light:'#F5DCE5', tMin:15, tMax:24, category:'berry' },
+  { id:'blackberry', name:'Blackberry', name_es:'Mora', icon:'🫐', days:70, color:'#4A3A5E', light:'#E0DCE6', tMin:15, tMax:24, category:'berry' },
+  { id:'grape', name:'Grape', name_es:'Uva', icon:'🍇', days:150, color:'#6E4C8A', light:'#E7DEF0', tMin:18, tMax:29, category:'fruit' },
+  { id:'melon', name:'Melon', name_es:'Melón', icon:'🍈', days:85, color:'#C7B93F', light:'#F6F2D8', tMin:22, tMax:30, category:'fruit' },
+  { id:'lemon', name:'Lemon', name_es:'Limón', icon:'🍋', days:240, color:'#E3C23A', light:'#FAF2D6', tMin:16, tMax:29, category:'fruit' },
+  { id:'kiwi', name:'Kiwi', name_es:'Kiwi', icon:'🥝', days:180, color:'#7FA33F', light:'#E6EFDA', tMin:15, tMax:27, category:'fruit' },
+  { id:'pineapple', name:'Pineapple', name_es:'Piña', icon:'🍍', days:300, color:'#E0B02A', light:'#FBF0CD', tMin:21, tMax:29, category:'fruit' },
+  { id:'cherry', name:'Cherry', name_es:'Cereza', icon:'🍒', days:120, color:'#B0333F', light:'#F3DADC', tMin:15, tMax:24, category:'berry' },
+  { id:'peach', name:'Peach', name_es:'Melocotón', icon:'🍑', days:150, color:'#E6934E', light:'#FBE9D8', tMin:15, tMax:24, category:'fruit' },
+  { id:'basil', name:'Basil', name_es:'Albahaca', icon:'🌿', days:60, color:'#4C8A4A', light:'#DDECDA', tMin:18, tMax:27, category:'herb' },
+  { id:'parsley', name:'Parsley', name_es:'Perejil', icon:'🌿', days:75, color:'#3F7D4A', light:'#DCEBDD', tMin:13, tMax:24, category:'herb' },
+  { id:'chives', name:'Chives', name_es:'Cebollino', icon:'🌱', days:60, color:'#4E9963', light:'#DFF0E4', tMin:13, tMax:24, category:'herb' },
+  { id:'mint', name:'Mint', name_es:'Menta', icon:'🍃', days:50, color:'#46A37C', light:'#DAF0E6', tMin:15, tMax:24, category:'herb' },
+  { id:'dill', name:'Dill', name_es:'Eneldo', icon:'🌿', days:70, color:'#5C9A5F', light:'#E1F0E2', tMin:13, tMax:24, category:'herb' },
+  { id:'cilantro', name:'Cilantro', name_es:'Cilantro', icon:'🌿', days:50, color:'#6AA33F', light:'#E6F0DA', tMin:10, tMax:24, category:'herb' },
+  { id:'oregano', name:'Oregano', name_es:'Orégano', icon:'🌿', days:80, color:'#6E8F4C', light:'#E6ECDA', tMin:15, tMax:27, category:'herb' },
+  { id:'sage', name:'Sage', name_es:'Salvia', icon:'🍃', days:75, color:'#7C9473', light:'#EAEEE6', tMin:15, tMax:27, category:'herb' },
+  { id:'rosemary', name:'Rosemary', name_es:'Romero', icon:'🌲', days:90, color:'#4F6B4C', light:'#DEE7DD', tMin:15, tMax:27, category:'herb' },
+  { id:'thyme', name:'Thyme', name_es:'Tomillo', icon:'🌾', days:75, color:'#A69A5B', light:'#F0EDDC', tMin:15, tMax:27, category:'herb' },
+];
+
+const CATEGORIES = ['all','fruit','berry','leafy','herb','root'];
+const CATEGORY_LABEL_KEY = { all:'catAll', fruit:'catFruit', berry:'catBerry', leafy:'catLeafy', herb:'catHerb', root:'catRoot' };
+
+const SYNONYMS = [
+  { k:['banana'], icon:'🍌', color:'#D9B23A', light:'#F9F0D2', tMin:20, tMax:30, category:'fruit' },
+  { k:['apple'], icon:'🍎', color:'#C5423F', light:'#F6DAD9', tMin:15, tMax:24, category:'fruit' },
+  { k:['pear'], icon:'🍐', color:'#8FAA4A', light:'#E9F0DA', tMin:15, tMax:24, category:'fruit' },
+  { k:['orange','mandarin','tangerine'], icon:'🍊', color:'#E08A2A', light:'#FBE7D2', tMin:16, tMax:29, category:'fruit' },
+  { k:['mango'], icon:'🥭', color:'#E0A62A', light:'#FBEED2', tMin:21, tMax:30, category:'fruit' },
+  { k:['coconut'], icon:'🥥', color:'#8A6E4E', light:'#EFE7DA', tMin:22, tMax:32, category:'fruit' },
+  { k:['olive'], icon:'🫒', color:'#6E7A3F', light:'#E6E9DA', tMin:15, tMax:27, category:'fruit' },
+  { k:['fig'], icon:'🍇', color:'#7A4A6A', light:'#EBDDE7', tMin:16, tMax:27, category:'fruit' },
+  { k:['lime'], icon:'🍋', color:'#8FB33F', light:'#E9F0D5', tMin:18, tMax:29, category:'fruit' },
+  { k:['fennel'], icon:'🌿', color:'#7CA35A', light:'#E4EFDD', tMin:13, tMax:21, category:'herb' },
+  { k:['tarragon'], icon:'🌿', color:'#6E9A5C', light:'#E4EFDD', tMin:15, tMax:24, category:'herb' },
+  { k:['marjoram'], icon:'🌿', color:'#75945A', light:'#E5EBDC', tMin:15, tMax:27, category:'herb' },
+  { k:['bay leaf','laurel'], icon:'🍃', color:'#3F6B4A', light:'#DAE7DD', tMin:13, tMax:24, category:'herb' },
+  { k:['brussels'], icon:'🥬', color:'#4F8A50', light:'#DDEEDD', tMin:13, tMax:21, category:'leafy' },
+  { k:['squash'], icon:'🎃', color:'#D3852E', light:'#F8E6D2', tMin:18, tMax:27, category:'fruit' },
+  { k:['bean'], icon:'🫘', color:'#8A4A3A', light:'#EDDAD5', tMin:18, tMax:27, category:'fruit' },
+  { k:['artichoke'], icon:'🌸', color:'#6E8A6A', light:'#E4EBE3', tMin:13, tMax:21, category:'leafy' },
+  { k:['rhubarb'], icon:'🌱', color:'#B0463F', light:'#F3DBD9', tMin:10, tMax:20, category:'root' },
+  { k:['nectarine'], icon:'🍑', color:'#E38A4A', light:'#FBE6D3', tMin:15, tMax:24, category:'fruit' },
+  { k:['apricot'], icon:'🍑', color:'#E3A24A', light:'#FBECD5', tMin:15, tMax:24, category:'fruit' },
+];
+
+const CUSTOM_ICON_POOL = ['🌱','🌿','🍃','🪴','🌾'];
+const STORAGE_KEY = 'greenhouse-state';
+const DAY_MS = 86400000;
+
+let state = { rows:6, cols:6, plantings:{}, customVeg:[], lang:'en', langManual:false, libraryCollapsed:true, gridSettingsCollapsed:true, manualLocation:null, roomRotated:false };
+let ALL_VEGETABLES = [...BASE_VEGETABLES];
+let VEG_MAP = {};
+let selectedVeg = null;
+let selectedCategory = 'all';
+let searchQuery = '';
+let lastWeatherData = null;
+let lastLocationMeta = null;
+
+function rebuildVegIndex(){ ALL_VEGETABLES = [...BASE_VEGETABLES, ...state.customVeg]; VEG_MAP = Object.fromEntries(ALL_VEGETABLES.map(v => [v.id, v])); }
+function todayStr(){ return new Date().toISOString().slice(0,10); }
+function daysBetween(a,b){ return Math.floor((b-a)/DAY_MS); }
+function fmtDate(iso){ const d = new Date(iso + 'T00:00:00'); return d.toLocaleDateString(lang==='es'?'es-ES':undefined, { month:'short', day:'numeric', year:'numeric' }); }
+function slugify(name){ return name.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'') || 'plant'; }
+function uniqueId(base){ let id = base, n = 2; while(VEG_MAP[id]) { id = `${base}-${n}`; n++; } return id; }
+function hashStr(str){ let h = 0; for(let i=0;i<str.length;i++){ h = (h*31 + str.charCodeAt(i)) >>> 0; } return h; }
+function hslToHex(h,s,l){ s/=100; l/=100; const k = n => (n + h/30) % 12; const a = s * Math.min(l, 1-l); const f = n => l - a*Math.max(-1, Math.min(k(n)-3, Math.min(9-k(n),1))); const toHex = x => Math.round(255*x).toString(16).padStart(2,'0'); return `#${toHex(f(0))}${toHex(f(8))}${toHex(f(4))}`; }
+
+/* ---------- Persistence ---------- */
+async function loadState(){
+  try{
+    const res = await window.storage.get(STORAGE_KEY, false);
+    if(res && res.value){
+      const parsed = JSON.parse(res.value);
+      if(parsed){
+        const legacySize = typeof parsed.size === 'number' ? parsed.size : null;
+        state = {
+          rows: typeof parsed.rows === 'number' ? parsed.rows : (legacySize || 6),
+          cols: typeof parsed.cols === 'number' ? parsed.cols : (legacySize || 6),
+          plantings: parsed.plantings || {},
+          customVeg: parsed.customVeg || [],
+          lang: parsed.lang || 'en',
+          langManual: typeof parsed.langManual === 'boolean' ? parsed.langManual : false,
+          libraryCollapsed: typeof parsed.libraryCollapsed === 'boolean' ? parsed.libraryCollapsed : true,
+          gridSettingsCollapsed: typeof parsed.gridSettingsCollapsed === 'boolean' ? parsed.gridSettingsCollapsed : true,
+          manualLocation: parsed.manualLocation || null,
+          roomRotated: typeof parsed.roomRotated === 'boolean' ? parsed.roomRotated : false
+        };
+      }
+    }
+  }catch(e){ /* first run */ }
+  lang = state.lang || 'en';
+  rebuildVegIndex();
+  applyStaticText();
+  applyLibraryCollapse();
+  applyGridSettingsCollapse();
+  render();
+  initEnvPanel();
+}
+async function saveState(){
+  try{ await window.storage.set(STORAGE_KEY, JSON.stringify(state), false); }
+  catch(e){ showToast(t('toastSaveFail')); }
+}
+function showToast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(showToast._timer);
+  showToast._timer = setTimeout(()=> el.classList.remove('show'), 2400);
+}
+
+/* ---------- Static text / language ---------- */
+function applyStaticText(){
+  document.getElementById('brandTitle').textContent = t('appTitle');
+  document.getElementById('brandSubtitle').textContent = t('appSubtitle');
+  document.getElementById('libraryTitle').textContent = t('libraryTitle');
+  document.getElementById('searchInput').placeholder = t('searchPlaceholder');
+  document.getElementById('addVegToggle').textContent = document.getElementById('addVegForm').classList.contains('show') ? t('addVegClose') : t('addPlantBtn');
+  document.getElementById('newVegName').placeholder = t('newVegNamePlaceholder');
+  document.getElementById('newVegDays').placeholder = t('newVegDaysPlaceholder');
+  document.getElementById('addHintText').textContent = t('addHintText');
+  document.getElementById('cancelAddVeg').textContent = t('cancelBtn');
+  document.getElementById('submitAddVeg').textContent = t('generateBtn');
+  document.getElementById('roomTitle').textContent = t('roomTitle');
+  document.getElementById('roomLegend').textContent = t('roomLegend');
+  document.getElementById('gridSettingsTitle').textContent = t('gridSettingsTitle');
+  document.getElementById('heightLabel').textContent = t('heightLabel');
+  document.getElementById('widthLabel').textContent = t('widthLabel');
+  document.getElementById('envTitle').textContent = t('envTitle');
+  document.getElementById('manualLocationInput').placeholder = t('manualLocationPlaceholder');
+  document.getElementById('useAutoLocationBtn').textContent = t('useAutoLocation');
+  document.getElementById('alertsTitleText').textContent = t('alertsTitle');
+  document.getElementById('estimateNote').textContent = t('estimateNote');
+  document.getElementById('footerCredit').textContent = t('footerCredit');
+  document.getElementById('langSelect').value = lang;
+  document.documentElement.lang = lang;
+  document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+  renderCatPills();
+}
+document.getElementById('langSelect').addEventListener('change', (e) => {
+  const newLang = e.target.value;
+  if(lang === newLang) return;
+  lang = newLang; state.lang = lang; state.langManual = true; saveState();
+  applyStaticText(); render(); initEnvPanel();
+});
+
+/* ---------- Collapsibles ---------- */
+const libraryToggle = document.getElementById('libraryToggle');
+const libraryBody = document.getElementById('libraryBody');
+function applyLibraryCollapse(){
+  libraryBody.style.display = state.libraryCollapsed ? 'none' : '';
+  libraryToggle.classList.toggle('open', !state.libraryCollapsed);
+}
+libraryToggle.addEventListener('click', () => { state.libraryCollapsed = !state.libraryCollapsed; saveState(); applyLibraryCollapse(); });
+
+const gridSettingsToggle = document.getElementById('gridSettingsToggle');
+const gridSettingsBody = document.getElementById('gridSettingsBody');
+function applyGridSettingsCollapse(){
+  gridSettingsBody.style.display = state.gridSettingsCollapsed ? 'none' : '';
+  gridSettingsToggle.classList.toggle('open', !state.gridSettingsCollapsed);
+}
+document.getElementById('gridSettingsHead').addEventListener('click', () => { state.gridSettingsCollapsed = !state.gridSettingsCollapsed; saveState(); applyGridSettingsCollapse(); });
+
+/* ---------- Render ---------- */
+function render(){ renderDims(); renderCatPills(); renderVegList(); renderRoom(); renderHeaderPills(); renderRipenessAlerts(); refreshEnvIfLoaded(); }
+function refreshEnvIfLoaded(){ if(lastWeatherData) renderEnvConditions(lastWeatherData); }
+function renderDims(){
+  document.getElementById('rowsVal').textContent = state.rows;
+  document.getElementById('colsVal').textContent = state.cols;
+  document.getElementById('dimSummary').textContent = `${state.rows} × ${state.cols}`;
+  document.getElementById('gridSizeLabel').textContent = t('gridLabel', { r: state.rows, c: state.cols });
+}
+
+function renderCatPills(){
+  const wrap = document.getElementById('catPills');
+  wrap.innerHTML = '';
+  CATEGORIES.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'cat-pill' + (selectedCategory === cat ? ' active' : '');
+    btn.textContent = t(CATEGORY_LABEL_KEY[cat]);
+    btn.addEventListener('click', () => { selectedCategory = cat; renderVegList(); renderCatPills(); });
+    wrap.appendChild(btn);
+  });
+}
+
+function renderVegList(){
+  const list = document.getElementById('vegList');
+  list.innerHTML = '';
+  const q = searchQuery.trim().toLowerCase();
+  const filtered = ALL_VEGETABLES.filter(v => {
+    const matchesQ = !q || v.name.toLowerCase().includes(q) || (v.name_es && v.name_es.toLowerCase().includes(q));
+    const matchesCat = selectedCategory === 'all' || v.category === selectedCategory;
+    return matchesQ && matchesCat;
+  });
+  if(filtered.length === 0){
+    list.innerHTML = `<div class="no-results">${t('noResults')} "${searchQuery}"<br>${t('tryAdd')}</div>`;
+    return;
+  }
+  filtered.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'veg-card' + (selectedVeg === v.id ? ' active' : '');
+    card.innerHTML = `
+      ${v.custom ? '<span class="custom-dot">★</span>' : ''}
+      <div class="icon-tile">${v.icon}</div>
+      <div class="name">${getVegName(v)}</div>`;
+    card.addEventListener('click', () => selectVeg(v.id));
+    card.addEventListener('mouseenter', () => showVegTooltip(card, v));
+    card.addEventListener('mouseleave', () => hideVegTooltip());
+    list.appendChild(card);
+  });
+}
+function selectVeg(id){ selectedVeg = (selectedVeg === id) ? null : id; renderVegList(); renderSelectedHint(); }
+
+function renderSelectedHint(){
+  const hint = document.getElementById('selectedHint');
+  if(selectedVeg && VEG_MAP[selectedVeg]){
+    const veg = VEG_MAP[selectedVeg];
+    hint.innerHTML = `${t('selectedHintPrefix')} <b>${getVegName(veg)}</b> ${t('selectedHintSuffix')}<br><button class="clear-select" id="clearSelect">${t('cancelSelection')}</button>`;
+    document.getElementById('clearSelect').addEventListener('click', () => { selectedVeg = null; renderVegList(); renderSelectedHint(); });
+    hint.classList.add('show');
+  } else {
+    hint.classList.remove('show'); hint.innerHTML = '';
+  }
+}
+
+/* Tooltip — positioned above (or below, if no room) the anchor so it never covers
+   the icon itself and the cursor never ends up resting on top of the tooltip text. */
+function showVegTooltip(anchorEl, veg){
+  const tip = document.getElementById('vegTooltip');
+  tip.innerHTML = `<div class="tt-name">${getVegName(veg)}</div>
+    <div>🕒 ${veg.days} ${t('daysToHarvestLabel')}</div>
+    <div>🌡️ ${t('idealTemp')}: ${veg.tMin}–${veg.tMax}°C</div>`;
+  tip.style.left = '-9999px';
+  tip.style.top = '-9999px';
+  tip.classList.add('show');
+
+  const tipRect = tip.getBoundingClientRect();
+  const anchorRect = anchorEl.getBoundingClientRect();
+  const gap = 10;
+
+  let left = anchorRect.left + anchorRect.width / 2 - tipRect.width / 2;
+  left = Math.max(8, Math.min(window.innerWidth - tipRect.width - 8, left));
+
+  let top = anchorRect.top - tipRect.height - gap;
+  if(top < 8){ top = anchorRect.bottom + gap; } // not enough room above — flip below instead
+
+  tip.style.left = left + 'px';
+  tip.style.top = top + 'px';
+}
+function hideVegTooltip(){ document.getElementById('vegTooltip').classList.remove('show'); }
+
+/* Room + drag-to-plant */
+let dragging = false;
+let dragKeys = new Set();
+
+function isMobileView(){ return window.matchMedia('(max-width: 700px)').matches; }
+function isTransposed(){ return isMobileView() !== state.roomRotated; }
+
+const WOOD_COLOR = '#C9A16D';
+function isCellPlanted(r, c){
+  const p = state.plantings[`${r}-${c}`];
+  return !!(p && VEG_MAP[p.vegId]);
+}
+function applyWoodEdges(cell, r, c, transposed){
+  // Map visual top/bottom/left/right to the correct data-neighbor depending on
+  // whether the grid is currently rendered transposed (mobile/rotated view).
+  let topPlanted, bottomPlanted, leftPlanted, rightPlanted;
+  if(transposed){
+    topPlanted    = c - 1 >= 0        && isCellPlanted(r, c - 1);
+    bottomPlanted = c + 1 < state.cols && isCellPlanted(r, c + 1);
+    leftPlanted   = r - 1 >= 0        && isCellPlanted(r - 1, c);
+    rightPlanted  = r + 1 < state.rows && isCellPlanted(r + 1, c);
+  } else {
+    topPlanted    = r - 1 >= 0        && isCellPlanted(r - 1, c);
+    bottomPlanted = r + 1 < state.rows && isCellPlanted(r + 1, c);
+    leftPlanted   = c - 1 >= 0        && isCellPlanted(r, c - 1);
+    rightPlanted  = c + 1 < state.cols && isCellPlanted(r, c + 1);
+  }
+  const edge = `3px solid ${WOOD_COLOR}`;
+  cell.style.borderTop    = topPlanted    ? 'none' : edge;
+  cell.style.borderBottom = bottomPlanted ? 'none' : edge;
+  cell.style.borderLeft   = leftPlanted   ? 'none' : edge;
+  cell.style.borderRight  = rightPlanted  ? 'none' : edge;
+}
+
+function renderRoom(){
+  const room = document.getElementById('room');
+  const mobile = isTransposed();
+  const visualCols = mobile ? state.rows : state.cols;
+  const visualRows = mobile ? state.cols : state.rows;
+  room.style.gridTemplateColumns = `repeat(${visualCols}, 1fr)`;
+  room.style.gridTemplateRows = `repeat(${visualRows}, 1fr)`;
+  room.style.aspectRatio = `${visualCols} / ${visualRows}`;
+  room.innerHTML = '';
+  for(let outer=0; outer<visualRows; outer++){
+    for(let inner=0; inner<visualCols; inner++){
+      const r = mobile ? inner : outer;
+      const c = mobile ? outer : inner;
+      const key = `${r}-${c}`;
+      const planting = state.plantings[key];
+      const cell = document.createElement('div');
+      cell.dataset.r = r; cell.dataset.c = c;
+      if(planting && VEG_MAP[planting.vegId]){
+        const veg = VEG_MAP[planting.vegId];
+        const elapsed = daysBetween(new Date(planting.plantedDate+'T00:00:00'), new Date(new Date().toDateString()));
+        const pct = Math.max(0, Math.min(100, Math.round((elapsed / veg.days) * 100)));
+        const ready = pct >= 100;
+        cell.className = 'cell planted' + (ready ? ' ready' : '');
+        cell.style.setProperty('--ring-color', veg.color);
+        cell.innerHTML = `<div class="inner">${veg.icon}<div class="prog-track"><div class="prog-fill" style="width:${pct}%"></div></div></div>`;
+        applyWoodEdges(cell, r, c, mobile);
+        cell.addEventListener('mouseenter', () => showVegTooltip(cell, veg));
+        cell.addEventListener('mouseleave', () => hideVegTooltip());
+        cell.addEventListener('click', () => { hideVegTooltip(); openModal(r, c); });
+      } else {
+        cell.className = 'cell';
+        cell.innerHTML = `<span class="cell-empty-mark">·</span>`;
+        cell.addEventListener('mousedown', (e) => { e.preventDefault(); startDrag(r, c); });
+        cell.addEventListener('mouseenter', () => continueDrag(r, c));
+        cell.addEventListener('touchstart', (e) => { e.preventDefault(); startDrag(r, c); }, { passive:false });
+      }
+      room.appendChild(cell);
+    }
+  }
+}
+
+function plantCellDuringDrag(r,c){
+  const key = `${r}-${c}`;
+  if(state.plantings[key]) return false;
+  state.plantings[key] = { vegId: selectedVeg, plantedDate: todayStr() };
+  dragKeys.add(key);
+  return true;
+}
+function startDrag(r,c){
+  if(!selectedVeg){ showToast(t('toastPickPlant')); return; }
+  dragging = true; dragKeys = new Set();
+  document.body.classList.add('dragging');
+  if(plantCellDuringDrag(r,c)){ renderRoom(); renderHeaderPills(); }
+}
+function continueDrag(r,c){
+  if(!dragging) return;
+  if(plantCellDuringDrag(r,c)){ renderRoom(); renderHeaderPills(); }
+}
+function endDrag(){
+  if(!dragging) return;
+  dragging = false;
+  document.body.classList.remove('dragging');
+  if(dragKeys.size > 0){
+    saveState();
+    renderRipenessAlerts();
+    refreshEnvIfLoaded();
+    const veg = VEG_MAP[selectedVeg];
+    const name = veg ? getVegName(veg) : '';
+    if(dragKeys.size === 1){
+      const [key] = [...dragKeys];
+      const [r,c] = key.split('-').map(n => parseInt(n,10) + 1);
+      showToast(t('toastPlanted', { name, r, c }));
+    } else {
+      showToast(t('toastPlantedMulti', { name, n: dragKeys.size }));
+    }
+  }
+  dragKeys = new Set();
+}
+document.addEventListener('mouseup', endDrag);
+document.addEventListener('touchend', endDrag);
+document.addEventListener('touchcancel', endDrag);
+document.addEventListener('touchmove', (e) => {
+  if(!dragging) return;
+  e.preventDefault();
+  const touch = e.touches[0];
+  const el = document.elementFromPoint(touch.clientX, touch.clientY);
+  const cellEl = el && el.closest('.cell');
+  if(cellEl && cellEl.dataset.r !== undefined) continueDrag(parseInt(cellEl.dataset.r,10), parseInt(cellEl.dataset.c,10));
+}, { passive:false });
+
+document.getElementById('rotateRoomBtn').addEventListener('click', () => {
+  state.roomRotated = !state.roomRotated;
+  saveState();
+  renderRoom();
+});
+document.getElementById('refreshRoomBtn').addEventListener('click', () => { renderRoom(); showToast(t('refreshedToast')); });
+
+let _mobileViewState = isMobileView();
+let _resizeTimer = null;
+window.addEventListener('resize', () => {
+  clearTimeout(_resizeTimer);
+  _resizeTimer = setTimeout(() => {
+    const nowMobile = isMobileView();
+    if(nowMobile !== _mobileViewState){ _mobileViewState = nowMobile; renderRoom(); }
+  }, 150);
+});
+
+function renderHeaderPills(){
+  let planted = 0, ready = 0;
+  const now = new Date(new Date().toDateString());
+  Object.values(state.plantings).forEach(p => {
+    const veg = VEG_MAP[p.vegId]; if(!veg) return;
+    planted++;
+    const elapsed = daysBetween(new Date(p.plantedDate+'T00:00:00'), now);
+    if(elapsed >= veg.days) ready++;
+  });
+  document.getElementById('plantedPill').textContent = t('plantedPill', { n: planted });
+  let readyPill = document.getElementById('readyPillHeader');
+  if(ready > 0){
+    if(!readyPill){
+      readyPill = document.createElement('div');
+      readyPill.className = 'ready-pill-header';
+      readyPill.id = 'readyPillHeader';
+      document.getElementById('plantedPill').insertAdjacentElement('afterend', readyPill);
+    }
+    readyPill.textContent = t('readyPillHeader', { n: ready });
+  } else if(readyPill){
+    readyPill.remove();
+  }
+}
+
+function openModal(r, c){
+  const key = `${r}-${c}`;
+  const planting = state.plantings[key];
+  if(!planting || !VEG_MAP[planting.vegId]) return;
+  const veg = VEG_MAP[planting.vegId];
+  const now = new Date(new Date().toDateString());
+  const plantedDate = new Date(planting.plantedDate+'T00:00:00');
+  const elapsed = daysBetween(plantedDate, now);
+  const pct = Math.max(0, Math.min(100, Math.round((elapsed / veg.days) * 100)));
+  const ready = elapsed >= veg.days;
+  const harvestDate = new Date(plantedDate.getTime() + veg.days * DAY_MS);
+  const daysLeft = veg.days - elapsed;
+  const dayWord = daysLeft === 1 ? t('day') : t('days');
+
+  const modal = document.getElementById('modalContent');
+  modal.innerHTML = `
+    <div class="head">
+      <div class="icon-badge" style="background:${veg.light}">${veg.icon}</div>
+      <div><h3>${getVegName(veg)}</h3><div class="block-pos">${r+1} · ${c+1}</div></div>
+    </div>
+    <div class="row"><span class="k">${t('modalPlantedOn')}</span><span class="v">${fmtDate(planting.plantedDate)}</span></div>
+    <div class="row"><span class="k">${t('modalDaysGrowing')}</span><span class="v">${elapsed} ${elapsed===1?t('day'):t('days')}</span></div>
+    <div class="row"><span class="k">${t('modalExpectedHarvest')}</span><span class="v">${fmtDate(harvestDate.toISOString().slice(0,10))}</span></div>
+    <div class="row"><span class="k">${t('idealTemp')}</span><span class="v">${veg.tMin}–${veg.tMax}°C</span></div>
+    <div class="progress-track"><div class="progress-fill" style="width:${pct}%; background:${veg.color}"></div></div>
+    <div class="progress-label ${ready?'ready':''}">${ready ? t('modalReady') : `${pct}% ${t('grown')} · ${daysLeft} ${dayWord} ${t('toGo')}`}</div>
+    <div class="modal-actions">
+      <button class="btn-clear" id="clearBlockBtn">${t('modalClear')}</button>
+      <button class="btn-close" id="closeModalBtn">${t('modalDone')}</button>
+    </div>
+  `;
+  document.getElementById('clearBlockBtn').addEventListener('click', () => {
+    delete state.plantings[key];
+    saveState(); closeModal(); renderRoom(); renderHeaderPills(); renderRipenessAlerts(); refreshEnvIfLoaded();
+    showToast(t('toastCleared'));
+  });
+  document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+  document.getElementById('overlay').classList.add('show');
+}
+function closeModal(){ document.getElementById('overlay').classList.remove('show'); }
+document.getElementById('overlay').addEventListener('click', (e) => { if(e.target.id === 'overlay') closeModal(); });
+document.addEventListener('keydown', (e) => {
+  if(e.key === 'Escape' && document.getElementById('overlay').classList.contains('show')) closeModal();
+});
+
+/* Grid settings: height (rows) first, then width (cols) */
+document.getElementById('rowsUp').addEventListener('click', (e) => {
+  e.stopPropagation();
+  if(state.rows >= 12){ showToast(t('toastMaxHeight')); return; }
+  state.rows++; saveState(); render();
+});
+document.getElementById('rowsDown').addEventListener('click', (e) => {
+  e.stopPropagation();
+  if(state.rows <= 2){ showToast(t('toastMinHeight')); return; }
+  const newRows = state.rows - 1;
+  Object.keys(state.plantings).forEach(key => {
+    const [r] = key.split('-').map(Number);
+    if(r >= newRows) delete state.plantings[key];
+  });
+  state.rows = newRows; saveState(); render();
+});
+document.getElementById('colsUp').addEventListener('click', (e) => {
+  e.stopPropagation();
+  if(state.cols >= 12){ showToast(t('toastMaxWidth')); return; }
+  state.cols++; saveState(); render();
+});
+document.getElementById('colsDown').addEventListener('click', (e) => {
+  e.stopPropagation();
+  if(state.cols <= 2){ showToast(t('toastMinWidth')); return; }
+  const newCols = state.cols - 1;
+  Object.keys(state.plantings).forEach(key => {
+    const [,c] = key.split('-').map(Number);
+    if(c >= newCols) delete state.plantings[key];
+  });
+  state.cols = newCols; saveState(); render();
+});
+
+document.getElementById('searchInput').addEventListener('input', (e) => { searchQuery = e.target.value; renderVegList(); });
+
+const addToggle = document.getElementById('addVegToggle');
+const addForm = document.getElementById('addVegForm');
+addToggle.addEventListener('click', () => {
+  addForm.classList.toggle('show');
+  addToggle.textContent = addForm.classList.contains('show') ? t('addVegClose') : t('addPlantBtn');
+  if(addForm.classList.contains('show')) document.getElementById('newVegName').focus();
+});
+document.getElementById('cancelAddVeg').addEventListener('click', () => {
+  addForm.classList.remove('show');
+  addToggle.textContent = t('addPlantBtn');
+  document.getElementById('newVegName').value = ''; document.getElementById('newVegDays').value = '';
+});
+
+function localSynonymMatch(name){
+  const n = name.toLowerCase();
+  for(const entry of SYNONYMS){ if(entry.k.some(kw => n.includes(kw))) return entry; }
+  const existing = ALL_VEGETABLES.find(v => n.includes(v.id.replace(/-/g,' ')) || v.name.toLowerCase().includes(n) || n.includes(v.name.toLowerCase()));
+  if(existing) return { icon: existing.icon, color: existing.color, light: existing.light, days: existing.days, tMin: existing.tMin, tMax: existing.tMax, category: existing.category };
+  return null;
+}
+function fallbackIconFor(name){
+  const h = hashStr(name);
+  const icon = CUSTOM_ICON_POOL[h % CUSTOM_ICON_POOL.length];
+  const hue = h % 360;
+  const color = hslToHex(100 + (hue % 60) - 30, 35, 38);
+  const light = hslToHex(100 + (hue % 60) - 30, 45, 90);
+  return { icon, color, light, days: 60, tMin: 15, tMax: 27, category: 'fruit' };
+}
+async function generateVegDetails(name){
+  const prompt = `You are choosing a visual identity for a home greenhouse planting app. The user wants to add "${name}" (a vegetable, herb, or small fruit) to their plant library.
+Respond with ONLY a raw JSON object, no markdown code fences, no commentary, matching exactly this shape:
+{"icon":"<single emoji that best represents ${name}>","color":"<hex color, saturated and representative>","light":"<hex color, a very pale tint of the same hue for a badge background>","days":<integer, typical days from planting to harvest for ${name} grown in a home greenhouse>,"tMin":<integer, minimum recommended greenhouse temperature in Celsius for healthy growth>,"tMax":<integer, maximum recommended greenhouse temperature in Celsius for healthy growth>,"category":"<one of: fruit, berry, leafy, herb, root — whichever best classifies ${name}>"}`;
+  try{
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ model:'claude-sonnet-4-6', max_tokens:300, messages:[{ role:'user', content: prompt }] })
+    });
+    const data = await response.json();
+    const textBlock = (data.content||[]).find(b => b.type === 'text');
+    if(!textBlock) throw new Error('no text block');
+    const clean = textBlock.text.replace(/```json|```/g,'').trim();
+    const parsed = JSON.parse(clean);
+    if(parsed.icon && parsed.color && parsed.light && parsed.days) return parsed;
+    throw new Error('unexpected shape');
+  }catch(e){ return null; }
+}
+
+document.getElementById('submitAddVeg').addEventListener('click', async () => {
+  const nameInput = document.getElementById('newVegName');
+  const daysInput = document.getElementById('newVegDays');
+  const name = nameInput.value.trim();
+  if(!name){ showToast(t('toastGiveName')); nameInput.focus(); return; }
+
+  const existingMatch = ALL_VEGETABLES.find(v => v.name.toLowerCase() === name.toLowerCase() || (v.name_es && v.name_es.toLowerCase() === name.toLowerCase()));
+  if(existingMatch){
+    selectVeg(existingMatch.id);
+    addForm.classList.remove('show'); addToggle.textContent = t('addPlantBtn');
+    nameInput.value=''; daysInput.value='';
+    showToast(t('toastAlreadyLibrary', { name: getVegName(existingMatch) }));
+    return;
+  }
+
+  const btn = document.getElementById('submitAddVeg');
+  btn.disabled = true; btn.textContent = t('generatingBtn');
+
+  let details = localSynonymMatch(name);
+  if(!details) details = await generateVegDetails(name);
+  if(!details) details = fallbackIconFor(name);
+
+  const manualDays = parseInt(daysInput.value, 10);
+  const days = (!isNaN(manualDays) && manualDays > 0) ? manualDays : (details.days || 60);
+  const tMin = details.tMin != null ? details.tMin : 15;
+  const tMax = details.tMax != null ? details.tMax : 27;
+  const category = ['fruit','berry','leafy','herb','root'].includes(details.category) ? details.category : 'fruit';
+
+  const id = uniqueId(slugify(name));
+  const newVeg = { id, name, icon: details.icon, days, color: details.color, light: details.light, tMin, tMax, category, custom: true };
+  state.customVeg.push(newVeg);
+  rebuildVegIndex(); saveState();
+
+  selectVeg(id);
+  searchQuery = ''; document.getElementById('searchInput').value = '';
+  selectedCategory = 'all'; renderCatPills();
+  renderVegList(); renderSelectedHint();
+
+  btn.disabled = false; btn.textContent = t('generateBtn');
+  nameInput.value=''; daysInput.value='';
+  addForm.classList.remove('show'); addToggle.textContent = t('addPlantBtn');
+  showToast(t('toastAdded', { name, icon: details.icon }));
+});
+
+/* ---------- Environment console ---------- */
+function weatherCodeToKey(code){
+  if(code === 0) return 'weatherClear';
+  if(code === 1 || code === 2) return 'weatherPartly';
+  if(code === 3) return 'weatherCloudy';
+  if(code === 45 || code === 48) return 'weatherFog';
+  if([51,53,55,56,57].includes(code)) return 'weatherDrizzle';
+  if([61,63,65,66,67].includes(code)) return 'weatherRain';
+  if([71,73,75,77].includes(code)) return 'weatherSnow';
+  if([80,81,82].includes(code)) return 'weatherShowers';
+  if([85,86].includes(code)) return 'weatherSnow';
+  if([95,96,99].includes(code)) return 'weatherStorm';
+  return null;
+}
+function weatherCodeToIcon(code){
+  if(code === 0) return '☀️';
+  if(code === 1 || code === 2) return '🌤️';
+  if(code === 3) return '☁️';
+  if(code === 45 || code === 48) return '🌫️';
+  if([51,53,55,56,57].includes(code)) return '🌦️';
+  if([61,63,65,66,67].includes(code)) return '🌧️';
+  if([71,73,75,77].includes(code)) return '❄️';
+  if([80,81,82].includes(code)) return '🌦️';
+  if([85,86].includes(code)) return '🌨️';
+  if([95,96,99].includes(code)) return '⛈️';
+  return '';
+}
+function weatherCodeToBg(code){
+  if(code === 0) return '#FDECC8';
+  if(code === 1 || code === 2) return '#E0F0FB';
+  if(code === 3) return '#E4E7EA';
+  if(code === 45 || code === 48) return '#E4E7EA';
+  if([51,53,55,56,57,80,81,82].includes(code)) return '#DCEAFB';
+  if([61,63,65,66,67].includes(code)) return '#CDE0FA';
+  if([71,73,75,77,85,86].includes(code)) return '#DDF1FB';
+  if([95,96,99].includes(code)) return '#E5DCFA';
+  return 'var(--bg-warm)';
+}
+
+const COUNTRY_LANG_MAP = {
+  ES:'es',MX:'es',AR:'es',CO:'es',PE:'es',VE:'es',CL:'es',EC:'es',GT:'es',CU:'es',BO:'es',DO:'es',HN:'es',PY:'es',SV:'es',NI:'es',CR:'es',PA:'es',UY:'es',GQ:'es',PR:'es',
+  FR:'fr',BE:'fr',SN:'fr',CI:'fr',ML:'fr',NE:'fr',TG:'fr',BJ:'fr',BF:'fr',MG:'fr',CD:'fr',CG:'fr',GA:'fr',HT:'fr',LU:'fr',MC:'fr',
+  PT:'pt',BR:'pt',AO:'pt',MZ:'pt',CV:'pt',GW:'pt',ST:'pt',TL:'pt',
+  DE:'de',AT:'de',CH:'de',LI:'de',
+  CN:'zh',TW:'zh',HK:'zh',MO:'zh',
+  IN:'hi',
+  SA:'ar',EG:'ar',AE:'ar',MA:'ar',DZ:'ar',TN:'ar',IQ:'ar',JO:'ar',LB:'ar',KW:'ar',QA:'ar',BH:'ar',OM:'ar',YE:'ar',LY:'ar',SD:'ar',SY:'ar',PS:'ar',
+  IT:'it',SM:'it',VA:'it',
+  RU:'ru',BY:'ru',KZ:'ru',KG:'ru'
+};
+function maybeAutoSetLanguage(countryCode){
+  if(state.langManual || !countryCode) return;
+  const target = COUNTRY_LANG_MAP[countryCode.toUpperCase()] || 'en';
+  if(target !== lang){
+    lang = target; state.lang = target; saveState();
+    applyStaticText(); render();
+  }
+}
+
+async function initEnvPanel(){
+  renderRipenessAlerts();
+  const condEl = document.getElementById('envConditions');
+  condEl.innerHTML = `<div class="env-loading">${t('envLoading')}</div>`;
+  document.getElementById('weatherDesc').style.display = 'none';
+  document.getElementById('weatherIcon').textContent = '';
+  document.getElementById('weatherIcon').style.background = 'transparent';
+  document.getElementById('locationName').textContent = '—';
+  document.getElementById('manualLocationForm').classList.remove('show');
+  document.getElementById('useAutoLocationBtn').classList.toggle('show', !!state.manualLocation);
+
+  if(state.manualLocation){
+    maybeAutoSetLanguage(state.manualLocation.countryCode);
+    fetchWeatherFor(state.manualLocation.lat, state.manualLocation.lon, state.manualLocation.name, 'manual');
+    return;
+  }
+
+  const ipData = await fetchIPData();
+  if(ipData) maybeAutoSetLanguage(ipData.countryCode);
+
+  if(!navigator.geolocation){
+    if(ipData) fetchWeatherFor(ipData.lat, ipData.lon, ipData.city, 'approx');
+    else showLocationError();
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(
+    (pos) => { fetchWeatherFor(pos.coords.latitude, pos.coords.longitude, ipData ? ipData.city : null, 'precise'); },
+    () => {
+      if(ipData) fetchWeatherFor(ipData.lat, ipData.lon, ipData.city, 'approx');
+      else showLocationError();
+    },
+    { timeout: 8000 }
+  );
+}
+document.getElementById('envRefreshBtn').addEventListener('click', initEnvPanel);
+
+async function fetchIPData(){
+  try{
+    const res = await fetch('https://ipwho.is/');
+    const data = await res.json();
+    if(data && data.success !== false && data.latitude && data.longitude){
+      return { lat: data.latitude, lon: data.longitude, city: data.city || null, countryCode: data.country_code || null };
+    }
+  }catch(e){ /* ignore, caller handles null */ }
+  return null;
+}
+
+function showLocationError(){
+  const condEl = document.getElementById('envConditions');
+  condEl.innerHTML = `<div class="env-error">${t('envNoLocation')}<br><button id="retryEnv">${t('retryBtn')}</button></div>`;
+  document.getElementById('retryEnv').addEventListener('click', initEnvPanel);
+}
+
+async function fetchWeatherFor(latitude, longitude, cityName, precision){
+  const condEl = document.getElementById('envConditions');
+  try{
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code&daily=sunset&timezone=auto&temperature_unit=celsius`;
+    const res = await fetch(url);
+    const data = await res.json();
+    lastWeatherData = data;
+    lastLocationMeta = { city: cityName, precision: precision || 'approx' };
+    renderEnvConditions(data);
+  }catch(e){
+    condEl.innerHTML = `<div class="env-error">${t('envFetchError')}<br><button id="retryEnv">${t('retryBtn')}</button></div>`;
+    document.getElementById('retryEnv').addEventListener('click', initEnvPanel);
+  }
+}
+
+/* Manual location entry */
+const locationEditLink = document.getElementById('locationEditLink');
+const manualLocationForm = document.getElementById('manualLocationForm');
+locationEditLink.addEventListener('click', () => {
+  manualLocationForm.classList.toggle('show');
+  if(manualLocationForm.classList.contains('show')) document.getElementById('manualLocationInput').focus();
+});
+document.getElementById('manualLocationCancel').addEventListener('click', () => {
+  manualLocationForm.classList.remove('show');
+  document.getElementById('manualLocationInput').value = '';
+});
+document.getElementById('manualLocationInput').addEventListener('keydown', (e) => {
+  if(e.key === 'Enter') document.getElementById('manualLocationGo').click();
+});
+document.getElementById('manualLocationGo').addEventListener('click', async () => {
+  const input = document.getElementById('manualLocationInput');
+  const query = input.value.trim();
+  if(!query) return;
+  const btn = document.getElementById('manualLocationGo');
+  btn.disabled = true;
+  try{
+    const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=1&format=json`);
+    const data = await res.json();
+    const result = data && data.results && data.results[0];
+    if(!result){ showToast(t('manualLocationNotFound')); btn.disabled = false; return; }
+    state.manualLocation = { lat: result.latitude, lon: result.longitude, name: result.name, countryCode: result.country_code || null };
+    saveState();
+    manualLocationForm.classList.remove('show');
+    input.value = '';
+    btn.disabled = false;
+    initEnvPanel();
+  }catch(e){
+    showToast(t('manualLocationNotFound'));
+    btn.disabled = false;
+  }
+});
+document.getElementById('useAutoLocationBtn').addEventListener('click', () => {
+  state.manualLocation = null;
+  saveState();
+  initEnvPanel();
+});
+
+function computeGreenhouseTemp(outdoorTemp){
+  const now = new Date();
+  const hour = now.getHours() + now.getMinutes()/60;
+  const daylightFactor = Math.max(0, Math.cos((hour-14)/24*2*Math.PI));
+  const offset = 3 + daylightFactor*7;
+  return Math.round((outdoorTemp + offset)*10)/10;
+}
+function computeIdealRange(){
+  const ids = new Set(Object.values(state.plantings).map(p => p.vegId));
+  let min = null, max = null;
+  ids.forEach(id => { const v = VEG_MAP[id]; if(!v) return; if(min === null || v.tMin < min) min = v.tMin; if(max === null || v.tMax > max) max = v.tMax; });
+  if(min === null) return { min: 15, max: 27 };
+  return { min, max };
+}
+
+function renderEnvConditions(data){
+  const condEl = document.getElementById('envConditions');
+  const cityText = (lastLocationMeta && lastLocationMeta.city) ? lastLocationMeta.city : '—';
+  const precisionKey = lastLocationMeta && lastLocationMeta.precision === 'manual' ? 'locationManualLabel'
+    : lastLocationMeta && lastLocationMeta.precision === 'precise' ? 'locationPrecise' : 'locationApprox';
+  document.getElementById('locationName').textContent = lastLocationMeta && lastLocationMeta.city
+    ? `${cityText} · ${t(precisionKey)}` : cityText;
+
+  const outdoorTemp = data.current ? data.current.temperature_2m : null;
+  const humidity = data.current ? data.current.relative_humidity_2m : null;
+  const wcode = data.current ? (data.current.weather_code ?? data.current.weathercode) : null;
+  const sunsetIso = data.daily && data.daily.sunset ? data.daily.sunset[0] : null;
+  let sunsetLabel = '—', lightsValue = t('lightsNatural'), lightsSub = '';
+  if(sunsetIso){
+    const sunset = new Date(sunsetIso);
+    sunsetLabel = sunset.toLocaleTimeString(lang==='es'?'es-ES':undefined, { hour:'2-digit', minute:'2-digit', hour12:false });
+    const msToSunset = sunset - new Date();
+    if(msToSunset < 0){ lightsValue = t('lightsOn'); lightsSub = t('lightsPast'); }
+    else if(msToSunset < 60*60*1000){ lightsSub = t('lightsSoon'); }
+    else{ lightsSub = t('hoursUntilSunset', { h: Math.floor(msToSunset/3600000) }); }
+  }
+  const sensorTemp = outdoorTemp !== null ? computeGreenhouseTemp(outdoorTemp) : null;
+  const idealRange = computeIdealRange();
+  const weatherIconEl = document.getElementById('weatherIcon');
+  weatherIconEl.textContent = weatherCodeToIcon(wcode);
+  weatherIconEl.style.background = wcode !== null && wcode !== undefined ? weatherCodeToBg(wcode) : 'transparent';
+
+  condEl.innerHTML = `
+    <div class="env-metric-big">
+      <div class="left">
+        <div class="emoji">🌡️</div>
+        <div><div class="label">${t('sensorCardLabel')}</div><div class="value">${sensorTemp !== null ? sensorTemp + '°C' : '—'}</div></div>
+      </div>
+      <div class="range"><div class="rlabel">${t('idealRangeLabel')}</div><div class="rvalue">${idealRange.min}°–${idealRange.max}°C</div></div>
+    </div>
+    <div class="env-grid-2">
+      <div class="env-chip temp"><div class="chiphead">🌤️ ${t('outdoorTemp')}</div><div class="val">${outdoorTemp !== null ? Math.round(outdoorTemp) + '°C' : '—'}</div></div>
+      <div class="env-chip humidity"><div class="chiphead">💧 ${t('humidityLabel')}</div><div class="val">${humidity !== null ? Math.round(humidity) + '%' : '—'}</div></div>
+    </div>
+    <div class="env-grid-2">
+      <div class="env-chip sunset"><div class="chiphead">🌇 ${t('sunsetLabelSub')}</div><div class="val">${sunsetLabel}</div><div class="sub">${lightsSub}</div></div>
+      <div class="env-chip lights"><div class="chiphead">💡 ${t('lightsLabelSub')}</div><div class="val" style="font-size:13px;">${lightsValue}</div></div>
+    </div>
+  `;
+  const weatherKey = weatherCodeToKey(wcode);
+  const weatherEl = document.getElementById('weatherDesc');
+  if(weatherKey){ weatherEl.textContent = weatherCodeToIcon(wcode) + ' ' + t(weatherKey); weatherEl.style.display = 'flex'; }
+  else { weatherEl.style.display = 'none'; }
+
+  if(sensorTemp !== null){
+    const status = checkTempRangeStatus(sensorTemp);
+    if(status !== null){
+      const statusEl = document.createElement('div');
+      if(status.length === 0){ statusEl.className = 'range-status ok'; statusEl.textContent = t('withinRange'); }
+      else{
+        statusEl.className = 'range-status warn';
+        const names = status.slice(0,3).join(', ') + (status.length > 3 ? '…' : '');
+        statusEl.textContent = t('outOfRange', { names });
+      }
+      condEl.appendChild(statusEl);
+    }
+  }
+}
+
+function checkTempRangeStatus(sensorTemp){
+  const plantedVegIds = new Set(Object.values(state.plantings).map(p => p.vegId));
+  if(plantedVegIds.size === 0) return null;
+  const outOfRangeNames = [];
+  let anyData = false;
+  plantedVegIds.forEach(id => {
+    const veg = VEG_MAP[id];
+    if(!veg || veg.tMin == null || veg.tMax == null) return;
+    anyData = true;
+    if(sensorTemp < veg.tMin || sensorTemp > veg.tMax) outOfRangeNames.push(getVegName(veg));
+  });
+  if(!anyData) return null;
+  return outOfRangeNames;
+}
+
+function renderRipenessAlerts(){
+  const el = document.getElementById('envAlerts');
+  const badge = document.getElementById('alertBadge');
+  if(!el) return;
+  const now = new Date(new Date().toDateString());
+  const entries = Object.entries(state.plantings).map(([key, p]) => {
+    const veg = VEG_MAP[p.vegId]; if(!veg) return null;
+    const elapsed = daysBetween(new Date(p.plantedDate+'T00:00:00'), now);
+    return { key, veg, daysLeft: veg.days - elapsed };
+  }).filter(Boolean).filter(e => e.daysLeft <= 3).sort((a,b) => a.daysLeft - b.daysLeft);
+
+  if(entries.length === 0){
+    el.innerHTML = `<div class="no-alerts">${t('noAlerts')}</div>`;
+    badge.style.display = 'none';
+    return;
+  }
+  badge.style.display = 'flex';
+  badge.textContent = entries.length;
+  el.innerHTML = entries.slice(0, 8).map(e => {
+    const [r,c] = e.key.split('-').map(n => parseInt(n,10)+1);
+    const ripe = e.daysLeft <= 0;
+    const tag = ripe ? `<span class="ready-tag">${t('readyTag')}</span>` : `<span class="soon-tag">${t('soonTag', { d: e.daysLeft })}</span>`;
+    return `<div class="alert-row" data-key="${e.key}">
+      <div class="aleft">
+        <div class="icon-tile-sm">${e.veg.icon}</div>
+        <div><div class="an">${getVegName(e.veg)}</div><div class="ad">${fmtDate(state.plantings[e.key].plantedDate)}</div></div>
+      </div>
+      ${tag}
+    </div>`;
+  }).join('');
+  el.querySelectorAll('.alert-row').forEach(node => {
+    node.addEventListener('click', () => { const [r,c] = node.dataset.key.split('-').map(Number); openModal(r,c); });
+  });
+}
+
+loadState();
+</script>
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
