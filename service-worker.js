@@ -1,8 +1,9 @@
-const CACHE_NAME = 'greenhouse-planner-v1';
+const CACHE_NAME = 'greenhouse-planner-v2';
 const CORE_ASSETS = [
   './',
   './index.html',
   './manifest.json',
+  './organics/conexion.js',
   './icons/icon-192.png',
   './icons/icon-512.png'
 ];

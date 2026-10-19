@@ -195,6 +195,23 @@
   .weather-desc{ font-size:11.5px; color: var(--pine-soft); background: var(--bg-warm); border-radius:10px; padding:9px 11px; margin-bottom:14px; display:flex; align-items:center; gap:7px; }
   .env-loading, .env-error{ font-size:12px; color: var(--pine-soft); padding: 10px 0; line-height:1.5; }
   .env-error button{ margin-top:8px; background: var(--bg-warm); border:1px solid var(--soil-line); color: var(--pine); padding:6px 10px; border-radius:8px; font-size:11.5px; cursor:pointer; font-family:'Public Sans', sans-serif; }
+  .board-card{ background: var(--bg-warm); border-radius:12px; padding:11px; margin:0 0 10px; }
+  .board-head{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .board-head .bt{ font-size:11px; font-weight:700; letter-spacing:.06em; color:var(--pine-soft); }
+  .board-pill{ font-size:10.5px; padding:3px 8px; border-radius:999px; background:#EEF3EF; color:#5F6F64; }
+  .board-pill.ok{ background:#DFF2E6; color:#1F6E3F; } .board-pill.bad{ background:#FBE3E0; color:#C0392B; }
+  .board-form{ display:none; margin-top:8px; }
+  .board-form.open{ display:block; }
+  .board-form input{ width:100%; margin:3px 0; padding:8px 9px; border:1px solid #D9E3DB; border-radius:8px; font:inherit; font-size:12.5px; background:#fff; }
+  .board-actions{ display:flex; gap:6px; margin-top:6px; flex-wrap:wrap; }
+  .board-actions button, .board-link{ font:inherit; font-size:12px; padding:6px 10px; border-radius:8px; border:1px solid #2E9E5B; background:#fff; color:#1F6E3F; cursor:pointer; }
+  .board-actions button.prim{ background:#2E9E5B; color:#fff; }
+  .board-err{ color:#C0392B; font-size:11.5px; min-height:14px; margin-top:4px; }
+  .board-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-top:8px; }
+  .board-item{ background:#fff; border-radius:9px; padding:7px 8px; }
+  .board-item .n{ font-size:10px; color:#5F6F64; } .board-item .v{ font-size:15px; font-weight:700; margin-top:1px; }
+  .board-zone{ display:flex; justify-content:space-between; font-size:12px; padding:5px 2px; border-top:1px solid #E4ECE6; }
+  .board-alarm{ background:#FBE3E0; color:#C0392B; border-radius:8px; padding:6px 8px; font-size:11.5px; margin-top:6px; }
   .range-status{ font-size:10.5px; margin: -2px 0 10px; padding:7px 9px; border-radius:9px; line-height:1.5; }
   .range-status.ok{ background: var(--green-bg); color: var(--green-accent); }
   .range-status.warn{ background: var(--orange-bg); color: var(--amber-dark); }
@@ -353,6 +370,22 @@
       <button class="use-auto-location" id="useAutoLocationBtn">📍 Use automatic location</button>
       <div id="envConditions"><div class="env-loading">…</div></div>
       <div class="weather-desc" id="weatherDesc" style="display:none;"></div>
+      <div class="board-card" id="boardCard">
+        <div class="board-head"><span class="bt" id="boardTitle">ORGANICS ONE</span><span class="board-pill" id="boardPill">—</span></div>
+        <div id="boardLive"></div>
+        <div class="board-form" id="boardForm">
+          <input id="bServidor" placeholder="abc123.ala.us-east-1.emqxsl.com" autocomplete="off" autocapitalize="off">
+          <input id="bUsuario" value="app" autocomplete="username" autocapitalize="off">
+          <input id="bClave" type="password" autocomplete="current-password">
+          <input id="bInv" value="invernadero1" autocapitalize="off">
+          <div class="board-err" id="boardErr"></div>
+        </div>
+        <div class="board-actions">
+          <button class="prim" id="boardConnect"></button>
+          <button id="boardDisconnect" style="display:none"></button>
+          <button id="boardForget" style="display:none"></button>
+        </div>
+      </div>
       <div class="alerts-title-row">
         <span class="eyebrow" id="alertsTitleText">HARVEST ALERTS</span>
         <span class="alert-badge" id="alertBadge" style="display:none;">0</span>
@@ -370,6 +403,7 @@
 <div class="toast" id="toast"></div>
 <div class="veg-tooltip" id="vegTooltip"></div>
 
+<script src="organics/conexion.js"></script>
 <script>
 // Outside claude.ai, window.storage doesn't exist — fall back to localStorage
 // so saving/loading the layout still works when installed as a standalone app.
@@ -421,6 +455,7 @@ const TRANSLATIONS = {
     envFetchError:"Couldn't load weather data right now.",
     retryBtn:'Retry',
     manualLocationPlaceholder:'City name…', manualLocationNotFound:'City not found — try another search',
+    boardTitle:'ORGANICS ONE BOARD', boardConnect:'Connect board', boardSave:'Connect', boardDisc:'Disconnect', boardForget:'Forget', boardServer:'Server (EMQX host)', boardUser:'User', boardPass:'Password', boardInv:'Greenhouse name', boardOff:'Not connected', boardOn:'Board online', boardNoBoard:'Board offline', boardUpdate:'Update firmware', boardTemp:'Temperature', boardHum:'Humidity', boardVpd:'VPD', boardSoil:'Soil', boardValveOpen:'watering', boardZone:'Zone', boardAlarm:'Alarm', boardConnecting:'Connecting…', boardLiveTemp:'Real sensor',
     useAutoLocation:'📍 Use automatic location', locationManualLabel:'Manual location',
     locationApprox:'Approximate location', locationPrecise:'Precise location',
     sensorCardLabel:'GREENHOUSE (SENSOR)', idealRangeLabel:'IDEAL RANGE',
@@ -465,6 +500,7 @@ const TRANSLATIONS = {
     envFetchError:'No se pudieron cargar los datos meteorológicos.',
     retryBtn:'Reintentar',
     manualLocationPlaceholder:'Nombre de la ciudad…', manualLocationNotFound:'Ciudad no encontrada — prueba otra búsqueda',
+    boardTitle:'TARJETA ORGANICS ONE', boardConnect:'Conectar tarjeta', boardSave:'Conectar', boardDisc:'Desconectar', boardForget:'Olvidar', boardServer:'Servidor (host de EMQX)', boardUser:'Usuario', boardPass:'Clave', boardInv:'Nombre del invernadero', boardOff:'Sin conexión', boardOn:'Tarjeta en línea', boardNoBoard:'Tarjeta desconectada', boardUpdate:'Actualizar firmware', boardTemp:'Temperatura', boardHum:'Humedad', boardVpd:'VPD', boardSoil:'Suelo', boardValveOpen:'regando', boardZone:'Zona', boardAlarm:'Alarma', boardConnecting:'Conectando…', boardLiveTemp:'Sensor real',
     useAutoLocation:'📍 Usar ubicación automática', locationManualLabel:'Ubicación manual',
     locationApprox:'Ubicación aproximada', locationPrecise:'Ubicación precisa',
     sensorCardLabel:'INVERNADERO (SENSOR)', idealRangeLabel:'RANGO IDEAL',
@@ -1677,7 +1713,9 @@ function renderEnvConditions(data){
     else if(msToSunset < 60*60*1000){ lightsSub = t('lightsSoon'); }
     else{ lightsSub = t('hoursUntilSunset', { h: Math.floor(msToSunset/3600000) }); }
   }
-  const sensorTemp = outdoorTemp !== null ? computeGreenhouseTemp(outdoorTemp) : null;
+  const boardTemp = boardAmbient().temperatura;
+  const sensorTemp = boardTemp !== null && boardTemp !== undefined ? Math.round(boardTemp*10)/10
+    : (outdoorTemp !== null ? computeGreenhouseTemp(outdoorTemp) : null);
   const idealRange = computeIdealRange();
   const weatherIconEl = document.getElementById('weatherIcon');
   weatherIconEl.textContent = weatherCodeToIcon(wcode);
@@ -1770,7 +1808,76 @@ function renderRipenessAlerts(){
   });
 }
 
+/* ---------- Organics One board ---------- */
+const OO = window.OrganicsOne;
+function boardAmbient(){
+  try{ if(OO && OO.info().conectado && OO.info().tarjetaEnLinea) return OO.ambiente(); }catch(e){}
+  return { temperatura:null };
+}
+const B = id => document.getElementById(id);
+const ALARM_ES = { tank_low:'Tanque bajo', pump_dry_run:'Bomba en seco', pump_overcurrent:'Sobrecorriente de bomba', irrigation_stop:'Paro de riego', pod_offline:'Pod ambiental sin respuesta', tamper:'Gabinete abierto' };
+function alarmLabel(a){ const m=/^zone(\d+)_offline$/.exec(a); return m ? t('boardZone')+' '+m[1]+': offline' : (lang==='es' && ALARM_ES[a]) || a.replace(/_/g,' '); }
+function fmtN(v,d,u){ return v===null||v===undefined ? '—' : v.toFixed(d)+u; }
+function renderBoard(){
+  if(!OO || !B('boardCard')) return;
+  const st = OO.info(), form = B('boardForm');
+  B('boardTitle').textContent = t('boardTitle');
+  const pill = B('boardPill');
+  if(!st.conectado){ pill.className='board-pill'; pill.textContent=t('boardOff'); }
+  else if(!st.tarjetaEnLinea){ pill.className='board-pill bad'; pill.textContent=t('boardNoBoard'); }
+  else{ pill.className='board-pill ok'; pill.textContent=t('boardOn')+(st.compatible===false?' · '+t('boardUpdate'):''); }
+  B('bServidor').placeholder = t('boardServer'); B('bUsuario').placeholder = t('boardUser');
+  B('bClave').placeholder = t('boardPass'); B('bInv').placeholder = t('boardInv');
+  B('boardConnect').textContent = form.classList.contains('open') ? t('boardSave') : t('boardConnect');
+  B('boardConnect').style.display = st.conectado ? 'none' : '';
+  B('boardDisconnect').textContent = t('boardDisc'); B('boardDisconnect').style.display = st.conectado ? '' : 'none';
+  B('boardForget').textContent = t('boardForget'); B('boardForget').style.display = (!st.conectado && OO.configuracionGuardada()) ? '' : 'none';
+  if(st.conectado) form.classList.remove('open');
+  const live = B('boardLive');
+  if(!st.conectado || !st.tarjetaEnLinea){ live.innerHTML=''; return; }
+  const a = OO.ambiente();
+  let h = '<div class="board-grid">'
+    + [[t('boardTemp'),fmtN(a.temperatura,1,'°C')],[t('boardHum'),fmtN(a.humedad,0,'%')],[t('boardVpd'),fmtN(a.vpd,2,' kPa')]]
+      .map(d=>`<div class="board-item"><div class="n">${d[0]}</div><div class="v">${d[1]}</div></div>`).join('') + '</div>';
+  OO.zonas().forEach(z=>{
+    h += `<div class="board-zone"><span>${t('boardZone')} ${z.zona}${z.enLinea?'':' ⚠️'}</span><span>${t('boardSoil')} ${fmtN(z.suelo,0,'%')}${z.valvulaAbierta?' · 💧 '+t('boardValveOpen'):''}</span></div>`;
+  });
+  OO.alarmasActivas().forEach(al=>{ h += `<div class="board-alarm">⚠️ ${t('boardAlarm')}: ${alarmLabel(al)}</div>`; });
+  live.innerHTML = h;
+}
+let boardTimer = null;
+function boardChanged(){
+  if(boardTimer) return;
+  boardTimer = setTimeout(()=>{ boardTimer=null; renderBoard(); refreshEnvIfLoaded(); }, 300);
+}
+function initBoard(){
+  if(!OO || !B('boardCard')) return;
+  const g = OO.configuracionGuardada();
+  if(g){ B('bServidor').value = g.servidor||''; B('bUsuario').value = g.usuario||'app'; B('bInv').value = g.invernadero||'invernadero1'; }
+  OO.onConexion(boardChanged);
+  OO.on('*', boardChanged);
+  B('boardConnect').onclick = () => {
+    const form = B('boardForm');
+    if(!form.classList.contains('open')){
+      if(g && g.servidor){ // reuse saved config silently
+        B('boardErr').textContent=''; B('boardPill').textContent=t('boardConnecting');
+        OO.conectar().catch(e=>{ form.classList.add('open'); B('boardErr').textContent=e.message; renderBoard(); });
+        return;
+      }
+      form.classList.add('open'); renderBoard(); return;
+    }
+    B('boardErr').textContent=''; B('boardPill').textContent=t('boardConnecting');
+    OO.conectar({ servidor:B('bServidor').value, usuario:B('bUsuario').value, clave:B('bClave').value, invernadero:B('bInv').value })
+      .then(()=>{ B('bClave').value=''; }, e=>{ B('boardErr').textContent=e.message; renderBoard(); });
+  };
+  B('boardDisconnect').onclick = () => { OO.desconectar(); };
+  B('boardForget').onclick = () => { OO.olvidarConfiguracion(); B('bServidor').value=''; B('bClave').value=''; renderBoard(); };
+  renderBoard();
+  if(g && g.servidor && OO.configuracionGuardada()) OO.conectar().catch(()=>{}); // auto-reconnect when credentials are saved
+}
+
 loadState();
+initBoard();
 </script>
 <script>
 if('serviceWorker' in navigator){
