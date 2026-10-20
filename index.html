@@ -168,8 +168,9 @@
   .modal .temp-alert.hot{ background:#FBE4E2; color:#8C1C16; border-left:4px solid #A3201A; }
   .modal .temp-alert{ display:flex; align-items:center; gap:8px; }
   .modal .temp-alert .ta-text{ flex:1; }
-  .modal .temp-alert .mute-x{ flex:0 0 auto; width:26px; height:26px; border-radius:50%; border:1.5px solid currentColor; background:rgba(255,255,255,0.55); color:inherit; font-size:13px; font-weight:700; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; }
-  .modal .temp-alert .mute-x:hover{ background:#fff; }
+  .modal .temp-alert .mute-x{ flex:0 0 auto; width:32px; height:32px; border-radius:8px; border:none; font-size:17px; font-weight:800; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; color:inherit; }
+  .modal .temp-alert.hot .mute-x{ background:#F2C6C1; } .modal .temp-alert.hot .mute-x:hover{ background:#E9AFA8; }
+  .modal .temp-alert.cold .mute-x{ background:#C4E3FA; } .modal .temp-alert.cold .mute-x:hover{ background:#A9D6F7; }
   .modal .mute-panel{ margin:-2px 0 6px; padding:9px 11px; border-radius:10px; background:var(--bg-warm); font-size:12.5px; }
   .modal .mute-panel .mp-title{ font-weight:700; margin-bottom:7px; color:var(--pine-dark); }
   .modal .mute-panel .mp-btns{ display:flex; gap:6px; flex-wrap:wrap; }
