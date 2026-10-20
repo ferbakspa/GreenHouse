@@ -1,5 +1,5 @@
 /*
- * Organics One: capa de conexión de la app con la tarjeta (contrato v1.0, ver CONTRATO.md).
+ * Organics One: capa de conexión de la app con la tarjeta (contrato v1.1, ver CONTRATO.md).
  *
  * La mantiene el proyecto de hardware. El proyecto de la app la USA, no la modifica: si la
  * app necesita algo que no está aquí, se pide en CONTRATO.md.
@@ -18,8 +18,8 @@
 (function (global) {
   'use strict';
 
-  var CONTRATO = '1.0';
-  var FW_MIN = { gateway: '1.03', audio: '1.00' };
+  var CONTRATO = '1.1';
+  var FW_MIN = { gateway: '1.04', audio: '1.00' };
   var MQTT_CDN = 'https://unpkg.com/mqtt@5.15.2/dist/mqtt.min.js';
   var CLAVE_CFG = 'organics.conexion.v1';
   var SALIDAS = ['extractor', 'fan', 'grow_light', 'work_light', 'spare'];
@@ -318,8 +318,12 @@
       SALIDAS.forEach(function (s) { var v = valor('output/' + s + '/state'); if (v !== undefined) r[s] = v === 'on'; });
       return r;
     },
+    /* fuente: 'mains' (red, sin bomba) o 'tank' (tanque con bomba). Sin dato (firmware < 1.04) asume 'tank'.
+       Con 'mains', la app oculta tanque, flotador y bomba. */
     agua: function () {
+      var fuente = valor('water/source') || (aJson(valor('gateway/info')) || {}).water || 'tank';
       return {
+        fuente: fuente, conTanque: fuente !== 'mains',
         tanque: aNumero(valor('tank/level')), flotador: valor('tank/float') || null,
         bomba: valor('pump/state') || null, corrienteBomba: aNumero(valor('pump/current')),
         caudal: aNumero(valor('flow/main')), volumen: aNumero(valor('flow/main_volume'))
@@ -350,6 +354,16 @@
       return rechazo(function () {
         if (SALIDAS.indexOf(nombre) < 0) throw new Error('Salida desconocida: ' + nombre);
         return publicar('output/' + nombre + '/set', encendida ? 'on' : 'off');
+      });
+    },
+    /* cambia la fuente de agua; la tarjeta la rechaza si hay un riego abierto o en cola */
+    fuenteAgua: function (fuente) {
+      return rechazo(function () {
+        if (fuente !== 'mains' && fuente !== 'tank') throw new Error('La fuente de agua es mains (red) o tank (tanque)');
+        return ordenConRespuesta('water/source/set', fuente, 'water/source/result').catch(function (e) {
+          if (/riego en curso/i.test(e.message)) throw new Error('Hay un riego en curso. Deténgalo y vuelva a intentar');
+          throw e;
+        });
       });
     },
     rearmarBomba: function () { return publicar('pump/reset', '1'); },

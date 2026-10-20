@@ -1,6 +1,6 @@
 # Capa de conexión con la tarjeta Organics One
 
-Esta carpeta conecta la app con la tarjeta según [CONTRATO.md](../CONTRATO.md) (v1.0). La mantiene el proyecto de hardware. El proyecto de la app la **usa** y no la modifica: si falta algo, se pide en el contrato.
+Esta carpeta conecta la app con la tarjeta según [CONTRATO.md](../CONTRATO.md) (v1.1). La mantiene el proyecto de hardware. El proyecto de la app la **usa** y no la modifica: si falta algo, se pide en el contrato.
 
 | Archivo | Para qué |
 |---|---|
@@ -32,7 +32,7 @@ OrganicsOne.on('alarm/#', () => pintarAlarmas(OrganicsOne.alarmasActivas()));
 | `zonas()` | `[{zona, enLinea, suelo1, suelo2, suelo (promedio), valvulaAbierta, riego:{state, remaining_s}, caudal, volumen, banderas, topeAutomatico}]` |
 | `ventanas()` | `[{ventana, posicion, estado, alarma}]` |
 | `salidas()` | `{extractor, fan, grow_light, work_light, spare}` en `true` / `false` |
-| `agua()` | `{tanque, flotador, bomba, corrienteBomba, caudal, volumen}` |
+| `agua()` | `{fuente, conTanque, tanque, flotador, bomba, corrienteBomba, caudal, volumen}`. `fuente`: `mains` (red) o `tank` (tanque). Con `conTanque` en `false`, la app oculta tanque, flotador y bomba |
 | `alarmasActivas()` | nombres de las alarmas en 1 (ver contrato) |
 | `reglasAutomaticas()` | las reglas vigentes (JSON del contrato) |
 | `audio.estado()` | `{enLinea, sonando, habilitado, volumen, escena, pista, error, config, escenas}` |
@@ -45,7 +45,8 @@ OrganicsOne.on('alarm/#', () => pintarAlarmas(OrganicsOne.alarmasActivas()));
 | `regar(zona, segundos)` / `detenerRiego(zona)` | Riego manual de una zona |
 | `ventana(n, 'open' \| 'close' \| 'stop' \| 0..100)` | Mueve una ventana |
 | `salida(nombre, true \| false)` | Extractor, ventilador, luces, reserva |
-| `rearmarBomba()` | Después de una alarma de bomba |
+| `fuenteAgua('mains' \| 'tank')` | Cambia la fuente de agua. Rechaza si hay un riego en curso. Antes de pasar a tanque, la app advierte que se necesita la bomba |
+| `rearmarBomba()` | Después de una alarma de bomba (solo con tanque) |
 | `refrescar()` | Pide a la tarjeta que republique todo |
 | `cambiarReglas({...})` | Cambios parciales de reglas automáticas. Resuelve con `ok` o rechaza con el motivo que da la tarjeta |
 | `audio.reproducir(escena?)`, `audio.detener()`, `audio.habilitar(bool)`, `audio.volumen(n)`, `audio.escena(e)`, `audio.configurar({...})` | Módulo de audio (opcional) |
@@ -75,4 +76,4 @@ python3 sim_gateway.py ordenes.jsonl &
 python3 prueba_e2e.py
 ```
 
-Abre `prueba.html` en Chromium, se conecta a una tarjeta simulada y verifica 24 puntos: datos en pantalla, órdenes, reglas aceptadas y rechazadas, audio, eventos, validaciones, y que ninguna orden salga retenida.
+Abre `prueba.html` en Chromium, se conecta a una tarjeta simulada y verifica 30 puntos: datos en pantalla, órdenes, reglas aceptadas y rechazadas, fuente de agua, audio, eventos, validaciones, y que ninguna orden salga retenida.

@@ -79,7 +79,10 @@
   </section>
 
   <section>
-    <h2>Agua y bomba</h2>
+    <h2>Agua</h2>
+    <div class="fila" style="margin-bottom:8px"><span id="fuenteTxt">Fuente: -</span>
+      <button id="btnRed" data-f="mains">Red (tubería)</button><button id="btnTanque" data-f="tank">Tanque (agua lluvia)</button></div>
+    <div class="sub" style="margin-bottom:8px">Tanque requiere la bomba instalada. No se puede cambiar con un riego en curso.</div>
     <div class="grilla" id="agua"></div>
     <div class="fila" style="margin-top:8px"><button id="btnRearmar">Rearmar bomba</button></div>
     <div class="error" id="errAgua"></div>
@@ -214,10 +217,13 @@
     }).join('') : 'Sin datos todavía.';
 
     var w = O.agua();
-    $('agua').innerHTML = [
+    $('fuenteTxt').textContent = 'Fuente: ' + (w.conTanque ? 'tanque (agua lluvia)' : 'red (tubería)');
+    $('btnRed').disabled = !w.conTanque; $('btnTanque').disabled = w.conTanque;
+    $('btnRearmar').style.display = w.conTanque ? '' : 'none';
+    $('agua').innerHTML = (w.conTanque ? [
       ['Tanque', fmt(w.tanque, 0, ' %')], ['Flotador', w.flotador === 'low' ? 'BAJO' : (w.flotador || '-')], ['Bomba', w.bomba || '-'],
-      ['Corriente', fmt(w.corrienteBomba, 2, ' A')], ['Caudal', fmt(w.caudal, 2, ' L/min')], ['Volumen', fmt(w.volumen, 1, ' L')]
-    ].map(function (d) { return '<div class="dato"><div class="n">' + d[0] + '</div><div class="v">' + d[1] + '</div></div>'; }).join('');
+      ['Corriente', fmt(w.corrienteBomba, 2, ' A')]] : []).concat([['Caudal', fmt(w.caudal, 2, ' L/min')], ['Volumen', fmt(w.volumen, 1, ' L')]
+    ]).map(function (d) { return '<div class="dato"><div class="n">' + d[0] + '</div><div class="v">' + d[1] + '</div></div>'; }).join('');
 
     var vs = O.ventanas();
     var est = { stopped:'detenida', opening:'abriendo', closing:'cerrando' };
@@ -256,6 +262,7 @@
     if (b.dataset.z) accion('errZonas', O.regar(Number(b.dataset.z), Number(b.dataset.s)));
     else if (b.dataset.v) accion('errVentanas', O.ventana(Number(b.dataset.v), b.dataset.a));
     else if (b.dataset.o) accion('errVentanas', O.salida(b.dataset.o, b.dataset.on === '1'));
+    else if (b.dataset.f) accion('errAgua', O.fuenteAgua(b.dataset.f));
   });
   $('btnRearmar').onclick = function () { accion('errAgua', O.rearmarBomba()); };
   $('btnRefrescar').onclick = function () { O.refrescar().catch(function () {}); };
