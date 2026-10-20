@@ -157,6 +157,25 @@
   #envPanel .estimate-note{ background:#fff; border-radius:0 0 18px 18px; padding:6px 13px 12px; margin-top:0; box-shadow:0 6px 8px rgba(38,67,58,0.05); }
   #envPanel .manual-location-form, #envPanel .use-auto-location{ margin-bottom:10px; }
 
+
+  /* ---------- Irrigation view ---------- */
+  .water-toggle.on{ background:#2a78d6; color:#fff; box-shadow:0 0 0 3px rgba(42,120,214,0.2); }
+  .water-bar{ display:none; }
+  .water-on .water-bar{ display:block; margin:0 0 10px; }
+  body.tabs-mode .water-on .tab-plant-bar{ display:none; }
+  .water-on .legend{ visibility:hidden; height:0; margin:0; }
+  .wb-chips{ display:flex; gap:6px; flex-wrap:wrap; }
+  .wb-chip{ display:inline-flex; align-items:center; gap:6px; border:1.5px solid var(--soil-line); background:#fff; border-radius:999px; padding:5px 11px; font:700 12.5px 'Public Sans', sans-serif; color: var(--pine-dark); cursor:pointer; }
+  .wb-chip .wb-dot{ width:10px; height:10px; border-radius:50%; background:var(--zc); }
+  .wb-chip.on{ border-color:var(--zc, #5C7268); box-shadow:0 0 0 3px color-mix(in srgb, var(--zc, #5C7268) 22%, transparent); }
+  .wb-chip.erase{ color: var(--pine-soft); }
+  .wb-line{ font-size:12.5px; color: var(--pine-soft); margin-top:8px; line-height:1.4; }
+  .wb-line b{ color: var(--pine-dark); }
+  #room.water-mode .cell .inner{ opacity:.3; filter:grayscale(.4); }
+  #room.water-mode .cell::after{ display:none !important; }
+  #room.water-mode .cell.wz::before{ content:''; position:absolute; inset:0; background:var(--zc); opacity:var(--za); pointer-events:none; z-index:1; }
+  #room.water-mode .zb{ position:absolute; top:3px; left:4px; z-index:2; font:800 10px 'Public Sans', sans-serif; color:#fff; background:var(--zc); border-radius:6px; padding:1px 5px; pointer-events:none; }
+
   /* ---------- Statistics ---------- */
   .pw-box{ max-width:420px; max-height:90vh; overflow:auto; }
   .pw-help{ font-size:12px !important; color: var(--pine-soft) !important; margin:0 0 10px !important; }
@@ -545,10 +564,12 @@
       <div class="room-header">
         <span class="eyebrow" id="roomTitle">MY GREENHOUSE</span>
         <div class="room-header-right">
+          <button class="icon-btn water-toggle" id="waterToggle" type="button" aria-pressed="false">💧</button>
           <button class="grid-size-label" id="gridSizeLabel" type="button">6 × 6 grid</button>
         </div>
       </div>
       <div class="tab-plant-bar" id="tabPlantBar"><button class="pick-plant-btn" id="openLibraryBtn"></button><button class="pick-plant-cancel" id="pickCancelBtn" aria-label="Cancel">✕</button></div>
+      <div class="water-bar" id="waterBar"></div>
       <div class="room" id="room"></div>
       <div class="legend" id="roomLegend">empty block · tap a planted block for details · drag to plant a row</div>
     </div>
@@ -819,6 +840,13 @@ const TRANSLATIONS = {
     envSunToday:'Sun today',
     envInHum:'Inside humidity',
     envOutHum:'Outdoor humidity',
+    waterView:'Irrigation view',
+    zoneLabel:'Zone {n}',
+    zonePaintHint:'Drag over the blocks this zone waters',
+    zoneEraseHint:'Drag over blocks to remove their zone',
+    zoneToday:'{l} L today',
+    zoneNoWater:'no watering today',
+    zoneSoil:'soil {s}%',
     boardTitle:'ORGANICS ONE BOARD', boardConnect:'Connect board', boardSave:'Connect', boardDisc:'Disconnect', boardForget:'Forget', boardServer:'Server (EMQX host)', boardUser:'User', boardPass:'Password', boardInv:'Greenhouse name', boardOff:'Not connected', boardOn:'Board online', boardNoBoard:'Board offline', boardUpdate:'Update firmware', boardTemp:'Temperature', boardHum:'Humidity', boardVpd:'VPD', boardSoil:'Soil', boardValveOpen:'watering', boardZone:'Zone', boardAlarm:'Alarm', boardConnecting:'Connecting…', boardLiveTemp:'Real sensor',
     useAutoLocation:'📍 Use automatic location', locationManualLabel:'Manual location',
     locationApprox:'Approximate location', locationPrecise:'Precise location',
@@ -1007,6 +1035,13 @@ const TRANSLATIONS = {
     envSunToday:'Sol hoy',
     envInHum:'Humedad interior',
     envOutHum:'Humedad exterior',
+    waterView:'Vista de riego',
+    zoneLabel:'Zona {n}',
+    zonePaintHint:'Arrastra sobre los bloques que riega esta zona',
+    zoneEraseHint:'Arrastra sobre los bloques para quitarles la zona',
+    zoneToday:'{l} L hoy',
+    zoneNoWater:'sin riego hoy',
+    zoneSoil:'suelo {s}%',
     boardTitle:'TARJETA ORGANICS ONE', boardConnect:'Conectar tarjeta', boardSave:'Conectar', boardDisc:'Desconectar', boardForget:'Olvidar', boardServer:'Servidor (host de EMQX)', boardUser:'Usuario', boardPass:'Clave', boardInv:'Nombre del invernadero', boardOff:'Sin conexión', boardOn:'Tarjeta en línea', boardNoBoard:'Tarjeta desconectada', boardUpdate:'Actualizar firmware', boardTemp:'Temperatura', boardHum:'Humedad', boardVpd:'VPD', boardSoil:'Suelo', boardValveOpen:'regando', boardZone:'Zona', boardAlarm:'Alarma', boardConnecting:'Conectando…', boardLiveTemp:'Sensor real',
     useAutoLocation:'📍 Usar ubicación automática', locationManualLabel:'Ubicación manual',
     locationApprox:'Ubicación aproximada', locationPrecise:'Ubicación precisa',
@@ -1194,6 +1229,13 @@ const TRANSLATIONS = {
     envSunToday:'Soleil aujourd\'hui',
     envInHum:'Humidité intérieure',
     envOutHum:'Humidité extérieure',
+    waterView:'Vue d\'arrosage',
+    zoneLabel:'Zone {n}',
+    zonePaintHint:'Glissez sur les blocs arrosés par cette zone',
+    zoneEraseHint:'Glissez sur les blocs pour retirer leur zone',
+    zoneToday:'{l} L aujourd\'hui',
+    zoneNoWater:'pas d\'arrosage aujourd\'hui',
+    zoneSoil:'sol {s}%',
     boardTitle:'CARTE ORGANICS ONE',
     boardConnect:'Connecter la carte',
     boardSave:'Connecter',
@@ -1422,6 +1464,13 @@ const TRANSLATIONS = {
     envSunToday:'Sol hoje',
     envInHum:'Umidade interna',
     envOutHum:'Umidade externa',
+    waterView:'Vista de rega',
+    zoneLabel:'Zona {n}',
+    zonePaintHint:'Arraste sobre os blocos que esta zona rega',
+    zoneEraseHint:'Arraste sobre os blocos para tirar a zona',
+    zoneToday:'{l} L hoje',
+    zoneNoWater:'sem rega hoje',
+    zoneSoil:'solo {s}%',
     boardTitle:'PLACA ORGANICS ONE',
     boardConnect:'Conectar placa',
     boardSave:'Conectar',
@@ -1650,6 +1699,13 @@ const TRANSLATIONS = {
     envSunToday:'Sonne heute',
     envInHum:'Innenfeuchte',
     envOutHum:'Außenfeuchte',
+    waterView:'Bewässerungsansicht',
+    zoneLabel:'Zone {n}',
+    zonePaintHint:'Über die Felder ziehen, die diese Zone bewässert',
+    zoneEraseHint:'Über Felder ziehen, um die Zone zu entfernen',
+    zoneToday:'{l} L heute',
+    zoneNoWater:'heute keine Bewässerung',
+    zoneSoil:'Boden {s}%',
     boardTitle:'ORGANICS-ONE-PLATINE',
     boardConnect:'Platine verbinden',
     boardSave:'Verbinden',
@@ -1878,6 +1934,13 @@ const TRANSLATIONS = {
     envSunToday:'今日日照',
     envInHum:'室内湿度',
     envOutHum:'室外湿度',
+    waterView:'灌溉视图',
+    zoneLabel:'区域 {n}',
+    zonePaintHint:'在此区域灌溉的地块上拖动',
+    zoneEraseHint:'在地块上拖动以移除区域',
+    zoneToday:'今天 {l} 升',
+    zoneNoWater:'今天未灌溉',
+    zoneSoil:'土壤 {s}%',
     boardTitle:'ORGANICS ONE 控制板',
     boardConnect:'连接控制板',
     boardSave:'连接',
@@ -2106,6 +2169,13 @@ const TRANSLATIONS = {
     envSunToday:'आज की धूप',
     envInHum:'अंदर की नमी',
     envOutHum:'बाहरी नमी',
+    waterView:'सिंचाई दृश्य',
+    zoneLabel:'क्षेत्र {n}',
+    zonePaintHint:'जिन खानों को यह क्षेत्र सींचता है, उन पर खींचें',
+    zoneEraseHint:'क्षेत्र हटाने के लिए खानों पर खींचें',
+    zoneToday:'आज {l} ली',
+    zoneNoWater:'आज सिंचाई नहीं',
+    zoneSoil:'मिट्टी {s}%',
     boardTitle:'ORGANICS ONE बोर्ड',
     boardConnect:'बोर्ड कनेक्ट करें',
     boardSave:'कनेक्ट करें',
@@ -2334,6 +2404,13 @@ const TRANSLATIONS = {
     envSunToday:'الشمس اليوم',
     envInHum:'الرطوبة الداخلية',
     envOutHum:'الرطوبة الخارجية',
+    waterView:'عرض الري',
+    zoneLabel:'المنطقة {n}',
+    zonePaintHint:'اسحب فوق المربعات التي ترويها هذه المنطقة',
+    zoneEraseHint:'اسحب فوق المربعات لإزالة المنطقة',
+    zoneToday:'{l} لتر اليوم',
+    zoneNoWater:'لا ري اليوم',
+    zoneSoil:'التربة {s}%',
     boardTitle:'لوحة ORGANICS ONE',
     boardConnect:'ربط اللوحة',
     boardSave:'اتصال',
@@ -2562,6 +2639,13 @@ const TRANSLATIONS = {
     envSunToday:'Sole oggi',
     envInHum:'Umidità interna',
     envOutHum:'Umidità esterna',
+    waterView:'Vista irrigazione',
+    zoneLabel:'Zona {n}',
+    zonePaintHint:'Trascina sui blocchi irrigati da questa zona',
+    zoneEraseHint:'Trascina sui blocchi per togliere la zona',
+    zoneToday:'{l} L oggi',
+    zoneNoWater:'nessuna irrigazione oggi',
+    zoneSoil:'suolo {s}%',
     boardTitle:'SCHEDA ORGANICS ONE',
     boardConnect:'Collega scheda',
     boardSave:'Collega',
@@ -2790,6 +2874,13 @@ const TRANSLATIONS = {
     envSunToday:'Солнце сегодня',
     envInHum:'Влажность внутри',
     envOutHum:'Влажность снаружи',
+    waterView:'Режим полива',
+    zoneLabel:'Зона {n}',
+    zonePaintHint:'Проведите по клеткам, которые поливает эта зона',
+    zoneEraseHint:'Проведите по клеткам, чтобы убрать зону',
+    zoneToday:'{l} л сегодня',
+    zoneNoWater:'сегодня без полива',
+    zoneSoil:'почва {s}%',
     boardTitle:'ПЛАТА ORGANICS ONE',
     boardConnect:'Подключить плату',
     boardSave:'Подключить',
@@ -3035,7 +3126,7 @@ const CUSTOM_ICON_POOL = ['🌱','🌿','🍃','🪴','🌾'];
 const STORAGE_KEY = 'greenhouse-state';
 const DAY_MS = 86400000;
 
-let state = { rows:6, cols:6, plantings:{}, customVeg:[], lang:'en', langManual:false, libraryCollapsed:true, gridSettingsCollapsed:true, manualLocation:null, roomRotated:false };
+let state = { rows:6, cols:6, plantings:{}, irrZones:{}, customVeg:[], lang:'en', langManual:false, libraryCollapsed:true, gridSettingsCollapsed:true, manualLocation:null, roomRotated:false };
 let ALL_VEGETABLES = [...BASE_VEGETABLES];
 let VEG_MAP = {};
 let selectedVeg = null;
@@ -3065,6 +3156,7 @@ async function loadState(){
           rows: typeof parsed.rows === 'number' ? parsed.rows : (legacySize || 6),
           cols: typeof parsed.cols === 'number' ? parsed.cols : (legacySize || 6),
           plantings: parsed.plantings || {},
+          irrZones: parsed.irrZones || {},
           customVeg: parsed.customVeg || [],
           lang: parsed.lang || 'en',
           langManual: typeof parsed.langManual === 'boolean' ? parsed.langManual : false,
@@ -3112,6 +3204,7 @@ function applyStaticText(){
   document.getElementById('gridSettingsTitle').textContent = t('gridSettingsTitle');
   document.getElementById('gridDone').textContent = t('modalDone');
   document.getElementById('gridSizeLabel').title = t('gridSettingsTitle');
+  document.getElementById('waterToggle').title = t('waterView');
   document.getElementById('heightLabel').textContent = t('heightLabel');
   document.getElementById('widthLabel').textContent = t('widthLabel');
   document.getElementById('envTitle').textContent = t('envTitle');
@@ -3354,9 +3447,15 @@ function renderRoom(){
         cell.style.setProperty('--ring-color', veg.color);
         cell.innerHTML = `<div class="inner">${veg.icon}<div class="prog-track"><div class="prog-fill" style="width:${pct}%"></div></div></div>`;
         applyWoodEdges(cell, r, c, mobile);
-        cell.addEventListener('mouseenter', () => showVegTooltip(cell, veg, key));
-        cell.addEventListener('mouseleave', () => hideVegTooltip());
-        cell.addEventListener('click', () => { hideVegTooltip(); openModal(r, c); });
+        if(waterMode){
+          cell.addEventListener('mousedown', (e) => { e.preventDefault(); startDrag(r, c); });
+          cell.addEventListener('mouseenter', () => continueDrag(r, c));
+          cell.addEventListener('touchstart', (e) => { e.preventDefault(); startDrag(r, c); }, { passive:false });
+        } else {
+          cell.addEventListener('mouseenter', () => showVegTooltip(cell, veg, key));
+          cell.addEventListener('mouseleave', () => hideVegTooltip());
+          cell.addEventListener('click', () => { hideVegTooltip(); openModal(r, c); });
+        }
       } else {
         cell.className = 'cell';
         cell.innerHTML = `<span class="cell-empty-mark">·</span>`;
@@ -3364,10 +3463,13 @@ function renderRoom(){
         cell.addEventListener('mouseenter', () => continueDrag(r, c));
         cell.addEventListener('touchstart', (e) => { e.preventDefault(); startDrag(r, c); }, { passive:false });
       }
+      if(waterMode) decorateZoneCell(cell, key);
       room.appendChild(cell);
     }
   }
+  room.classList.toggle('water-mode', waterMode);
   applyTempWarnings();
+  if(waterMode) renderWaterBar();
 }
 
 function plantCellDuringDrag(r,c){
@@ -3378,6 +3480,7 @@ function plantCellDuringDrag(r,c){
   return true;
 }
 function startDrag(r,c){
+  if(waterMode){ dragging = true; dragKeys = new Set(); document.body.classList.add('dragging'); paintZone(r, c); return; }
   if(!selectedVeg){ showToast(t('toastPickPlant')); return; }
   dragging = true; dragKeys = new Set();
   document.body.classList.add('dragging');
@@ -3385,12 +3488,14 @@ function startDrag(r,c){
 }
 function continueDrag(r,c){
   if(!dragging) return;
+  if(waterMode){ paintZone(r, c); return; }
   if(plantCellDuringDrag(r,c)){ renderRoom(); renderHeaderPills(); }
 }
 function endDrag(){
   if(!dragging) return;
   dragging = false;
   document.body.classList.remove('dragging');
+  if(waterMode){ dragKeys = new Set(); saveState(); renderWaterBar(); return; }
   if(dragKeys.size > 0){
     saveState();
     renderRipenessAlerts();
@@ -4471,6 +4576,60 @@ function openPowerSettings(){
   document.getElementById('powerOverlay').onclick = e => { if(e.target.id === 'powerOverlay') close(); };
   document.getElementById('powerOverlay').classList.add('show');
 }
+
+/* ---------- Irrigation view: blocks coloured by irrigation zone ---------- */
+let waterMode = false, zoneBrush = 1;
+const ZONE_COLORS = ['#2a78d6','#eb6834','#1baf7a','#eda100','#e87ba4','#008300','#6250d6','#e34948'];
+function zoneColor(n){ return ZONE_COLORS[(n - 1) % ZONE_COLORS.length]; }
+function zoneCount(){
+  let n = 4;
+  try{ if(OO && OO.info().conectado) n = Math.max(n, OO.zonas().length); }catch(e){}
+  Object.values(state.irrZones || {}).forEach(z => { n = Math.max(n, z); });
+  return Math.min(8, n);
+}
+function zoneStats(n){
+  const irr = (typeof lsGet === 'function' ? lsGet(IRR_KEY, []) : []).filter(p => p.zone === n && isToday(p.ts));
+  const min = irr.reduce((a,p) => a + (p.min || 0), 0);
+  let soil = null;
+  try{ if(OO && OO.info().conectado){ const z = OO.zonas().find(q => q.zona === n); if(z) soil = z.suelo; } }catch(e){}
+  return { min, liters: min * flowLpm(), soil };
+}
+function decorateZoneCell(cell, key){
+  const z = (state.irrZones || {})[key]; if(!z) return;
+  const maxMin = Math.max(1, ...Array.from({ length: zoneCount() }, (_, i) => zoneStats(i + 1).min));
+  const st = zoneStats(z);
+  cell.classList.add('wz');
+  cell.style.setProperty('--zc', zoneColor(z));
+  cell.style.setProperty('--za', (0.22 + 0.5 * (st.min / maxMin)).toFixed(2));
+  const b = document.createElement('span'); b.className = 'zb'; b.textContent = z; cell.appendChild(b);
+}
+function paintZone(r, c){
+  const key = r + '-' + c; if(dragKeys.has(key)) return;
+  dragKeys.add(key);
+  state.irrZones = state.irrZones || {};
+  if(zoneBrush === 0) delete state.irrZones[key]; else state.irrZones[key] = zoneBrush;
+  renderRoom();
+}
+function renderWaterBar(){
+  const bar = document.getElementById('waterBar'); if(!bar) return;
+  if(!waterMode){ bar.innerHTML = ''; return; }
+  const n = zoneCount(), st = zoneBrush ? zoneStats(zoneBrush) : null;
+  const assigned = Object.values(state.irrZones || {}).filter(z => z === zoneBrush).length;
+  let line;
+  if(!zoneBrush) line = t('zoneEraseHint');
+  else if(!assigned) line = t('zonePaintHint');
+  else line = `<b>${t('zoneLabel', { n: zoneBrush })}</b> · ${st.min ? t('zoneToday', { l: nf(st.liters, 0) }) + ' (' + t('statsEstimated') + ')' : t('zoneNoWater')}${st.soil != null ? ' · ' + t('zoneSoil', { s: nf(st.soil, 0) }) : ''}`;
+  bar.innerHTML = `<div class="wb-chips">${Array.from({ length: n }, (_, i) => i + 1).map(z => `<button class="wb-chip${z === zoneBrush ? ' on' : ''}" data-z="${z}" style="--zc:${zoneColor(z)}"><span class="wb-dot"></span>${z}</button>`).join('')}<button class="wb-chip erase${zoneBrush === 0 ? ' on' : ''}" data-z="0">⌫</button></div><div class="wb-line">${line}</div>`;
+  bar.querySelectorAll('.wb-chip').forEach(b => b.addEventListener('click', () => { zoneBrush = Number(b.dataset.z); renderWaterBar(); }));
+}
+function toggleWater(){
+  waterMode = !waterMode; hideVegTooltip();
+  const btn = document.getElementById('waterToggle');
+  btn.classList.toggle('on', waterMode); btn.setAttribute('aria-pressed', String(waterMode));
+  document.getElementById('roomPanel').classList.toggle('water-on', waterMode);
+  renderRoom(); renderWaterBar();
+}
+document.getElementById('waterToggle').addEventListener('click', toggleWater);
 
 /* ---------- Tabs on phones/tablets ---------- */
 const TAB_ORDER = ['env','room','stats'];
