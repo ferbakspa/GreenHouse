@@ -323,6 +323,7 @@
   .board-actions{ display:flex; gap:6px; margin-top:6px; flex-wrap:wrap; }
   .board-actions button, .board-link{ font:inherit; font-size:12px; padding:6px 10px; border-radius:8px; border:1px solid #2E9E5B; background:#fff; color:#1F6E3F; cursor:pointer; }
   .board-actions button.prim{ background:#2E9E5B; color:#fff; }
+  .board-learn{ display:inline-block; margin-top:8px; font-size:12px; color: var(--green-accent); font-weight:700; }
   .board-err{ color:#C0392B; font-size:11.5px; min-height:14px; margin-top:4px; }
   .board-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-top:8px; }
   .board-item{ background:#fff; border-radius:9px; padding:7px 8px; }
@@ -521,6 +522,7 @@
           <button id="boardDisconnect" style="display:none"></button>
           <button id="boardForget" style="display:none"></button>
         </div>
+        <a class="board-learn" id="boardLearn" href="https://aidex.cl/invernaderos/" target="_blank" rel="noopener"></a>
       </div>
       <div class="alerts-title-row">
         <span class="eyebrow" id="alertsTitleText">HARVEST ALERTS</span>
@@ -732,6 +734,7 @@ const TRANSLATIONS = {
     powerConfigure:'Set up equipment',
     powerTracked:'from real on-time',
     powerMeterNote:'Estimate. For real consumption, install a Wi-Fi energy meter in your electrical panel.',
+    boardLearn:'Don\'t have a board? Learn about Organics One',
     boardTitle:'ORGANICS ONE BOARD', boardConnect:'Connect board', boardSave:'Connect', boardDisc:'Disconnect', boardForget:'Forget', boardServer:'Server (EMQX host)', boardUser:'User', boardPass:'Password', boardInv:'Greenhouse name', boardOff:'Not connected', boardOn:'Board online', boardNoBoard:'Board offline', boardUpdate:'Update firmware', boardTemp:'Temperature', boardHum:'Humidity', boardVpd:'VPD', boardSoil:'Soil', boardValveOpen:'watering', boardZone:'Zone', boardAlarm:'Alarm', boardConnecting:'Connecting…', boardLiveTemp:'Real sensor',
     useAutoLocation:'📍 Use automatic location', locationManualLabel:'Manual location',
     locationApprox:'Approximate location', locationPrecise:'Precise location',
@@ -897,6 +900,7 @@ const TRANSLATIONS = {
     powerConfigure:'Configurar equipos',
     powerTracked:'con tiempo real encendido',
     powerMeterNote:'Estimación. Para el consumo real, instala un medidor de energía con Wi-Fi en el tablero eléctrico.',
+    boardLearn:'¿No tienes tarjeta? Conoce Organics One',
     boardTitle:'TARJETA ORGANICS ONE', boardConnect:'Conectar tarjeta', boardSave:'Conectar', boardDisc:'Desconectar', boardForget:'Olvidar', boardServer:'Servidor (host de EMQX)', boardUser:'Usuario', boardPass:'Clave', boardInv:'Nombre del invernadero', boardOff:'Sin conexión', boardOn:'Tarjeta en línea', boardNoBoard:'Tarjeta desconectada', boardUpdate:'Actualizar firmware', boardTemp:'Temperatura', boardHum:'Humedad', boardVpd:'VPD', boardSoil:'Suelo', boardValveOpen:'regando', boardZone:'Zona', boardAlarm:'Alarma', boardConnecting:'Conectando…', boardLiveTemp:'Sensor real',
     useAutoLocation:'📍 Usar ubicación automática', locationManualLabel:'Ubicación manual',
     locationApprox:'Ubicación aproximada', locationPrecise:'Ubicación precisa',
@@ -1061,6 +1065,7 @@ const TRANSLATIONS = {
     powerConfigure:'Configurer les équipements',
     powerTracked:'temps réel de fonctionnement',
     powerMeterNote:'Estimation. Pour la consommation réelle, installez un compteur d\'énergie Wi-Fi dans le tableau électrique.',
+    boardLearn:'Pas de carte ? Découvrez Organics One',
     boardTitle:'CARTE ORGANICS ONE',
     boardConnect:'Connecter la carte',
     boardSave:'Connecter',
@@ -1266,6 +1271,7 @@ const TRANSLATIONS = {
     powerConfigure:'Configurar equipamentos',
     powerTracked:'com tempo real ligado',
     powerMeterNote:'Estimativa. Para o consumo real, instale um medidor de energia Wi-Fi no quadro elétrico.',
+    boardLearn:'Não tem a placa? Conheça a Organics One',
     boardTitle:'PLACA ORGANICS ONE',
     boardConnect:'Conectar placa',
     boardSave:'Conectar',
@@ -1471,6 +1477,7 @@ const TRANSLATIONS = {
     powerConfigure:'Geräte einrichten',
     powerTracked:'mit echter Laufzeit',
     powerMeterNote:'Schätzung. Für den echten Verbrauch installiere einen WLAN-Energiezähler im Schaltschrank.',
+    boardLearn:'Keine Platine? Organics One kennenlernen',
     boardTitle:'ORGANICS-ONE-PLATINE',
     boardConnect:'Platine verbinden',
     boardSave:'Verbinden',
@@ -1676,6 +1683,7 @@ const TRANSLATIONS = {
     powerConfigure:'设置设备',
     powerTracked:'按实际运行时间',
     powerMeterNote:'估算值。如需实际用电量，请在电箱中安装 Wi-Fi 电能表。',
+    boardLearn:'还没有控制板？了解 Organics One',
     boardTitle:'ORGANICS ONE 控制板',
     boardConnect:'连接控制板',
     boardSave:'连接',
@@ -1881,6 +1889,7 @@ const TRANSLATIONS = {
     powerConfigure:'उपकरण सेट करें',
     powerTracked:'असल चलने के समय से',
     powerMeterNote:'अनुमान। असल खपत के लिए बिजली पैनल में Wi-Fi ऊर्जा मीटर लगाएँ।',
+    boardLearn:'बोर्ड नहीं है? Organics One के बारे में जानें',
     boardTitle:'ORGANICS ONE बोर्ड',
     boardConnect:'बोर्ड कनेक्ट करें',
     boardSave:'कनेक्ट करें',
@@ -2086,6 +2095,7 @@ const TRANSLATIONS = {
     powerConfigure:'ضبط المعدات',
     powerTracked:'بوقت التشغيل الفعلي',
     powerMeterNote:'تقدير. للاستهلاك الفعلي ركّب عداد طاقة بشبكة Wi-Fi في لوحة الكهرباء.',
+    boardLearn:'ليست لديك لوحة؟ تعرّف على Organics One',
     boardTitle:'لوحة ORGANICS ONE',
     boardConnect:'ربط اللوحة',
     boardSave:'اتصال',
@@ -2291,6 +2301,7 @@ const TRANSLATIONS = {
     powerConfigure:'Configura dispositivi',
     powerTracked:'con tempo reale di accensione',
     powerMeterNote:'Stima. Per il consumo reale installa un contatore di energia Wi-Fi nel quadro elettrico.',
+    boardLearn:'Non hai la scheda? Scopri Organics One',
     boardTitle:'SCHEDA ORGANICS ONE',
     boardConnect:'Collega scheda',
     boardSave:'Collega',
@@ -2496,6 +2507,7 @@ const TRANSLATIONS = {
     powerConfigure:'Настроить оборудование',
     powerTracked:'по реальному времени работы',
     powerMeterNote:'Оценка. Для реального расхода установите Wi-Fi счётчик энергии в электрощите.',
+    boardLearn:'Нет платы? Узнайте об Organics One',
     boardTitle:'ПЛАТА ORGANICS ONE',
     boardConnect:'Подключить плату',
     boardSave:'Подключить',
@@ -3715,6 +3727,7 @@ function renderBoard(){
   B('boardConnect').textContent = form.classList.contains('open') ? t('boardSave') : t('boardConnect');
   B('boardConnect').style.display = st.conectado ? 'none' : '';
   B('boardDisconnect').textContent = t('boardDisc'); B('boardDisconnect').style.display = st.conectado ? '' : 'none';
+  const bl = B('boardLearn'); if(bl){ bl.textContent = t('boardLearn'); bl.style.display = st.conectado ? 'none' : ''; }
   B('boardForget').textContent = t('boardForget'); B('boardForget').style.display = (!st.conectado && OO.configuracionGuardada()) ? '' : 'none';
   if(st.conectado) form.classList.remove('open');
   const live = B('boardLive');
@@ -4039,7 +4052,7 @@ function renderStats(){
           sensorTile('🌱', t('statsSoil'), nf(soilAvg,0)+' %', online && soilAvg != null),
           sensorTile('🛢️', t('statsTank'), nf(w.tanque,0)+' %', online && w.conTanque && w.tanque != null),
           sensorTile('⚡', t('statsPower'), '', false)].join(''); })()}</div>
-      ${online ? '' : `<div class="st-cta"><div>${t('statsCta')}</div><a href="mailto:ferbak.spa@gmail.com?subject=Organics%20One" class="st-cta-btn">${t('statsCtaBtn')}</a></div>`}
+      ${online ? '' : `<div class="st-cta"><div>${t('statsCta')}</div><a href="https://aidex.cl/invernaderos/" target="_blank" rel="noopener" class="st-cta-btn">${t('statsCtaBtn')}</a></div>`}
     </div>`;
 
   const C_OUT = '#2a78d6', C_IN = '#1baf7a', C_SUN = '#eda100';
