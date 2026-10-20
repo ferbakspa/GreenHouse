@@ -282,6 +282,16 @@
   .progress-fill{ height:100%; border-radius:6px; transition: width .3s; }
   .progress-label{ font-size:12px; color: var(--pine-soft); text-align:center; margin-bottom: 16px; }
   .progress-label.ready{ color: var(--amber-dark); font-weight:700; }
+  .consent-overlay{ position:fixed; inset:0; z-index:400; background:rgba(13,40,26,0.55); display:none; align-items:center; justify-content:center; padding:16px; }
+  .consent-overlay.show{ display:flex; }
+  .consent-box{ background:#fff; border-radius:16px; max-width:440px; width:100%; padding:22px 20px 18px; box-shadow:0 18px 50px rgba(0,0,0,0.35); }
+  .consent-box h3{ margin:0 0 10px; font-size:19px; color:var(--pine-dark); }
+  .consent-box p{ margin:0 0 10px; font-size:13.5px; line-height:1.55; color:#33463B; }
+  .consent-box .consent-key{ background:var(--bg-warm); border-left:4px solid var(--green-accent); border-radius:8px; padding:9px 11px; }
+  .consent-box a{ color:var(--green-accent); font-weight:700; }
+  .consent-box button{ margin-top:6px; width:100%; padding:12px; border:none; border-radius:10px; background:var(--pine-dark); color:#fff; font-weight:700; font-size:14px; cursor:pointer; }
+  .legal-links{ text-align:center; font-size:11px; color:var(--pine-soft); margin:18px 0 10px; }
+  .legal-links a{ color:var(--pine-soft); }
   .modal-actions{ display:flex; gap:10px; }
   .modal-actions button{ flex:1; padding: 10px 12px; border-radius:10px; border:none; font-weight:600; font-size:13px; cursor:pointer; font-family:'Public Sans', sans-serif; }
   .btn-clear{ background: #F5E4E1; color:#A0413A; }
@@ -440,6 +450,14 @@
   <footer class="credit" id="footerCredit">Your layout saves automatically on this device.</footer>
 </div>
 
+<div class="consent-overlay" id="consentOverlay" role="dialog" aria-modal="true"><div class="consent-box">
+  <h3 id="consentTitle"></h3>
+  <p class="consent-key" id="consentKey"></p>
+  <p id="consentBody"></p>
+  <p><a href="terms.html" target="_blank" rel="noopener" id="consentTermsLink"></a> · <a href="privacy.html" target="_blank" rel="noopener" id="consentPrivacyLink"></a></p>
+  <button id="consentAccept"></button>
+</div></div>
+<div class="legal-links"><a href="terms.html" target="_blank" rel="noopener" id="footTerms">Terms</a> · <a href="privacy.html" target="_blank" rel="noopener" id="footPrivacy">Privacy</a></div>
 <div class="overlay" id="overlay"><div class="modal" id="modalContent"></div></div>
 <div class="toast" id="toast"></div>
 <div class="veg-tooltip" id="vegTooltip"></div>
@@ -553,6 +571,12 @@ const TRANSLATIONS = {
     mutedForever:'Alert silenced until the end of this crop',
     unmute:'Reactivate',
     mutedToast:'Alert silenced',
+    consentTitle:'Before you start',
+    consentKey:'The temperatures, ranges, harvest dates and alerts in this app are reference recommendations, not rules or guarantees.',
+    consentBody:'Your crop depends on many factors the app does not control, such as variety, soil, watering, light, pests and local climate. You make the decisions for your greenhouse and for any equipment you control from the app.',
+    consentAccept:'I understand and accept',
+    termsLabel:'Terms of use',
+    privacyLabel:'Privacy policy',
     boardTitle:'ORGANICS ONE BOARD', boardConnect:'Connect board', boardSave:'Connect', boardDisc:'Disconnect', boardForget:'Forget', boardServer:'Server (EMQX host)', boardUser:'User', boardPass:'Password', boardInv:'Greenhouse name', boardOff:'Not connected', boardOn:'Board online', boardNoBoard:'Board offline', boardUpdate:'Update firmware', boardTemp:'Temperature', boardHum:'Humidity', boardVpd:'VPD', boardSoil:'Soil', boardValveOpen:'watering', boardZone:'Zone', boardAlarm:'Alarm', boardConnecting:'Connecting…', boardLiveTemp:'Real sensor',
     useAutoLocation:'📍 Use automatic location', locationManualLabel:'Manual location',
     locationApprox:'Approximate location', locationPrecise:'Precise location',
@@ -655,6 +679,12 @@ const TRANSLATIONS = {
     mutedForever:'Aviso silenciado hasta el final de este cultivo',
     unmute:'Reactivar',
     mutedToast:'Aviso silenciado',
+    consentTitle:'Antes de empezar',
+    consentKey:'Las temperaturas, rangos, fechas de cosecha y avisos de esta app son recomendaciones de referencia, no reglas ni garantías.',
+    consentBody:'El resultado de tu cultivo depende de muchos factores que la app no controla, como la variedad, el suelo, el riego, la luz, las plagas y el clima local. Las decisiones sobre tu invernadero y sobre los equipos que controles desde la app son tuyas.',
+    consentAccept:'Entiendo y acepto',
+    termsLabel:'Términos de uso',
+    privacyLabel:'Política de privacidad',
     boardTitle:'TARJETA ORGANICS ONE', boardConnect:'Conectar tarjeta', boardSave:'Conectar', boardDisc:'Desconectar', boardForget:'Olvidar', boardServer:'Servidor (host de EMQX)', boardUser:'Usuario', boardPass:'Clave', boardInv:'Nombre del invernadero', boardOff:'Sin conexión', boardOn:'Tarjeta en línea', boardNoBoard:'Tarjeta desconectada', boardUpdate:'Actualizar firmware', boardTemp:'Temperatura', boardHum:'Humedad', boardVpd:'VPD', boardSoil:'Suelo', boardValveOpen:'regando', boardZone:'Zona', boardAlarm:'Alarma', boardConnecting:'Conectando…', boardLiveTemp:'Sensor real',
     useAutoLocation:'📍 Usar ubicación automática', locationManualLabel:'Ubicación manual',
     locationApprox:'Ubicación aproximada', locationPrecise:'Ubicación precisa',
@@ -756,6 +786,12 @@ const TRANSLATIONS = {
     mutedForever:'Alerte désactivée jusqu\'à la fin de cette culture',
     unmute:'Réactiver',
     mutedToast:'Alerte désactivée',
+    consentTitle:'Avant de commencer',
+    consentKey:'Les températures, plages, dates de récolte et alertes de cette app sont des recommandations de référence, pas des règles ni des garanties.',
+    consentBody:'Le résultat de votre culture dépend de nombreux facteurs que l\'app ne contrôle pas, comme la variété, le sol, l\'arrosage, la lumière, les ravageurs et le climat local. Les décisions concernant votre serre et les équipements pilotés depuis l\'app vous appartiennent.',
+    consentAccept:'Je comprends et j\'accepte',
+    termsLabel:'Conditions d\'utilisation',
+    privacyLabel:'Politique de confidentialité',
     boardTitle:'CARTE ORGANICS ONE',
     boardConnect:'Connecter la carte',
     boardSave:'Connecter',
@@ -898,6 +934,12 @@ const TRANSLATIONS = {
     mutedForever:'Aviso silenciado até o fim deste cultivo',
     unmute:'Reativar',
     mutedToast:'Aviso silenciado',
+    consentTitle:'Antes de começar',
+    consentKey:'As temperaturas, faixas, datas de colheita e avisos deste app são recomendações de referência, não regras nem garantias.',
+    consentBody:'O resultado do seu cultivo depende de muitos fatores que o app não controla, como variedade, solo, irrigação, luz, pragas e clima local. As decisões sobre sua estufa e sobre os equipamentos que você controla pelo app são suas.',
+    consentAccept:'Entendo e aceito',
+    termsLabel:'Termos de uso',
+    privacyLabel:'Política de privacidade',
     boardTitle:'PLACA ORGANICS ONE',
     boardConnect:'Conectar placa',
     boardSave:'Conectar',
@@ -1040,6 +1082,12 @@ const TRANSLATIONS = {
     mutedForever:'Warnung stumm bis zum Ende dieser Kultur',
     unmute:'Reaktivieren',
     mutedToast:'Warnung stummgeschaltet',
+    consentTitle:'Bevor du startest',
+    consentKey:'Temperaturen, Bereiche, Erntetermine und Warnungen in dieser App sind Richtwerte, keine Regeln oder Garantien.',
+    consentBody:'Das Ergebnis deiner Kultur hängt von vielen Faktoren ab, die die App nicht steuert, etwa Sorte, Boden, Bewässerung, Licht, Schädlinge und lokales Klima. Die Entscheidungen über dein Gewächshaus und die Geräte, die du per App steuerst, triffst du.',
+    consentAccept:'Ich verstehe und akzeptiere',
+    termsLabel:'Nutzungsbedingungen',
+    privacyLabel:'Datenschutzerklärung',
     boardTitle:'ORGANICS-ONE-PLATINE',
     boardConnect:'Platine verbinden',
     boardSave:'Verbinden',
@@ -1182,6 +1230,12 @@ const TRANSLATIONS = {
     mutedForever:'提醒已关闭至本次种植结束',
     unmute:'重新开启',
     mutedToast:'提醒已关闭',
+    consentTitle:'开始之前',
+    consentKey:'本应用中的温度、范围、收获日期和提醒均为参考建议，并非规定或保证。',
+    consentBody:'作物的结果取决于许多应用无法控制的因素，例如品种、土壤、灌溉、光照、病虫害和当地气候。温室以及通过应用控制的设备，均由你自行决定。',
+    consentAccept:'我已了解并接受',
+    termsLabel:'使用条款',
+    privacyLabel:'隐私政策',
     boardTitle:'ORGANICS ONE 控制板',
     boardConnect:'连接控制板',
     boardSave:'连接',
@@ -1324,6 +1378,12 @@ const TRANSLATIONS = {
     mutedForever:'चेतावनी इस फसल के अंत तक बंद',
     unmute:'फिर चालू करें',
     mutedToast:'चेतावनी बंद',
+    consentTitle:'शुरू करने से पहले',
+    consentKey:'इस ऐप के तापमान, सीमाएँ, कटाई की तारीखें और चेतावनियाँ संदर्भ सुझाव हैं, नियम या गारंटी नहीं।',
+    consentBody:'आपकी फसल का परिणाम कई ऐसे कारकों पर निर्भर करता है जिन्हें ऐप नियंत्रित नहीं करता, जैसे किस्म, मिट्टी, सिंचाई, रोशनी, कीट और स्थानीय मौसम। अपने ग्रीनहाउस और ऐप से नियंत्रित उपकरणों के फ़ैसले आपके हैं।',
+    consentAccept:'मैं समझता/समझती हूँ और स्वीकार करता/करती हूँ',
+    termsLabel:'उपयोग की शर्तें',
+    privacyLabel:'गोपनीयता नीति',
     boardTitle:'ORGANICS ONE बोर्ड',
     boardConnect:'बोर्ड कनेक्ट करें',
     boardSave:'कनेक्ट करें',
@@ -1466,6 +1526,12 @@ const TRANSLATIONS = {
     mutedForever:'التنبيه مُسكت حتى نهاية هذا المحصول',
     unmute:'إعادة التفعيل',
     mutedToast:'تم إسكات التنبيه',
+    consentTitle:'قبل أن تبدأ',
+    consentKey:'درجات الحرارة والنطاقات ومواعيد الحصاد والتنبيهات في هذا التطبيق توصيات مرجعية، وليست قواعد ولا ضمانات.',
+    consentBody:'تعتمد نتيجة محصولك على عوامل كثيرة لا يتحكم بها التطبيق، مثل الصنف والتربة والري والضوء والآفات والمناخ المحلي. القرارات الخاصة بدفيئتك وبالمعدات التي تتحكم بها من التطبيق تعود إليك.',
+    consentAccept:'أفهم وأوافق',
+    termsLabel:'شروط الاستخدام',
+    privacyLabel:'سياسة الخصوصية',
     boardTitle:'لوحة ORGANICS ONE',
     boardConnect:'ربط اللوحة',
     boardSave:'اتصال',
@@ -1608,6 +1674,12 @@ const TRANSLATIONS = {
     mutedForever:'Avviso silenziato fino alla fine di questa coltura',
     unmute:'Riattiva',
     mutedToast:'Avviso silenziato',
+    consentTitle:'Prima di iniziare',
+    consentKey:'Temperature, intervalli, date di raccolta e avvisi di questa app sono raccomandazioni di riferimento, non regole né garanzie.',
+    consentBody:'Il risultato della tua coltura dipende da molti fattori che l\'app non controlla, come varietà, suolo, irrigazione, luce, parassiti e clima locale. Le decisioni sulla tua serra e sui dispositivi che controlli dall\'app sono tue.',
+    consentAccept:'Ho capito e accetto',
+    termsLabel:'Termini di utilizzo',
+    privacyLabel:'Informativa sulla privacy',
     boardTitle:'SCHEDA ORGANICS ONE',
     boardConnect:'Collega scheda',
     boardSave:'Collega',
@@ -1750,6 +1822,12 @@ const TRANSLATIONS = {
     mutedForever:'Предупреждение отключено до конца этой культуры',
     unmute:'Включить снова',
     mutedToast:'Предупреждение отключено',
+    consentTitle:'Перед началом',
+    consentKey:'Температуры, диапазоны, сроки сбора и предупреждения в приложении являются справочными рекомендациями, а не правилами или гарантиями.',
+    consentBody:'Результат выращивания зависит от многих факторов, которые приложение не контролирует: сорта, почвы, полива, света, вредителей и местного климата. Решения о вашей теплице и об оборудовании, которым вы управляете из приложения, принимаете вы.',
+    consentAccept:'Понимаю и принимаю',
+    termsLabel:'Условия использования',
+    privacyLabel:'Политика конфиденциальности',
     boardTitle:'ПЛАТА ORGANICS ONE',
     boardConnect:'Подключить плату',
     boardSave:'Подключить',
@@ -2108,7 +2186,7 @@ function applyGridSettingsCollapse(){
 document.getElementById('gridSettingsHead').addEventListener('click', () => { state.gridSettingsCollapsed = !state.gridSettingsCollapsed; saveState(); applyGridSettingsCollapse(); });
 
 /* ---------- Render ---------- */
-function render(){ if(typeof renderIconPicker==='function') renderIconPicker(); if(typeof renderBoard==='function' && window.OrganicsOne && document.getElementById('boardCard')) renderBoard(); renderDims(); renderCatPills(); renderVegList(); renderRoom(); renderHeaderPills(); renderRipenessAlerts(); refreshEnvIfLoaded(); }
+function render(){ if(typeof renderConsentTexts==='function') renderConsentTexts(); if(typeof renderIconPicker==='function') renderIconPicker(); if(typeof renderBoard==='function' && window.OrganicsOne && document.getElementById('boardCard')) renderBoard(); renderDims(); renderCatPills(); renderVegList(); renderRoom(); renderHeaderPills(); renderRipenessAlerts(); refreshEnvIfLoaded(); }
 function refreshEnvIfLoaded(){ if(lastWeatherData) renderEnvConditions(lastWeatherData); }
 function renderDims(){
   document.getElementById('rowsVal').textContent = state.rows;
@@ -3069,8 +3147,28 @@ function initBoard(){
   if(g && g.servidor && OO.configuracionGuardada()) OO.conectar().catch(()=>{}); // auto-reconnect when credentials are saved
 }
 
+/* ---------- terms acceptance (first launch and on new terms version) ---------- */
+const TERMS_VERSION = '1.0';
+function termsAccepted(){ try{ return localStorage.getItem('gp.termsAccepted') === TERMS_VERSION; }catch(e){ return false; } }
+function renderConsentTexts(){
+  const set = (id,k) => { const el = document.getElementById(id); if(el) el.textContent = t(k); };
+  set('consentTitle','consentTitle'); set('consentKey','consentKey'); set('consentBody','consentBody');
+  set('consentTermsLink','termsLabel'); set('consentPrivacyLink','privacyLabel'); set('consentAccept','consentAccept');
+  set('footTerms','termsLabel'); set('footPrivacy','privacyLabel');
+}
+function initConsent(){
+  renderConsentTexts();
+  if(termsAccepted()) return;
+  document.getElementById('consentOverlay').classList.add('show');
+  document.getElementById('consentAccept').addEventListener('click', () => {
+    try{ localStorage.setItem('gp.termsAccepted', TERMS_VERSION); }catch(e){}
+    document.getElementById('consentOverlay').classList.remove('show');
+  });
+}
+
 loadState();
 initBoard();
+initConsent();
 </script>
 <script>
 if('serviceWorker' in navigator){
