@@ -196,6 +196,16 @@
   .ws-open input{ width:60px; padding:5px 6px; border:1.5px solid var(--soil-line); border-radius:8px; font:inherit; text-align:center; }
   .ws-help{ font-size:11.5px; color: var(--pine-soft); margin-top:8px; line-height:1.4; }
   .eh-risk.fungus{ background:rgba(255,255,255,0.95); color:#7A4B00; text-shadow:none; }
+  .settings-btn{ width:40px; height:40px; font-size:18px; background:#fff; box-shadow: var(--card-shadow); }
+  .set-box{ max-width:400px; }
+  .set-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 0; border-top:1px solid var(--bg-warm); }
+  .set-row.col{ flex-direction:column; align-items:stretch; }
+  .set-l{ font-size:13.5px; font-weight:700; color: var(--pine-dark); }
+  .set-units{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px; }
+  .set-units .ws-opt{ border-radius:12px; padding:9px 10px; text-align:left; }
+  .set-units .ws-opt b{ display:block; font-size:13px; } .set-units .ws-opt small{ display:block; font-size:11px; opacity:.85; margin-top:2px; }
+  .set-links{ font-size:12px; color: var(--pine-soft); padding:12px 0 2px; border-top:1px solid var(--bg-warm); }
+  .set-box .lang-switch{ margin:0; }
   /* ---------- Statistics ---------- */
   #statsPanel .panel-head{ display:flex; align-items:center; justify-content:space-between; }
   .export-btn{ border:1.5px solid var(--green-accent); background:#fff; color: var(--green-accent); font:700 12px 'Public Sans', sans-serif; padding:6px 11px; border-radius:999px; cursor:pointer; }
@@ -517,21 +527,7 @@
     </div>
     <div class="header-right">
       <div class="planted-pill" id="plantedPill">✨ 0 planted</div>
-      <div class="lang-switch">
-        <span class="globe">🌐</span>
-        <select id="langSelect" aria-label="Language">
-          <option value="en">English</option>
-          <option value="es">Español</option>
-          <option value="it">Italiano</option>
-          <option value="fr">Français</option>
-          <option value="pt">Português</option>
-          <option value="de">Deutsch</option>
-          <option value="zh">中文</option>
-          <option value="hi">हिन्दी</option>
-          <option value="ar">العربية</option>
-          <option value="ru">Русский</option>
-        </select>
-      </div>
+      <button class="icon-btn settings-btn" id="settingsBtn" type="button" aria-label="Settings">⚙️</button>
     </div>
   </header>
 
@@ -666,6 +662,26 @@
 </div></div>
 <div class="consent-overlay grid-overlay" id="powerOverlay" role="dialog" aria-modal="true"><div class="consent-box grid-box pw-box" id="powerBox"></div></div>
 <div class="consent-overlay grid-overlay" id="exportOverlay" role="dialog" aria-modal="true"><div class="consent-box grid-box" id="exportBox"></div></div>
+<div class="consent-overlay grid-overlay" id="settingsOverlay" role="dialog" aria-modal="true"><div class="consent-box grid-box set-box">
+  <div class="grid-box-head"><div class="gear-wrap"><div class="gear-icon">⚙️</div><div><div class="eyebrow" id="setTitle">SETTINGS</div></div></div>
+    <button class="icon-btn" id="settingsClose" aria-label="Close">✕</button></div>
+  <div class="set-row"><div class="set-l">🌐 <span id="setLangL">Language</span></div><div class="lang-switch"><select id="langSelect" aria-label="Language">
+          <option value="en">English</option>
+          <option value="es">Español</option>
+          <option value="it">Italiano</option>
+          <option value="fr">Français</option>
+          <option value="pt">Português</option>
+          <option value="de">Deutsch</option>
+          <option value="zh">中文</option>
+          <option value="hi">हिन्दी</option>
+          <option value="ar">العربية</option>
+          <option value="ru">Русский</option>
+        </select></div></div>
+  <div class="set-row col"><div class="set-l">📏 <span id="setUnitsL">Units</span></div>
+    <div class="set-units"><button class="ws-opt" data-u="metric"><b id="uMetricL">Metric</b><small>m · °C · L · mm</small></button><button class="ws-opt" data-u="imperial"><b id="uImperialL">Imperial</b><small>ft · °F · gal · in</small></button></div></div>
+  <div class="set-links"><a href="terms.html" target="_blank" rel="noopener" id="setTerms">Terms</a> · <a href="privacy.html" target="_blank" rel="noopener" id="setPrivacy">Privacy</a></div>
+  <button id="settingsDone">OK</button>
+</div></div>
 <div class="sheet-backdrop" id="sheetBackdrop"></div>
 <nav class="tabbar" id="tabbar" aria-label="Sections">
   <button data-tab="env"><span class="ti">🌤️</span><span class="tl" id="tabEnvL">Environment</span></button>
@@ -906,6 +922,11 @@ const TRANSLATIONS = {
     fungusMechCold:'Fungus risk: {h} h of high humidity. Mechanical windows don\'t open when it\'s cold: ventilate for a while or turn on the fan.',
     fungusManual:'Fungus risk: {h} h of high humidity. Open windows or the door to ventilate.',
     fungusOpenNoDrop:'Windows are open but humidity isn\'t dropping ({rh}%). Open the door or turn on the fan.',
+    settingsTitle:'SETTINGS',
+    setLang:'Language',
+    setUnits:'Units',
+    unitsMetric:'Metric',
+    unitsImperial:'Imperial',
     boardTitle:'ORGANICS ONE BOARD', boardConnect:'Connect board', boardSave:'Connect', boardDisc:'Disconnect', boardForget:'Forget', boardServer:'Server (EMQX host)', boardUser:'User', boardPass:'Password', boardInv:'Greenhouse name', boardOff:'Not connected', boardOn:'Board online', boardNoBoard:'Board offline', boardUpdate:'Update firmware', boardTemp:'Temperature', boardHum:'Humidity', boardVpd:'VPD', boardSoil:'Soil', boardValveOpen:'watering', boardZone:'Zone', boardAlarm:'Alarm', boardConnecting:'Connecting…', boardLiveTemp:'Real sensor',
     useAutoLocation:'📍 Use automatic location', locationManualLabel:'Manual location',
     locationApprox:'Approximate location', locationPrecise:'Precise location',
@@ -1128,6 +1149,11 @@ const TRANSLATIONS = {
     fungusMechCold:'Riesgo de hongos: {h} h con humedad alta. Con frío las ventanas mecánicas no abren: ventila un rato o enciende el ventilador.',
     fungusManual:'Riesgo de hongos: {h} h con humedad alta. Abre ventanas o la puerta para ventilar.',
     fungusOpenNoDrop:'Las ventanas están abiertas pero la humedad no baja ({rh}%). Abre la puerta o enciende el ventilador.',
+    settingsTitle:'CONFIGURACIÓN',
+    setLang:'Idioma',
+    setUnits:'Unidades',
+    unitsMetric:'Métrico',
+    unitsImperial:'Imperial',
     boardTitle:'TARJETA ORGANICS ONE', boardConnect:'Conectar tarjeta', boardSave:'Conectar', boardDisc:'Desconectar', boardForget:'Olvidar', boardServer:'Servidor (host de EMQX)', boardUser:'Usuario', boardPass:'Clave', boardInv:'Nombre del invernadero', boardOff:'Sin conexión', boardOn:'Tarjeta en línea', boardNoBoard:'Tarjeta desconectada', boardUpdate:'Actualizar firmware', boardTemp:'Temperatura', boardHum:'Humedad', boardVpd:'VPD', boardSoil:'Suelo', boardValveOpen:'regando', boardZone:'Zona', boardAlarm:'Alarma', boardConnecting:'Conectando…', boardLiveTemp:'Sensor real',
     useAutoLocation:'📍 Usar ubicación automática', locationManualLabel:'Ubicación manual',
     locationApprox:'Ubicación aproximada', locationPrecise:'Ubicación precisa',
@@ -1349,6 +1375,11 @@ const TRANSLATIONS = {
     fungusMechCold:'Risque de champignons : {h} h d\'humidité élevée. Par temps froid, les fenêtres mécaniques ne s\'ouvrent pas : aérez un moment ou allumez le ventilateur.',
     fungusManual:'Risque de champignons : {h} h d\'humidité élevée. Ouvrez fenêtres ou porte pour aérer.',
     fungusOpenNoDrop:'Les fenêtres sont ouvertes mais l\'humidité ne baisse pas ({rh}%). Ouvrez la porte ou allumez le ventilateur.',
+    settingsTitle:'PARAMÈTRES',
+    setLang:'Langue',
+    setUnits:'Unités',
+    unitsMetric:'Métrique',
+    unitsImperial:'Impérial',
     boardTitle:'CARTE ORGANICS ONE',
     boardConnect:'Connecter la carte',
     boardSave:'Connecter',
@@ -1611,6 +1642,11 @@ const TRANSLATIONS = {
     fungusMechCold:'Risco de fungos: {h} h de umidade alta. Com frio as janelas mecânicas não abrem: ventile um pouco ou ligue o ventilador.',
     fungusManual:'Risco de fungos: {h} h de umidade alta. Abra janelas ou a porta para ventilar.',
     fungusOpenNoDrop:'As janelas estão abertas mas a umidade não baixa ({rh}%). Abra a porta ou ligue o ventilador.',
+    settingsTitle:'CONFIGURAÇÕES',
+    setLang:'Idioma',
+    setUnits:'Unidades',
+    unitsMetric:'Métrico',
+    unitsImperial:'Imperial',
     boardTitle:'PLACA ORGANICS ONE',
     boardConnect:'Conectar placa',
     boardSave:'Conectar',
@@ -1873,6 +1909,11 @@ const TRANSLATIONS = {
     fungusMechCold:'Pilzrisiko: {h} Std. hohe Luftfeuchte. Bei Kälte öffnen mechanische Fenster nicht: kurz lüften oder Ventilator einschalten.',
     fungusManual:'Pilzrisiko: {h} Std. hohe Luftfeuchte. Fenster oder Tür zum Lüften öffnen.',
     fungusOpenNoDrop:'Die Fenster sind offen, aber die Luftfeuchte sinkt nicht ({rh}%). Tür öffnen oder Ventilator einschalten.',
+    settingsTitle:'EINSTELLUNGEN',
+    setLang:'Sprache',
+    setUnits:'Einheiten',
+    unitsMetric:'Metrisch',
+    unitsImperial:'Imperial',
     boardTitle:'ORGANICS-ONE-PLATINE',
     boardConnect:'Platine verbinden',
     boardSave:'Verbinden',
@@ -2135,6 +2176,11 @@ const TRANSLATIONS = {
     fungusMechCold:'霉菌风险：高湿已持续 {h} 小时。天冷时机械窗不会打开：请短暂通风或打开风扇。',
     fungusManual:'霉菌风险：高湿已持续 {h} 小时。请打开窗户或门通风。',
     fungusOpenNoDrop:'窗户已打开但湿度没有下降（{rh}%）。请打开门或风扇。',
+    settingsTitle:'设置',
+    setLang:'语言',
+    setUnits:'单位',
+    unitsMetric:'公制',
+    unitsImperial:'英制',
     boardTitle:'ORGANICS ONE 控制板',
     boardConnect:'连接控制板',
     boardSave:'连接',
@@ -2397,6 +2443,11 @@ const TRANSLATIONS = {
     fungusMechCold:'फफूंद का जोखिम: {h} घं से अधिक नमी। ठंड में यांत्रिक खिड़कियाँ नहीं खुलतीं: कुछ देर हवा दें या पंखा चलाएँ।',
     fungusManual:'फफूंद का जोखिम: {h} घं से अधिक नमी। खिड़कियाँ या दरवाज़ा खोलें।',
     fungusOpenNoDrop:'खिड़कियाँ खुली हैं पर नमी कम नहीं हो रही ({rh}%)। दरवाज़ा खोलें या पंखा चलाएँ।',
+    settingsTitle:'सेटिंग्स',
+    setLang:'भाषा',
+    setUnits:'इकाइयाँ',
+    unitsMetric:'मीट्रिक',
+    unitsImperial:'इंपीरियल',
     boardTitle:'ORGANICS ONE बोर्ड',
     boardConnect:'बोर्ड कनेक्ट करें',
     boardSave:'कनेक्ट करें',
@@ -2659,6 +2710,11 @@ const TRANSLATIONS = {
     fungusMechCold:'خطر فطريات: {h} ساعة من الرطوبة العالية. في البرد لا تفتح النوافذ الميكانيكية: هوِّ قليلًا أو شغّل المروحة.',
     fungusManual:'خطر فطريات: {h} ساعة من الرطوبة العالية. افتح النوافذ أو الباب للتهوية.',
     fungusOpenNoDrop:'النوافذ مفتوحة لكن الرطوبة لا تنخفض ({rh}%). افتح الباب أو شغّل المروحة.',
+    settingsTitle:'الإعدادات',
+    setLang:'اللغة',
+    setUnits:'الوحدات',
+    unitsMetric:'متري',
+    unitsImperial:'إمبراطوري',
     boardTitle:'لوحة ORGANICS ONE',
     boardConnect:'ربط اللوحة',
     boardSave:'اتصال',
@@ -2921,6 +2977,11 @@ const TRANSLATIONS = {
     fungusMechCold:'Rischio funghi: {h} h di umidità alta. Con il freddo le finestre meccaniche non si aprono: arieggia un po\' o accendi il ventilatore.',
     fungusManual:'Rischio funghi: {h} h di umidità alta. Apri finestre o porta per arieggiare.',
     fungusOpenNoDrop:'Le finestre sono aperte ma l\'umidità non scende ({rh}%). Apri la porta o accendi il ventilatore.',
+    settingsTitle:'IMPOSTAZIONI',
+    setLang:'Lingua',
+    setUnits:'Unità',
+    unitsMetric:'Metrico',
+    unitsImperial:'Imperiale',
     boardTitle:'SCHEDA ORGANICS ONE',
     boardConnect:'Collega scheda',
     boardSave:'Collega',
@@ -3183,6 +3244,11 @@ const TRANSLATIONS = {
     fungusMechCold:'Риск грибка: {h} ч высокой влажности. В холод механические окна не открываются: проветрите немного или включите вентилятор.',
     fungusManual:'Риск грибка: {h} ч высокой влажности. Откройте окна или дверь для проветривания.',
     fungusOpenNoDrop:'Окна открыты, но влажность не снижается ({rh}%). Откройте дверь или включите вентилятор.',
+    settingsTitle:'НАСТРОЙКИ',
+    setLang:'Язык',
+    setUnits:'Единицы',
+    unitsMetric:'Метрические',
+    unitsImperial:'Имперские',
     boardTitle:'ПЛАТА ORGANICS ONE',
     boardConnect:'Подключить плату',
     boardSave:'Подключить',
@@ -3253,8 +3319,26 @@ const TRANSLATIONS = {
   }
 };
 let lang = 'en';
+
+/* ---------- Units: data stays metric; only what is shown changes ---------- */
+function imperial(){ return state && state.units === 'imperial'; }
+function uT(c){ return c == null ? null : (imperial() ? c * 9/5 + 32 : c); }
+function uTd(d){ return d == null ? null : (imperial() ? d * 9/5 : d); }
+function TU(){ return imperial() ? '°F' : '°C'; }
+function uL(l){ return l == null ? null : (imperial() ? l * 0.264172 : l); }
+function LU(){ return imperial() ? 'gal' : 'L'; }
+function uMM(mm){ return mm == null ? null : (imperial() ? mm / 25.4 : mm); }
+function MMU(){ return imperial() ? 'in' : 'mm'; }
+function fromUT(v){ return imperial() ? (v - 32) * 5/9 : v; }
+function fromUL(v){ return imperial() ? v / 0.264172 : v; }
+function unitText(str){
+  if(!imperial() || typeof str !== 'string') return str;
+  return str.replace(/°C/g, '°F').replace(/ L\/min/g, ' gal/min').replace(/\{l\} L/g, '{l} gal').replace(/\{l\} л/g, '{l} gal').replace(/\{l\} 升/g, '{l} gal')
+    .replace(/50 × 50 cm/g, '20 × 20 in').replace(/50 × 50 厘米/g, '20 × 20 in').replace(/50 × 50 सेमी/g, '20 × 20 in').replace(/50 × 50 سم/g, '20 × 20 in').replace(/50 × 50 см/g, '20 × 20 in')
+    .replace(/\b6 m\b/g, '20 ft').replace(/\b1 m\b/g, '3 ft').replace(/6 米/g, '20 ft').replace(/1 米/g, '3 ft').replace(/6 मी/g, '20 ft').replace(/1 मी/g, '3 ft').replace(/6 م\b/g, '20 ft').replace(/1 م\b/g, '3 ft').replace(/6 м\b/g, '20 ft').replace(/1 м\b/g, '3 ft');
+}
 function t(key, vars){
-  let str = (TRANSLATIONS[lang] && TRANSLATIONS[lang][key]) || TRANSLATIONS.en[key] || key;
+  let str = unitText((TRANSLATIONS[lang] && TRANSLATIONS[lang][key]) || TRANSLATIONS.en[key] || key);
   if(vars) Object.keys(vars).forEach(k => { str = str.replace(new RegExp('\\{'+k+'\\}','g'), vars[k]); });
   return str;
 }
@@ -3428,7 +3512,7 @@ const CUSTOM_ICON_POOL = ['🌱','🌿','🍃','🪴','🌾'];
 const STORAGE_KEY = 'greenhouse-state';
 const DAY_MS = 86400000;
 
-let state = { rows:6, cols:6, plantings:{}, irrZones:{}, customVeg:[], lang:'en', langManual:false, libraryCollapsed:true, gridSettingsCollapsed:true, manualLocation:null, roomRotated:false };
+let state = { rows:6, cols:6, plantings:{}, irrZones:{}, units:'metric', unitsManual:false, customVeg:[], lang:'en', langManual:false, libraryCollapsed:true, gridSettingsCollapsed:true, manualLocation:null, roomRotated:false };
 let ALL_VEGETABLES = [...BASE_VEGETABLES];
 let VEG_MAP = {};
 let selectedVeg = null;
@@ -3459,6 +3543,7 @@ async function loadState(){
           cols: typeof parsed.cols === 'number' ? parsed.cols : (legacySize || 6),
           plantings: parsed.plantings || {},
           irrZones: parsed.irrZones || {},
+          units: parsed.units === 'imperial' ? 'imperial' : 'metric', unitsManual: !!parsed.unitsManual,
           windows: parsed.windows || {},
           customVeg: parsed.customVeg || [],
           lang: parsed.lang || 'en',
@@ -3547,16 +3632,17 @@ document.getElementById('gridOverlay').addEventListener('click', e => { if(e.tar
 document.addEventListener('keydown', e => { if(e.key === 'Escape') closeGridSettings(); });
 
 /* ---------- Render ---------- */
-function render(){ if(typeof renderStats==='function' && typeof OO!=='undefined') try{ renderStats(); }catch(e){} if(typeof renderTabbar==='function' && document.getElementById('tabbar')) renderTabbar(); if(typeof renderConsentTexts==='function') renderConsentTexts(); if(typeof renderIconPicker==='function') renderIconPicker(); if(typeof renderBoard==='function' && window.OrganicsOne && document.getElementById('boardCard')) renderBoard(); renderDims(); renderCatPills(); renderVegList(); renderRoom(); renderHeaderPills(); renderRipenessAlerts(); refreshEnvIfLoaded(); }
+function render(){ if(typeof renderSettings==='function' && document.getElementById('settingsOverlay')) renderSettings(); if(typeof renderStats==='function' && typeof OO!=='undefined') try{ renderStats(); }catch(e){} if(typeof renderTabbar==='function' && document.getElementById('tabbar')) renderTabbar(); if(typeof renderConsentTexts==='function') renderConsentTexts(); if(typeof renderIconPicker==='function') renderIconPicker(); if(typeof renderBoard==='function' && window.OrganicsOne && document.getElementById('boardCard')) renderBoard(); renderDims(); renderCatPills(); renderVegList(); renderRoom(); renderHeaderPills(); renderRipenessAlerts(); refreshEnvIfLoaded(); }
 function refreshEnvIfLoaded(){ if(lastWeatherData) renderEnvConditions(lastWeatherData); }
 const CELL_M = 0.5;   /* each grid square is 50 x 50 cm */
-function fmtM(n){ return (n * CELL_M).toLocaleString(lang==='es'?'es-CL':lang, { maximumFractionDigits:1 }); }
-function fmtArea(r,c){ return (r * c * CELL_M * CELL_M).toLocaleString(lang==='es'?'es-CL':lang, { maximumFractionDigits:2 }); }
+function fmtM(n){ return ((imperial() ? 3.28084 : 1) * n * CELL_M).toLocaleString(lang==='es'?'es-CL':lang, { maximumFractionDigits:1 }); }
+function fmtArea(r,c){ return ((imperial() ? 10.7639 : 1) * r * c * CELL_M * CELL_M).toLocaleString(lang==='es'?'es-CL':lang, { maximumFractionDigits:2 }); }
 function renderDims(){
-  document.getElementById('rowsVal').textContent = fmtM(state.rows) + ' m';
-  document.getElementById('colsVal').textContent = fmtM(state.cols) + ' m';
-  document.getElementById('dimSummary').textContent = `${fmtM(state.rows)} × ${fmtM(state.cols)} m · ${fmtArea(state.rows, state.cols)} m²`;
-  document.getElementById('gridSizeLabel').textContent = `${fmtM(state.rows)} × ${fmtM(state.cols)} m`;
+  const LEN = imperial() ? ' ft' : ' m', AREA = imperial() ? ' ft²' : ' m²';
+  document.getElementById('rowsVal').textContent = fmtM(state.rows) + LEN;
+  document.getElementById('colsVal').textContent = fmtM(state.cols) + LEN;
+  document.getElementById('dimSummary').textContent = `${fmtM(state.rows)} × ${fmtM(state.cols)}${LEN} · ${fmtArea(state.rows, state.cols)}${AREA}`;
+  document.getElementById('gridSizeLabel').textContent = `${fmtM(state.rows)} × ${fmtM(state.cols)}${LEN}`;
   document.getElementById('cellSizeHint').textContent = t('cellSizeHint');
 }
 
@@ -3622,7 +3708,7 @@ function showVegTooltip(anchorEl, veg, withStatus){
   tip.innerHTML = `<div class="tt-name">${getVegName(veg)}</div>
     ${st ? `<div class="tt-alert ${st.kind}">${st.kind==='cold'?'❄️':'🔥'} ${tempStatusText(st)}</div>` : ''}
     <div>🕒 ${veg.days} ${t('daysToHarvestLabel')}</div>
-    <div${st?' style="font-weight:700"':''}>🌡️ ${t('idealTemp')}: ${veg.tMin}–${veg.tMax}°C</div>`;
+    <div${st?' style="font-weight:700"':''}>🌡️ ${t('idealTemp')}: ${Math.round(uT(veg.tMin))}–${Math.round(uT(veg.tMax))}${TU()}</div>`;
   tip.style.left = '-9999px';
   tip.style.top = '-9999px';
   tip.classList.add('show');
@@ -3698,7 +3784,7 @@ function tempStatus(veg){
   if(currentSensorTemp > veg.tMax) return { kind:'hot', t:currentSensorTemp, min:veg.tMin, max:veg.tMax };
   return null;
 }
-function tempStatusText(st){ return st.kind==='cold' ? t('tempCold',{ t:st.t, min:st.min }) : t('tempHot',{ t:st.t, max:st.max }); }
+function tempStatusText(st){ const f = v => Math.round(uT(v) * 10) / 10; return st.kind==='cold' ? t('tempCold',{ t:f(st.t), min:f(st.min) }) : t('tempHot',{ t:f(st.t), max:f(st.max) }); }
 function applyTempWarnings(){
   const room = document.getElementById('room'); if(!room) return;
   const transposed = isTransposed();
@@ -3889,7 +3975,7 @@ function openModal(r, c){
     <div class="row"><span class="k">${t('modalPlantedOn')}</span><span class="v">${fmtDate(planting.plantedDate)}</span></div>
     <div class="row"><span class="k">${t('modalDaysGrowing')}</span><span class="v">${elapsed} ${elapsed===1?t('day'):t('days')}</span></div>
     <div class="row"><span class="k">${t('modalExpectedHarvest')}</span><span class="v">${fmtDate(harvestDate.toISOString().slice(0,10))}</span></div>
-    <div class="row${tst?' temp-'+tst.kind:''}"><span class="k">${t('idealTemp')}</span><span class="v">${veg.tMin}–${veg.tMax}°C</span></div>
+    <div class="row${tst?' temp-'+tst.kind:''}"><span class="k">${t('idealTemp')}</span><span class="v">${Math.round(uT(veg.tMin))}–${Math.round(uT(veg.tMax))}${TU()}</span></div>
     <div class="progress-track"><div class="progress-fill" style="width:${pct}%; background:${veg.color}"></div></div>
     <div class="progress-label ${ready?'ready':''}">${ready ? t('modalReady') : `${pct}% ${t('grown')} · ${daysLeft} ${dayWord} ${t('toGo')}`}</div>
     <div class="modal-actions">
@@ -4137,6 +4223,7 @@ const COUNTRY_LANG_MAP = {
   RU:'ru',BY:'ru',KZ:'ru',KG:'ru'
 };
 function maybeAutoSetLanguage(countryCode){
+  if(countryCode && !state.unitsManual){ const imp = ['US','LR','MM'].includes(countryCode.toUpperCase()) ? 'imperial' : 'metric'; if(state.units !== imp){ state.units = imp; saveState(); render(); } }
   if(state.langManual || !countryCode) return;
   const target = COUNTRY_LANG_MAP[countryCode.toUpperCase()] || 'en';
   if(target !== lang){
@@ -4339,7 +4426,7 @@ function renderEnvConditions(data){
     const log = lsGet(LOG_KEY, []).filter(p => p.t != null && Date.now() - p.ts < 75*60000);
     if(log.length >= 2 && Date.now() - log[0].ts > 45*60000){
       const d = Math.round((sensorTemp - log[0].t) * 10) / 10;
-      if(Math.abs(d) >= 0.5) trend = `<div class="eh-trend">${d > 0 ? '↗' : '↘'} ${t(d > 0 ? 'envTrendUp' : 'envTrendDown', { d: n1(Math.abs(d)) })}</div>`;
+      if(Math.abs(d) >= 0.5) trend = `<div class="eh-trend">${d > 0 ? '↗' : '↘'} ${t(d > 0 ? 'envTrendUp' : 'envTrendDown', { d: n1(uTd(Math.abs(d))) })}</div>`;
     }
   }
   // risk lines: condensation inside (sensor) or dew/frost tonight (local forecast)
@@ -4347,14 +4434,14 @@ function renderEnvConditions(data){
   if(live && amb.humedad != null){
     const dp = dewPoint(amb.temperatura, amb.humedad), margin = amb.temperatura - dp;
     dewTile = { dp, margin };
-    if(margin < 2) risk = `<div class="eh-risk">💧 ${t('envCondRisk', { d: n1(Math.max(0, margin)) })}</div>`;
+    if(margin < 2) risk = `<div class="eh-risk">💧 ${t('envCondRisk', { d: n1(uTd(Math.max(0, margin))) })}</div>`;
     const fg = fungusAlert(amb); if(fg) risk = `<div class="eh-risk fungus">🍄 ${fg}</div>`;
   } else if(typeof statsWeather !== 'undefined' && statsWeather && statsWeather.hourly){
     const H = statsWeather.hourly, nowMs = Date.now(), until = new Date(); until.setDate(until.getDate() + 1); until.setHours(9,0,0,0);
     let minT = null, minRh = null;
     H.time.forEach((iso, i) => { const tms = new Date(iso).getTime(); if(tms > nowMs && tms <= until.getTime() && (minT === null || H.temperature_2m[i] < minT)){ minT = H.temperature_2m[i]; minRh = H.relative_humidity_2m[i]; } });
     if(minT !== null){
-      if(minT <= 1) risk = `<div class="eh-risk">❄️ ${t('envFrost', { d: n1(minT) })}</div>`;
+      if(minT <= 1) risk = `<div class="eh-risk">❄️ ${t('envFrost', { d: n1(uT(minT)) })}</div>`;
       else if(minT - dewPoint(minT, minRh) <= 1.5) risk = `<div class="eh-risk">💧 ${t('envDewNight')}</div>`;
     }
   }
@@ -4380,13 +4467,13 @@ function renderEnvConditions(data){
       <div class="eh-top"><span class="eh-city">📍 ${cityText}</span><button class="eh-edit" id="heroEdit" aria-label="${t('locationManualLabel')}">✏️</button>
         ${weatherKey ? `<span class="eh-pill">${night && wcode !== null && wcode <= 2 ? '🌙' : weatherCodeToIcon(wcode)} ${t(weatherKey)}</span>` : ''}</div>
       <div class="eh-big">
-        <div class="eh-n">${sensorTemp !== null ? n1(sensorTemp) : '-'}<small>°</small></div>
-        <div class="eh-meta"><b>${t('envGreenhouse')}</b> · ${live ? t('envSensor') : t('envEstimated')}<br>${t('envOutside')} ${outdoorTemp !== null ? Math.round(outdoorTemp) + '°' : '-'}${mx !== null && mn !== null ? ' · ' + t('envMaxMin', { a:Math.round(mx), b:Math.round(mn) }) : ''}</div>
+        <div class="eh-n">${sensorTemp !== null ? n1(uT(sensorTemp)) : '-'}<small>°</small></div>
+        <div class="eh-meta"><b>${t('envGreenhouse')}</b> · ${live ? t('envSensor') : t('envEstimated')}<br>${t('envOutside')} ${outdoorTemp !== null ? Math.round(uT(outdoorTemp)) + '°' : '-'}${mx !== null && mn !== null ? ' · ' + t('envMaxMin', { a:Math.round(uT(mx)), b:Math.round(uT(mn)) }) : ''}</div>
       </div>
       ${trend}
       ${hasPlants && sensorTemp !== null ? `<div class="eh-range">
         <div class="eh-track"><div class="eh-ok" style="left:${pct(idealRange.min)}%;right:${100 - pct(idealRange.max)}%"></div><div class="eh-mark ${inRange && statusCls !== 'warn' ? 'in' : 'out'}" style="left:${pct(sensorTemp)}%"></div></div>
-        <div class="eh-ends"><span>${lo}°</span><span>${t('envIdeal', { a:idealRange.min, b:idealRange.max })}</span><span>${hi}°</span></div></div>` : ''}
+        <div class="eh-ends"><span>${Math.round(uT(lo))}°</span><span>${t('envIdeal', { a:Math.round(uT(idealRange.min)), b:Math.round(uT(idealRange.max)) })}</span><span>${Math.round(uT(hi))}°</span></div></div>` : ''}
       <div class="eh-status ${statusCls}"><span class="dot"></span><span>${statusTxt}</span></div>
       ${risk}
     </div>
@@ -4395,7 +4482,7 @@ function renderEnvConditions(data){
       <div class="eb-tile"><div class="eb-h">🌇 ${sentenceCase(t('sunsetLabelSub'))}</div><div class="eb-v">${sunsetLabel}</div><div class="eb-s">${sunsetSub}</div></div>
       <div class="eb-tile"><div class="eb-h">💡 ${sentenceCase(t('lightsLabelSub'))}</div><div class="eb-v small">${lightsValue}</div><div class="eb-s">${lightsSub}</div></div>
       ${dewTile
-        ? `<div class="eb-tile"><div class="eb-h">🌫️ ${t('envDew')}</div><div class="eb-v">${n1(dewTile.dp)}°</div><div class="eb-s">${t('envDewMargin', { d:n1(dewTile.margin) })}</div></div>`
+        ? `<div class="eb-tile"><div class="eb-h">🌫️ ${t('envDew')}</div><div class="eb-v">${n1(uT(dewTile.dp))}°</div><div class="eb-s">${t('envDewMargin', { d:n1(uTd(dewTile.margin)) })}</div></div>`
         : `<div class="eb-tile"><div class="eb-h">☀️ ${t('envSunToday')}</div><div class="eb-v">${sunH !== null ? n1(sunH) + ' h' : (weatherKey ? weatherCodeToIcon(wcode) : '-')}</div>${arc(sunPct)}</div>`}
     </div>`;
   const he = document.getElementById('heroEdit');
@@ -4482,7 +4569,7 @@ function renderBoard(){
   if(!st.conectado || !st.tarjetaEnLinea){ live.innerHTML=''; return; }
   const a = OO.ambiente();
   let h = '<div class="board-grid">'
-    + [[t('boardTemp'),fmtN(a.temperatura,1,'°C')],[t('boardHum'),fmtN(a.humedad,0,'%')],[t('boardVpd'),fmtN(a.vpd,2,' kPa')],[t('boardCo2'),fmtN(a.co2,0,' ppm')],[t('boardLight'),fmtN(a.luz,0,' lx')]]
+    + [[t('boardTemp'),fmtN(uT(a.temperatura),1,TU())],[t('boardHum'),fmtN(a.humedad,0,'%')],[t('boardVpd'),fmtN(a.vpd,2,' kPa')],[t('boardCo2'),fmtN(a.co2,0,' ppm')],[t('boardLight'),fmtN(a.luz,0,' lx')]]
       .map(d=>`<div class="board-item"><div class="n">${d[0]}</div><div class="v">${d[1]}</div></div>`).join('') + '</div>';
   const w = OO.agua();
   const item = (n,v,bad) => `<div class="board-item${bad?' bad':''}"><div class="n">${n}</div><div class="v">${v}</div></div>`;
@@ -4497,7 +4584,7 @@ function renderBoard(){
   }
   h += '<div class="board-grid">'
     + (w.conTanque ? item(t('boardTank'),fmtN(w.tanque,0,'%')) + item(t('boardFloat'),floatTxt,w.flotador==='low') + item(t('boardPump'),pumpTxt) : '')
-    + item(t('boardFlow'),fmtN(w.caudal,1,' L/min')) + item(t('boardVolume'),fmtN(w.volumen,0,' L')) + '</div>';
+    + item(t('boardFlow'),fmtN(uL(w.caudal),1,' '+LU()+'/min')) + item(t('boardVolume'),fmtN(uL(w.volumen),0,' '+LU())) + '</div>';
   const zs = OO.zonas();
   if(zs.length){
     h += `<div class="board-sec">${t('boardZones')}</div>`;
@@ -4765,10 +4852,10 @@ function renderStats(){
   body.innerHTML = `
     <div class="st-head">📍 ${city ? city + ' · ' : ''}${dateTxt}</div>
     <div class="st-tiles">
-      <div class="st-tile"><div class="tl">${t('statsOutTemp')}</div><div class="tv">${d ? nf(d.temperature_2m_max[0],0)+'° / '+nf(d.temperature_2m_min[0],0)+'°' : '-'}</div><div class="ts">${t('statsMaxMin')}</div></div>
+      <div class="st-tile"><div class="tl">${t('statsOutTemp')}</div><div class="tv">${d ? nf(uT(d.temperature_2m_max[0]),0)+'° / '+nf(uT(d.temperature_2m_min[0]),0)+'°' : '-'}</div><div class="ts">${t('statsMaxMin')}</div></div>
       <div class="st-tile"><div class="tl">${t('statsHumidity')}</div><div class="tv">${rhAvg != null ? nf(rhAvg,0)+'%' : '-'}</div><div class="ts">${t('statsAvg')}</div></div>
       <div class="st-tile"><div class="tl">${t('statsSunHours')}</div><div class="tv">${sunH != null ? nf(sunH,1)+' h' : '-'}</div><div class="ts">${t('statsToday')}</div></div>
-      <div class="st-tile"><div class="tl">${t('statsRain')}</div><div class="tv">${d ? nf(d.precipitation_sum[0],1)+' mm' : '-'}</div><div class="ts">${t('statsToday')}</div></div>
+      <div class="st-tile"><div class="tl">${t('statsRain')}</div><div class="tv">${d ? nf(uMM(d.precipitation_sum[0]), imperial() ? 2 : 1)+' '+MMU() : '-'}</div><div class="ts">${t('statsToday')}</div></div>
     </div>
     <div class="st-card"><div class="st-title">🌡️ ${t('statsTempChart')}</div><div class="st-chart" id="stTemp"></div>
       <div class="st-note">${hasLog ? t('statsFromSensor') : t('statsEstimatedNote')}</div></div>
@@ -4778,9 +4865,9 @@ function renderStats(){
       <div class="st-water">
         <div><div class="wv">${irr.length}</div><div class="wl">${t('statsIrrigations')}</div></div>
         <div><div class="wv">${nf(minutes,0)} min</div><div class="wl">${t('statsMinutes')}${zones ? ' · '+zones+' '+t('statsZones') : ''}</div></div>
-        <div><div class="wv">${measured != null ? nf(measured,0) : '≈ '+nf(minutes*flowLpm(),0)} L</div><div class="wl">${measured != null ? t('statsMeasured') : t('statsEstimated')}</div></div>
+        <div><div class="wv">${measured != null ? nf(uL(measured),0) : '≈ '+nf(uL(minutes*flowLpm()),0)} ${LU()}</div><div class="wl">${measured != null ? t('statsMeasured') : t('statsEstimated')}</div></div>
       </div>
-      ${measured == null ? `<div class="st-note">${t('statsFlowNote',{ f:`<input type="number" id="stFlow" min="0.5" max="100" step="0.5" value="${flowLpm()}">` })}</div>` : ''}
+      ${measured == null ? `<div class="st-note">${t('statsFlowNote',{ f:`<input type="number" id="stFlow" min="0.5" max="100" step="0.5" value="${Math.round(uL(flowLpm())*10)/10}">` })}</div>` : ''}
       <div class="st-manual"><span>${t('statsLogManual')}</span>
         <select id="stManMin">${[5,10,15,20,30,45,60].map(m => `<option value="${m}">${m} min</option>`).join('')}</select>
         <button id="stManAdd">${t('statsAdd')}</button></div>
@@ -4794,7 +4881,7 @@ function renderStats(){
     <div class="st-card"><div class="st-title">📟 ${t('statsSensors')}</div>
       <div class="st-sensors">${(() => { const a = online ? OO.ambiente() : {}, w = online ? OO.agua() : {}, z = online ? OO.zonas() : [];
         const soil = z.map(q => q.suelo).filter(v => v != null); const soilAvg = soil.length ? soil.reduce((x,y)=>x+y,0)/soil.length : null;
-        return [sensorTile('🌡️', t('statsInTemp'), nf(a.temperatura,1)+' °C', online && a.temperatura != null),
+        return [sensorTile('🌡️', t('statsInTemp'), nf(uT(a.temperatura),1)+' '+TU(), online && a.temperatura != null),
           sensorTile('💧', t('statsInHum'), nf(a.humedad,0)+' %', online && a.humedad != null),
           sensorTile('🫧', 'CO2', nf(a.co2,0)+' ppm', online && a.co2 != null),
           sensorTile('💡', t('statsLight'), nf(a.luz,0)+' lx', online && a.luz != null),
@@ -4805,10 +4892,10 @@ function renderStats(){
     </div>`;
 
   const C_OUT = '#2a78d6', C_IN = '#1baf7a', C_SUN = '#eda100';
-  const inSeries = hasLog ? { name:t('statsGreenhouseSensor'), color:C_IN, pts:logToday.map(p => ({ x:p.hr, y:p.t })) }
-                          : { name:t('statsGreenhouseEst'), color:C_IN, dashed:true, pts:hourly.map(p => ({ x:p.h, y:estimateGreenhouse(p.t, p.h) })) };
-  drawChart(document.getElementById('stTemp'), { title:t('statsTempChart'), unit:'°C', band:[range.min, range.max],
-    series:[{ name:t('statsOutside'), color:C_OUT, pts:hourly.map(p => ({ x:p.h, y:p.t })) }, inSeries] });
+  const inSeries = hasLog ? { name:t('statsGreenhouseSensor'), color:C_IN, pts:logToday.map(p => ({ x:p.hr, y:uT(p.t) })) }
+                          : { name:t('statsGreenhouseEst'), color:C_IN, dashed:true, pts:hourly.map(p => ({ x:p.h, y:uT(estimateGreenhouse(p.t, p.h)) })) };
+  drawChart(document.getElementById('stTemp'), { title:t('statsTempChart'), unit:TU(), band:[uT(range.min), uT(range.max)],
+    series:[{ name:t('statsOutside'), color:C_OUT, pts:hourly.map(p => ({ x:p.h, y:uT(p.t) })) }, inSeries] });
   const humSeries = [{ name:t('statsOutside'), color:C_OUT, pts:hourly.map(p => ({ x:p.h, y:p.rh })) }];
   if(logToday.filter(p => p.h != null).length >= 2)
     humSeries.push({ name:t('statsGreenhouseSensor'), color:C_IN, pts:logToday.map(p => ({ x:p.hr, y:p.h })) });
@@ -4817,7 +4904,7 @@ function renderStats(){
 
   const pcfg = document.getElementById('stPowerCfg'); if(pcfg) pcfg.addEventListener('click', openPowerSettings);
   const flow = document.getElementById('stFlow');
-  if(flow) flow.addEventListener('change', () => { lsSet(FLOW_KEY, Number(flow.value) || 6); renderStats(); });
+  if(flow) flow.addEventListener('change', () => { lsSet(FLOW_KEY, fromUL(Number(flow.value)) || 6); renderStats(); });
   document.getElementById('stManAdd').addEventListener('click', () => { logIrrigation(0, Number(document.getElementById('stManMin').value), 'manual'); showToast(t('statsAdded')); });
 }
 window.addEventListener('resize', () => { clearTimeout(window._stRs); window._stRs = setTimeout(renderStats, 250); });
@@ -4943,9 +5030,9 @@ function renderWaterBar(){
   let line;
   if(!any) line = t('zoneNoneYet');
   else if(zoneFocus){ const st = zoneStats(zoneFocus);
-    line = `<b>${t('zoneLabel', { n: zoneFocus })}</b> · ${st.min ? t('zoneToday', { l: nf(st.liters, 0) }) + ' · ' + nf(st.min, 0) + ' min (' + t('statsEstimated') + ')' : t('zoneNoWater')}${st.soil != null ? ' · ' + t('zoneSoil', { s: nf(st.soil, 0) }) : ''}`; }
+    line = `<b>${t('zoneLabel', { n: zoneFocus })}</b> · ${st.min ? t('zoneToday', { l: nf(uL(st.liters), 0) }) + ' · ' + nf(st.min, 0) + ' min (' + t('statsEstimated') + ')' : t('zoneNoWater')}${st.soil != null ? ' · ' + t('zoneSoil', { s: nf(st.soil, 0) }) : ''}`; }
   else line = t('zoneTapHint');
-  bar.innerHTML = `<div class="wb-legend"><span>${t('zoneWaterToday')}</span><span class="wb-scale"><span>0 L</span><i></i><span>${nf(mx, 0)} L</span></span></div>
+  bar.innerHTML = `<div class="wb-legend"><span>${t('zoneWaterToday')}</span><span class="wb-scale"><span>0 ${LU()}</span><i></i><span>${nf(uL(mx), 0)} ${LU()}</span></span></div>
     <div class="wb-line">${line}</div>
     <div class="wb-actions"><button class="wb-edit" id="zoneEditBtn">✏️ ${t('zoneEdit')}</button></div>`;
   document.getElementById('zoneEditBtn').onclick = () => { zoneEdit = true; zoneFocus = null; if(!zoneBrush) zoneBrush = 1; renderRoom(); };
@@ -4970,9 +5057,9 @@ function statsSummaryText(){
   const pw = powerToday();
   const lines = [
     `My GreenHouse Planner · ${city} · ${new Date().toLocaleDateString(lang==='es'?'es-CL':lang)}`,
-    d ? `${t('statsOutTemp')}: ${nf(d.temperature_2m_max[0],0)}° / ${nf(d.temperature_2m_min[0],0)}° · ${t('statsHumidity')}: ${rh != null ? nf(rh,0)+'%' : '-'} · ${t('statsSunHours')}: ${d.sunshine_duration ? nf(d.sunshine_duration[0]/3600,1)+' h' : '-'} · ${t('statsRain')}: ${nf(d.precipitation_sum[0],1)} mm` : '',
-    currentSensorTemp != null ? `${t('envGreenhouse')}: ${nf(currentSensorTemp,1)} °C (${boardAmbient().temperatura != null ? t('envSensor') : t('envEstimated')})` : '',
-    `${t('statsWater')}: ${irr.length} ${t('statsIrrigations')}, ${nf(min,0)} min, ≈ ${nf(min*flowLpm(),0)} L`,
+    d ? `${t('statsOutTemp')}: ${nf(uT(d.temperature_2m_max[0]),0)}° / ${nf(uT(d.temperature_2m_min[0]),0)}° · ${t('statsHumidity')}: ${rh != null ? nf(rh,0)+'%' : '-'} · ${t('statsSunHours')}: ${d.sunshine_duration ? nf(d.sunshine_duration[0]/3600,1)+' h' : '-'} · ${t('statsRain')}: ${nf(uMM(d.precipitation_sum[0]),1)} ${MMU()}` : '',
+    currentSensorTemp != null ? `${t('envGreenhouse')}: ${nf(uT(currentSensorTemp),1)} ${TU()} (${boardAmbient().temperatura != null ? t('envSensor') : t('envEstimated')})` : '',
+    `${t('statsWater')}: ${irr.length} ${t('statsIrrigations')}, ${nf(min,0)} min, ≈ ${nf(uL(min*flowLpm()),0)} ${LU()}`,
     pw.rows.length ? `${t('powerToday')}: ≈ ${nf(pw.wh/1000,2)} kWh` : ''
   ];
   return lines.filter(Boolean).join('\n');
@@ -5031,7 +5118,7 @@ document.getElementById('exportBtn').addEventListener('click', openExport);
 /* ---------- Fungus risk (needs the board's inside humidity) ----------
    Reference values for common greenhouse fungi (botrytis, mildew): long periods of high
    humidity or wet leaves at mild temperatures. Tune them in one place after field validation. */
-const FUNGUS = { rh:85, tMin:10, tMax:25, hours:6, leafWet:50, openPct:10, openMinutes:60, rhDrop:5 };
+const FUNGUS = { rh:85, tMin:10, tMax:25, hours:6, leafWet:50, openPct:10, openMinutes:60, rhDrop:3 };
 function windowCfg(){ const w = state.windows || {}; return { type: w.type || 'auto', openC: Number(w.openC) || 27 }; }
 function windowType(){
   const w = windowCfg(); if(w.type !== 'auto') return w.type;
@@ -5071,12 +5158,30 @@ function renderWindowSettings(){
   const w = windowCfg(), type = w.type === 'auto' ? windowType() : w.type;
   el.innerHTML = `<div class="ws-title">🪟 ${t('winTitle')}</div>
     <div class="ws-opts">${[['board','winBoard'],['mechanical','winMech'],['manual','winManual']].map(([v,k]) => `<button class="ws-opt${type === v ? ' on' : ''}" data-v="${v}">${t(k)}</button>`).join('')}</div>
-    ${type === 'mechanical' ? `<label class="ws-open">${t('winOpenAt')} <input type="number" id="winOpenC" min="10" max="45" step="1" value="${w.openC}"> °C</label>` : ''}
+    ${type === 'mechanical' ? `<label class="ws-open">${t('winOpenAt')} <input type="number" id="winOpenC" min="${Math.round(uT(10))}" max="${Math.round(uT(45))}" step="1" value="${Math.round(uT(w.openC))}"> ${TU()}</label>` : ''}
     <div class="ws-help">${t('winHelp')}</div>`;
   el.querySelectorAll('.ws-opt').forEach(b => b.addEventListener('click', () => { state.windows = Object.assign({}, state.windows, { type:b.dataset.v }); saveState(); renderWindowSettings(); refreshEnvIfLoaded(); }));
   const oc = document.getElementById('winOpenC');
-  if(oc) oc.addEventListener('change', () => { state.windows = Object.assign({}, state.windows, { type:'mechanical', openC: Math.max(10, Math.min(45, Number(oc.value) || 27)) }); saveState(); refreshEnvIfLoaded(); });
+  if(oc) oc.addEventListener('change', () => { state.windows = Object.assign({}, state.windows, { type:'mechanical', openC: Math.max(10, Math.min(45, fromUT(Number(oc.value)) || 27)) }); saveState(); refreshEnvIfLoaded(); });
 }
+
+/* ---------- Settings (things set once: language, units...) ---------- */
+function renderSettings(){
+  const set = (id,k) => { const el = document.getElementById(id); if(el) el.textContent = t(k); };
+  set('setTitle','settingsTitle'); set('setLangL','setLang'); set('setUnitsL','setUnits'); set('uMetricL','unitsMetric'); set('uImperialL','unitsImperial');
+  set('setTerms','termsLabel'); set('setPrivacy','privacyLabel'); set('settingsDone','modalDone');
+  document.querySelectorAll('#settingsOverlay [data-u]').forEach(b => b.classList.toggle('on', (state.units || 'metric') === b.dataset.u));
+  const sb = document.getElementById('settingsBtn'); if(sb) sb.setAttribute('aria-label', t('settingsTitle'));
+}
+function openSettings(){ renderSettings(); document.getElementById('settingsOverlay').classList.add('show'); }
+function closeSettings(){ document.getElementById('settingsOverlay').classList.remove('show'); }
+document.getElementById('settingsBtn').addEventListener('click', openSettings);
+document.getElementById('settingsClose').addEventListener('click', closeSettings);
+document.getElementById('settingsDone').addEventListener('click', closeSettings);
+document.getElementById('settingsOverlay').addEventListener('click', e => { if(e.target.id === 'settingsOverlay') closeSettings(); });
+document.querySelectorAll('#settingsOverlay [data-u]').forEach(b => b.addEventListener('click', () => {
+  state.units = b.dataset.u; state.unitsManual = true; saveState(); renderSettings(); render(); refreshEnvIfLoaded();
+}));
 
 /* ---------- Tabs on phones/tablets ---------- */
 const TAB_ORDER = ['env','room','stats'];
