@@ -6,7 +6,7 @@
 </defs>
 <rect width="512" height="512" fill="url(#fbg)"/>
 <g transform="translate(0,0)">
-<path d="M256 392 C256 330 258 270 256 200" stroke="#1F7A45" stroke-width="15" stroke-linecap="round" fill="none"/>
+<path d="M256 392 C256 330 258 270 256 200" stroke="#3FAE6B" stroke-width="15" stroke-linecap="round" fill="none"/>
 <path d="M256 292 C196 296 148 258 140 192 C206 186 252 226 256 292 Z" fill="url(#fl1)" stroke="#146B39" stroke-width="7" stroke-linejoin="round"/>
 <path d="M256 262 C318 262 366 224 374 158 C306 152 260 194 256 262 Z" fill="url(#fl2)" stroke="#146B39" stroke-width="7" stroke-linejoin="round"/>
 <path d="M256 214 C238 196 238 168 256 146 C274 168 274 196 256 214 Z" fill="#CFFBD9" stroke="#146B39" stroke-width="6" stroke-linejoin="round"/>
