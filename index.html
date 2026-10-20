@@ -3969,7 +3969,6 @@ function renderEnvConditions(data){
       <div class="eh-glow"></div>
       <div class="eh-top"><span class="eh-city">📍 ${cityText}</span><button class="eh-edit" id="heroEdit" aria-label="${t('locationManualLabel')}">✏️</button>
         ${weatherKey ? `<span class="eh-pill">${night && wcode !== null && wcode <= 2 ? '🌙' : weatherCodeToIcon(wcode)} ${t(weatherKey)}</span>` : ''}</div>
-      <div class="eh-sub">${dateTxt} · ${timeTxt} · ${t(precisionKey)}</div>
       <div class="eh-big">
         <div class="eh-n">${sensorTemp !== null ? n1(sensorTemp) : '-'}<small>°</small></div>
         <div class="eh-meta"><b>${t('envGreenhouse')}</b> · ${live ? t('envSensor') : t('envEstimated')}<br>${t('envOutside')} ${outdoorTemp !== null ? Math.round(outdoorTemp) + '°' : '-'}${mx !== null && mn !== null ? ' · ' + t('envMaxMin', { a:Math.round(mx), b:Math.round(mn) }) : ''}</div>
