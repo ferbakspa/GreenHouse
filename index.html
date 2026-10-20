@@ -228,7 +228,51 @@
   .pw-list > div{ display:flex; justify-content:space-between; gap:8px; padding:5px 0; border-top:1px solid var(--bg-warm); color: var(--pine-dark); }
   .pw-dim{ color: var(--pine-soft); font-size:11.5px; }
 
-  .st-head{ font-size:12.5px; color: var(--pine-soft); margin:-4px 0 12px; font-weight:600; }
+  .st-head{ display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin:-2px 2px 12px; }
+  .st-head b{ font:700 19px 'Fraunces', Georgia, serif; color: var(--pine-dark); }
+  .st-head span{ font-size:12px; color: var(--pine-soft); font-weight:600; text-align:right; }
+  .st-kpis{ display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; margin-bottom:12px; }
+  .st-kpi{ display:flex; flex-direction:column; justify-content:flex-start; font:inherit; text-align:left; cursor:pointer; background:#fff; border:1px solid #DDE7DA; border-radius:16px; padding:11px 12px 12px; box-shadow:0 1px 3px rgba(38,67,58,.05); color: var(--pine); transition: border-color .15s, box-shadow .15s; min-width:0; }
+  .st-kpi:hover{ border-color: var(--green-accent); box-shadow:0 4px 12px rgba(38,67,58,.10); }
+  .st-kpi .kh{ font-size:11.5px; font-weight:700; color: var(--pine-soft); display:flex; align-items:center; gap:5px; }
+  .st-kpi .kh i{ margin-left:auto; font-style:normal; color:#A8B8AE; font-size:17px; line-height:10px; }
+  .st-kpi .kv{ font:700 25px/1.15 'Fraunces', Georgia, serif; color: var(--pine-dark); margin-top:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .st-kpi .kv small{ font:600 12px 'Public Sans', sans-serif; color: var(--pine-soft); }
+  .st-kpi .ks{ font-size:11px; color: var(--pine-soft); margin-top:3px; line-height:1.35; }
+  .st-kpi .kst{ font-weight:700; }
+  .st-kpi .kst.warn{ color:#8A5A00; } .st-kpi .kst.ok{ color:#2B6B54; }
+  .kdot{ display:inline-block; width:7px; height:7px; border-radius:50%; margin-right:5px; vertical-align:1px; background: var(--green-accent); }
+  .kst.warn .kdot{ background:#E8A33D; }
+  .kbar{ height:6px; background:#E3EDF5; border-radius:99px; margin-top:7px; overflow:hidden; }
+  .kbar b{ display:block; height:100%; background:#2a78d6; border-radius:99px; }
+  .st-mark{ font: 700 10px 'Public Sans', sans-serif; fill: var(--pine-dark); paint-order:stroke; stroke:#fff; stroke-width:3px; }
+  .st-sens-card .st-sensors{ grid-template-columns: repeat(3, 1fr); gap:6px; }
+  .st-sens-card .st-sensor{ padding:6px 8px; border-radius:10px; }
+  .st-sens-card .ss-i{ display:none; }
+  .st-overlay .st-sheet{ max-width:440px; max-height:88vh; overflow:auto; padding:14px 18px 20px; }
+  .sd-grab{ display:none; width:38px; height:4px; border-radius:9px; background:#D5DED3; margin:0 auto 10px; }
+  .sd-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px; }
+  .sd-head b{ display:block; font:700 19px 'Fraunces', Georgia, serif; color: var(--pine-dark); }
+  .sd-head span{ font-size:11.5px; color: var(--pine-soft); }
+  .sd-big{ display:grid; gap:8px; margin-bottom:6px; }
+  .sd-big > div{ background: var(--bg); border-radius:12px; padding:9px 10px; min-width:0; }
+  .sd-big b{ display:block; font:700 18px 'Fraunces', Georgia, serif; color: var(--pine-dark); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .sd-big span{ font-size:10.5px; color: var(--pine-soft); }
+  .sd-sec{ font-size:11px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color: var(--pine-soft); margin:14px 0 6px; }
+  .sd-row{ display:flex; justify-content:space-between; align-items:center; gap:10px; font-size:13px; padding:8px 0; border-bottom:1px solid #EEF2EC; color: var(--pine-dark); }
+  .sd-row > span:first-child{ color: var(--pine-soft); }
+  .sd-row input, .sd-row select{ width:76px; font:inherit; font-size:13px; padding:5px 7px; border:1px solid var(--soil-line); border-radius:8px; background:#fff; }
+  .sd-sug{ background:#EEF5FC; border-radius:12px; padding:9px 11px; font-size:12.5px; font-weight:600; color: var(--pine-dark); line-height:1.45; }
+  .sd-sug.warn{ background:#FFF4DE; color:#7A4B00; margin-top:8px; }
+  .sd-sug small{ display:block; font-weight:500; color: var(--pine-soft); font-size:11px; margin-top:3px; }
+  .sd-btn{ font:inherit; font-size:12.5px; font-weight:700; padding:6px 11px; border-radius:9px; border:none; background: var(--green-accent); color:#fff; cursor:pointer; }
+  .sd-actions{ margin-top:12px; }
+  @media (max-width: 980px){
+    .st-overlay.show{ align-items:flex-end; padding:0; }
+    .st-overlay .st-sheet{ max-width:none; border-radius:22px 22px 0 0; padding-bottom: calc(20px + env(safe-area-inset-bottom)); }
+    .sd-grab{ display:block; }
+  }
+  @media (max-width: 520px){ .st-kpis{ grid-template-columns: repeat(2, 1fr); } }
   .st-tiles{ display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; margin-bottom:14px; }
   .st-tile{ background: var(--bg-warm); border-radius:12px; padding:10px 11px; }
   .st-tile .tl{ font-size:11px; color: var(--pine-soft); font-weight:600; }
@@ -265,7 +309,7 @@
   .st-cta{ margin-top:10px; padding:10px 12px; border-radius:12px; background: var(--green-bg); display:flex; align-items:center; justify-content:space-between; gap:10px; font-size:12.5px; color: var(--pine-dark); line-height:1.4; }
   .st-cta-btn{ flex:0 0 auto; background: var(--green-accent); color:#fff !important; text-decoration:none; font-weight:700; font-size:12px; padding:8px 11px; border-radius:9px; }
   @media (max-width: 520px){ .st-tiles{ grid-template-columns: repeat(2, 1fr); } .st-cta{ flex-direction:column; align-items:flex-start; } }
-  @media (min-width: 981px){ #statsBody{ display:grid; grid-template-columns: 1fr 1fr; gap:0 14px; } #statsBody .st-head, #statsBody .st-tiles, #statsBody .st-card:last-child{ grid-column: 1 / -1; } }
+  @media (min-width: 981px){ #statsBody{ display:grid; grid-template-columns: 1fr 1fr; gap:0 14px; } #statsBody .st-head, #statsBody .st-kpis, #statsBody .st-wide, #statsBody .st-card:last-child{ grid-column: 1 / -1; } }
 
   /* Add Plant */
   .btn-add-plant-row{ width:100%; padding:10px; border-radius:12px; border:1.5px solid var(--soil-line); background: var(--white); color: var(--pine); font-weight:700; font-size:12.5px; cursor:pointer; margin-bottom:12px; transition: border-color .15s, background .15s; }
@@ -662,6 +706,7 @@
   <p><a href="terms.html" target="_blank" rel="noopener" id="consentTermsLink"></a> · <a href="privacy.html" target="_blank" rel="noopener" id="consentPrivacyLink"></a></p>
   <button id="consentAccept"></button>
 </div></div>
+<div class="consent-overlay st-overlay" id="statOverlay" role="dialog" aria-modal="true"><div class="consent-box st-sheet" id="statBox"></div></div>
 <div class="consent-overlay grid-overlay" id="powerOverlay" role="dialog" aria-modal="true"><div class="consent-box grid-box pw-box" id="powerBox"></div></div>
 <div class="consent-overlay grid-overlay" id="exportOverlay" role="dialog" aria-modal="true"><div class="consent-box grid-box" id="exportBox"></div></div>
 <div class="consent-overlay grid-overlay" id="settingsOverlay" role="dialog" aria-modal="true"><div class="consent-box grid-box set-box">
@@ -938,6 +983,57 @@ const TRANSLATIONS = {
     irrModal:"Water suggested today",
     irrNoPlants:"Plant something to see how much water it needs.",
     irrNoZone:"no zone",
+    kToday:"Today",
+    kTemp:"Temperature",
+    kHum:"Humidity",
+    kWater:"Water",
+    kPower:"Electricity",
+    kSun:"Sun",
+    kRain:"Rain",
+    kTempSensor:"greenhouse max / min",
+    kTempEst:"estimated greenhouse, max / min",
+    kAbove:"{h} h above ideal",
+    kBelow:"{h} h below ideal",
+    kOutRange:"{h} h outside ideal",
+    kInRange:"within ideal",
+    kHumIn:"indoor average",
+    kHumOut:"outdoor average",
+    kFungusRisk:"fungus risk",
+    kNoFungus:"no fungus risk",
+    kWaterSub:"watered / suggested",
+    kWaterOnly:"watered today",
+    kEstToday:"estimated today",
+    kSunPeak:"max {t} · {w} W/m²",
+    kRainTomorrow:"tomorrow {v}",
+    chMax:"max {v}",
+    chMin:"min {v}",
+    sdInMax:"greenhouse max",
+    sdInMin:"greenhouse min",
+    sdIdeal:"ideal range",
+    sdOutMaxMin:"Outdoor max / min",
+    sdHotHour:"Hottest time",
+    sdHoursAbove:"Hours above ideal",
+    sdHoursBelow:"Hours below ideal",
+    sdHumAvg:"average",
+    sdHumMin:"minimum",
+    sdHumMax:"maximum",
+    sdHumIn:"Indoor (sensor)",
+    sdFungus:"Fungus",
+    sdFungusNeedsBoard:"The fungus alert needs the Organics One board.",
+    sdSuggested:"Suggested today",
+    sdByZone:"By zone",
+    sdSettings:"Settings",
+    sdFlow:"Flow per zone",
+    sdOf:"{a} of {b}",
+    sdWaterNote:"Liters are estimated from the flow. With the Organics One board they are measured.",
+    sdSunHours:"sun hours",
+    sdPeakW:"max radiation",
+    sdPeakT:"peak time",
+    sdSunrise:"Sunrise",
+    sdSunset:"Sunset",
+    sdRainToday:"today",
+    sdRainTomorrow:"tomorrow",
+    sdRainNote:"Inside the greenhouse rain does not reach the crops. The suggested watering does not subtract it.",
     boardTitle:'ORGANICS ONE BOARD', boardConnect:'Connect board', boardSave:'Connect', boardDisc:'Disconnect', boardForget:'Forget', boardServer:'Server (EMQX host)', boardUser:'User', boardPass:'Password', boardInv:'Greenhouse name', boardOff:'Not connected', boardOn:'Board online', boardNoBoard:'Board offline', boardUpdate:'Update firmware', boardTemp:'Temperature', boardHum:'Humidity', boardVpd:'VPD', boardSoil:'Soil', boardValveOpen:'watering', boardZone:'Zone', boardAlarm:'Alarm', boardConnecting:'Connecting…', boardLiveTemp:'Real sensor',
     useAutoLocation:'📍 Use automatic location', locationManualLabel:'Manual location',
     locationApprox:'Approximate location', locationPrecise:'Precise location',
@@ -1174,6 +1270,57 @@ const TRANSLATIONS = {
     irrModal:"Agua sugerida hoy",
     irrNoPlants:"Planta algo para ver cuánta agua necesita.",
     irrNoZone:"sin zona",
+    kToday:"Hoy",
+    kTemp:"Temperatura",
+    kHum:"Humedad",
+    kWater:"Agua",
+    kPower:"Electricidad",
+    kSun:"Sol",
+    kRain:"Lluvia",
+    kTempSensor:"invernadero máx. / mín.",
+    kTempEst:"invernadero estimado, máx. / mín.",
+    kAbove:"{h} h sobre lo ideal",
+    kBelow:"{h} h bajo lo ideal",
+    kOutRange:"{h} h fuera de lo ideal",
+    kInRange:"dentro de lo ideal",
+    kHumIn:"promedio interior",
+    kHumOut:"promedio exterior",
+    kFungusRisk:"riesgo de hongos",
+    kNoFungus:"sin riesgo de hongos",
+    kWaterSub:"regado / sugerido",
+    kWaterOnly:"regado hoy",
+    kEstToday:"estimado hoy",
+    kSunPeak:"máx. {t} · {w} W/m²",
+    kRainTomorrow:"mañana {v}",
+    chMax:"máx. {v}",
+    chMin:"mín. {v}",
+    sdInMax:"máx. invernadero",
+    sdInMin:"mín. invernadero",
+    sdIdeal:"rango ideal",
+    sdOutMaxMin:"Exterior máx. / mín.",
+    sdHotHour:"Hora más caliente",
+    sdHoursAbove:"Horas sobre lo ideal",
+    sdHoursBelow:"Horas bajo lo ideal",
+    sdHumAvg:"promedio",
+    sdHumMin:"mínima",
+    sdHumMax:"máxima",
+    sdHumIn:"Interior (sensor)",
+    sdFungus:"Hongos",
+    sdFungusNeedsBoard:"El aviso de hongos necesita la tarjeta Organics One.",
+    sdSuggested:"Sugerido hoy",
+    sdByZone:"Por zona",
+    sdSettings:"Ajustes",
+    sdFlow:"Caudal por zona",
+    sdOf:"{a} de {b}",
+    sdWaterNote:"Los litros son estimados con el caudal. Con la tarjeta Organics One se miden reales.",
+    sdSunHours:"horas de sol",
+    sdPeakW:"radiación máx.",
+    sdPeakT:"hora máx.",
+    sdSunrise:"Salida del sol",
+    sdSunset:"Puesta de sol",
+    sdRainToday:"hoy",
+    sdRainTomorrow:"mañana",
+    sdRainNote:"Dentro del invernadero la lluvia no llega a los cultivos. El riego sugerido no la descuenta.",
     boardTitle:'TARJETA ORGANICS ONE', boardConnect:'Conectar tarjeta', boardSave:'Conectar', boardDisc:'Desconectar', boardForget:'Olvidar', boardServer:'Servidor (host de EMQX)', boardUser:'Usuario', boardPass:'Clave', boardInv:'Nombre del invernadero', boardOff:'Sin conexión', boardOn:'Tarjeta en línea', boardNoBoard:'Tarjeta desconectada', boardUpdate:'Actualizar firmware', boardTemp:'Temperatura', boardHum:'Humedad', boardVpd:'VPD', boardSoil:'Suelo', boardValveOpen:'regando', boardZone:'Zona', boardAlarm:'Alarma', boardConnecting:'Conectando…', boardLiveTemp:'Sensor real',
     useAutoLocation:'📍 Usar ubicación automática', locationManualLabel:'Ubicación manual',
     locationApprox:'Ubicación aproximada', locationPrecise:'Ubicación precisa',
@@ -1409,6 +1556,57 @@ const TRANSLATIONS = {
     irrModal:"Eau conseillée aujourd'hui",
     irrNoPlants:"Plantez quelque chose pour voir combien d'eau il faut.",
     irrNoZone:"sans zone",
+    kToday:"Aujourd'hui",
+    kTemp:"Température",
+    kHum:"Humidité",
+    kWater:"Eau",
+    kPower:"Électricité",
+    kSun:"Soleil",
+    kRain:"Pluie",
+    kTempSensor:"serre max. / min.",
+    kTempEst:"serre estimée, max. / min.",
+    kAbove:"{h} h au-dessus de l'idéal",
+    kBelow:"{h} h en dessous de l'idéal",
+    kOutRange:"{h} h hors de l'idéal",
+    kInRange:"dans l'idéal",
+    kHumIn:"moyenne intérieure",
+    kHumOut:"moyenne extérieure",
+    kFungusRisk:"risque de champignons",
+    kNoFungus:"pas de risque de champignons",
+    kWaterSub:"arrosé / conseillé",
+    kWaterOnly:"arrosé aujourd'hui",
+    kEstToday:"estimé aujourd'hui",
+    kSunPeak:"max. {t} · {w} W/m²",
+    kRainTomorrow:"demain {v}",
+    chMax:"max. {v}",
+    chMin:"min. {v}",
+    sdInMax:"max. serre",
+    sdInMin:"min. serre",
+    sdIdeal:"plage idéale",
+    sdOutMaxMin:"Extérieur max. / min.",
+    sdHotHour:"Heure la plus chaude",
+    sdHoursAbove:"Heures au-dessus de l'idéal",
+    sdHoursBelow:"Heures en dessous de l'idéal",
+    sdHumAvg:"moyenne",
+    sdHumMin:"minimum",
+    sdHumMax:"maximum",
+    sdHumIn:"Intérieur (capteur)",
+    sdFungus:"Champignons",
+    sdFungusNeedsBoard:"L'alerte champignons nécessite la carte Organics One.",
+    sdSuggested:"Conseillé aujourd'hui",
+    sdByZone:"Par zone",
+    sdSettings:"Réglages",
+    sdFlow:"Débit par zone",
+    sdOf:"{a} sur {b}",
+    sdWaterNote:"Les litres sont estimés avec le débit. Avec la carte Organics One ils sont mesurés.",
+    sdSunHours:"heures de soleil",
+    sdPeakW:"rayonnement max.",
+    sdPeakT:"heure max.",
+    sdSunrise:"Lever du soleil",
+    sdSunset:"Coucher du soleil",
+    sdRainToday:"aujourd'hui",
+    sdRainTomorrow:"demain",
+    sdRainNote:"Dans la serre la pluie n'atteint pas les cultures. L'arrosage conseillé ne la déduit pas.",
     boardTitle:'CARTE ORGANICS ONE',
     boardConnect:'Connecter la carte',
     boardSave:'Connecter',
@@ -1685,6 +1883,57 @@ const TRANSLATIONS = {
     irrModal:"Água sugerida hoje",
     irrNoPlants:"Plante algo para ver quanta água precisa.",
     irrNoZone:"sem zona",
+    kToday:"Hoje",
+    kTemp:"Temperatura",
+    kHum:"Umidade",
+    kWater:"Água",
+    kPower:"Eletricidade",
+    kSun:"Sol",
+    kRain:"Chuva",
+    kTempSensor:"estufa máx. / mín.",
+    kTempEst:"estufa estimada, máx. / mín.",
+    kAbove:"{h} h acima do ideal",
+    kBelow:"{h} h abaixo do ideal",
+    kOutRange:"{h} h fora do ideal",
+    kInRange:"dentro do ideal",
+    kHumIn:"média interna",
+    kHumOut:"média externa",
+    kFungusRisk:"risco de fungos",
+    kNoFungus:"sem risco de fungos",
+    kWaterSub:"regado / sugerido",
+    kWaterOnly:"regado hoje",
+    kEstToday:"estimado hoje",
+    kSunPeak:"máx. {t} · {w} W/m²",
+    kRainTomorrow:"amanhã {v}",
+    chMax:"máx. {v}",
+    chMin:"mín. {v}",
+    sdInMax:"máx. estufa",
+    sdInMin:"mín. estufa",
+    sdIdeal:"faixa ideal",
+    sdOutMaxMin:"Externo máx. / mín.",
+    sdHotHour:"Hora mais quente",
+    sdHoursAbove:"Horas acima do ideal",
+    sdHoursBelow:"Horas abaixo do ideal",
+    sdHumAvg:"média",
+    sdHumMin:"mínima",
+    sdHumMax:"máxima",
+    sdHumIn:"Interno (sensor)",
+    sdFungus:"Fungos",
+    sdFungusNeedsBoard:"O alerta de fungos precisa da placa Organics One.",
+    sdSuggested:"Sugerido hoje",
+    sdByZone:"Por zona",
+    sdSettings:"Ajustes",
+    sdFlow:"Vazão por zona",
+    sdOf:"{a} de {b}",
+    sdWaterNote:"Os litros são estimados com a vazão. Com a placa Organics One são medidos.",
+    sdSunHours:"horas de sol",
+    sdPeakW:"radiação máx.",
+    sdPeakT:"hora máx.",
+    sdSunrise:"Nascer do sol",
+    sdSunset:"Pôr do sol",
+    sdRainToday:"hoje",
+    sdRainTomorrow:"amanhã",
+    sdRainNote:"Dentro da estufa a chuva não chega aos cultivos. A rega sugerida não a desconta.",
     boardTitle:'PLACA ORGANICS ONE',
     boardConnect:'Conectar placa',
     boardSave:'Conectar',
@@ -1961,6 +2210,57 @@ const TRANSLATIONS = {
     irrModal:"Empfohlenes Wasser heute",
     irrNoPlants:"Pflanze etwas, um den Wasserbedarf zu sehen.",
     irrNoZone:"ohne Zone",
+    kToday:"Heute",
+    kTemp:"Temperatur",
+    kHum:"Feuchte",
+    kWater:"Wasser",
+    kPower:"Strom",
+    kSun:"Sonne",
+    kRain:"Regen",
+    kTempSensor:"Gewächshaus max. / min.",
+    kTempEst:"Gewächshaus geschätzt, max. / min.",
+    kAbove:"{h} h über ideal",
+    kBelow:"{h} h unter ideal",
+    kOutRange:"{h} h außerhalb ideal",
+    kInRange:"im Idealbereich",
+    kHumIn:"Mittel innen",
+    kHumOut:"Mittel außen",
+    kFungusRisk:"Pilzrisiko",
+    kNoFungus:"kein Pilzrisiko",
+    kWaterSub:"gegossen / empfohlen",
+    kWaterOnly:"heute gegossen",
+    kEstToday:"heute geschätzt",
+    kSunPeak:"max. {t} · {w} W/m²",
+    kRainTomorrow:"morgen {v}",
+    chMax:"max. {v}",
+    chMin:"min. {v}",
+    sdInMax:"max. Gewächshaus",
+    sdInMin:"min. Gewächshaus",
+    sdIdeal:"Idealbereich",
+    sdOutMaxMin:"Außen max. / min.",
+    sdHotHour:"Wärmste Uhrzeit",
+    sdHoursAbove:"Stunden über ideal",
+    sdHoursBelow:"Stunden unter ideal",
+    sdHumAvg:"Mittel",
+    sdHumMin:"Minimum",
+    sdHumMax:"Maximum",
+    sdHumIn:"Innen (Sensor)",
+    sdFungus:"Pilze",
+    sdFungusNeedsBoard:"Der Pilzhinweis braucht die Organics One Platine.",
+    sdSuggested:"Empfohlen heute",
+    sdByZone:"Nach Zone",
+    sdSettings:"Einstellungen",
+    sdFlow:"Durchfluss pro Zone",
+    sdOf:"{a} von {b}",
+    sdWaterNote:"Die Liter sind mit dem Durchfluss geschätzt. Mit der Organics One Platine werden sie gemessen.",
+    sdSunHours:"Sonnenstunden",
+    sdPeakW:"max. Strahlung",
+    sdPeakT:"Spitzenzeit",
+    sdSunrise:"Sonnenaufgang",
+    sdSunset:"Sonnenuntergang",
+    sdRainToday:"heute",
+    sdRainTomorrow:"morgen",
+    sdRainNote:"Im Gewächshaus erreicht der Regen die Pflanzen nicht. Die empfohlene Bewässerung zieht ihn nicht ab.",
     boardTitle:'ORGANICS-ONE-PLATINE',
     boardConnect:'Platine verbinden',
     boardSave:'Verbinden',
@@ -2237,6 +2537,57 @@ const TRANSLATIONS = {
     irrModal:"今日建议水量",
     irrNoPlants:"种植作物后即可查看需水量。",
     irrNoZone:"无分区",
+    kToday:"今天",
+    kTemp:"温度",
+    kHum:"湿度",
+    kWater:"水",
+    kPower:"电",
+    kSun:"日照",
+    kRain:"降雨",
+    kTempSensor:"温室 最高 / 最低",
+    kTempEst:"温室估计 最高 / 最低",
+    kAbove:"高于理想 {h} 小时",
+    kBelow:"低于理想 {h} 小时",
+    kOutRange:"超出理想 {h} 小时",
+    kInRange:"在理想范围内",
+    kHumIn:"室内平均",
+    kHumOut:"室外平均",
+    kFungusRisk:"真菌风险",
+    kNoFungus:"无真菌风险",
+    kWaterSub:"已浇 / 建议",
+    kWaterOnly:"今日已浇",
+    kEstToday:"今日估计",
+    kSunPeak:"最高 {t} · {w} W/m²",
+    kRainTomorrow:"明天 {v}",
+    chMax:"最高 {v}",
+    chMin:"最低 {v}",
+    sdInMax:"温室最高",
+    sdInMin:"温室最低",
+    sdIdeal:"理想范围",
+    sdOutMaxMin:"室外 最高 / 最低",
+    sdHotHour:"最热时刻",
+    sdHoursAbove:"高于理想的小时",
+    sdHoursBelow:"低于理想的小时",
+    sdHumAvg:"平均",
+    sdHumMin:"最低",
+    sdHumMax:"最高",
+    sdHumIn:"室内（传感器）",
+    sdFungus:"真菌",
+    sdFungusNeedsBoard:"真菌提醒需要 Organics One 控制板。",
+    sdSuggested:"今日建议",
+    sdByZone:"按分区",
+    sdSettings:"设置",
+    sdFlow:"每区流量",
+    sdOf:"{a} / {b}",
+    sdWaterNote:"升数按流量估算。使用 Organics One 控制板可实际测量。",
+    sdSunHours:"日照小时",
+    sdPeakW:"最大辐射",
+    sdPeakT:"峰值时间",
+    sdSunrise:"日出",
+    sdSunset:"日落",
+    sdRainToday:"今天",
+    sdRainTomorrow:"明天",
+    sdRainNote:"温室内雨水不会落到作物上。建议浇水量不扣除降雨。",
     boardTitle:'ORGANICS ONE 控制板',
     boardConnect:'连接控制板',
     boardSave:'连接',
@@ -2513,6 +2864,57 @@ const TRANSLATIONS = {
     irrModal:"आज सुझाया गया पानी",
     irrNoPlants:"पानी की ज़रूरत देखने के लिए कुछ लगाएँ।",
     irrNoZone:"बिना ज़ोन",
+    kToday:"आज",
+    kTemp:"तापमान",
+    kHum:"नमी",
+    kWater:"पानी",
+    kPower:"बिजली",
+    kSun:"धूप",
+    kRain:"बारिश",
+    kTempSensor:"ग्रीनहाउस अधिकतम / न्यूनतम",
+    kTempEst:"अनुमानित ग्रीनहाउस, अधिकतम / न्यूनतम",
+    kAbove:"आदर्श से ऊपर {h} घं",
+    kBelow:"आदर्श से नीचे {h} घं",
+    kOutRange:"आदर्श से बाहर {h} घं",
+    kInRange:"आदर्श के भीतर",
+    kHumIn:"अंदर का औसत",
+    kHumOut:"बाहर का औसत",
+    kFungusRisk:"फफूंद का जोखिम",
+    kNoFungus:"फफूंद का जोखिम नहीं",
+    kWaterSub:"सींचा / सुझाया",
+    kWaterOnly:"आज सींचा",
+    kEstToday:"आज अनुमानित",
+    kSunPeak:"अधिकतम {t} · {w} W/m²",
+    kRainTomorrow:"कल {v}",
+    chMax:"अधिकतम {v}",
+    chMin:"न्यूनतम {v}",
+    sdInMax:"ग्रीनहाउस अधिकतम",
+    sdInMin:"ग्रीनहाउस न्यूनतम",
+    sdIdeal:"आदर्श सीमा",
+    sdOutMaxMin:"बाहर अधिकतम / न्यूनतम",
+    sdHotHour:"सबसे गर्म समय",
+    sdHoursAbove:"आदर्श से ऊपर घंटे",
+    sdHoursBelow:"आदर्श से नीचे घंटे",
+    sdHumAvg:"औसत",
+    sdHumMin:"न्यूनतम",
+    sdHumMax:"अधिकतम",
+    sdHumIn:"अंदर (सेंसर)",
+    sdFungus:"फफूंद",
+    sdFungusNeedsBoard:"फफूंद चेतावनी के लिए Organics One बोर्ड चाहिए।",
+    sdSuggested:"आज सुझाया गया",
+    sdByZone:"ज़ोन के अनुसार",
+    sdSettings:"सेटिंग्स",
+    sdFlow:"प्रति ज़ोन प्रवाह",
+    sdOf:"{b} में से {a}",
+    sdWaterNote:"लीटर प्रवाह से अनुमानित हैं। Organics One बोर्ड से असली माप होता है।",
+    sdSunHours:"धूप के घंटे",
+    sdPeakW:"अधिकतम विकिरण",
+    sdPeakT:"अधिकतम समय",
+    sdSunrise:"सूर्योदय",
+    sdSunset:"सूर्यास्त",
+    sdRainToday:"आज",
+    sdRainTomorrow:"कल",
+    sdRainNote:"ग्रीनहाउस के अंदर बारिश फसलों तक नहीं पहुँचती। सुझाई गई सिंचाई इसे नहीं घटाती।",
     boardTitle:'ORGANICS ONE बोर्ड',
     boardConnect:'बोर्ड कनेक्ट करें',
     boardSave:'कनेक्ट करें',
@@ -2789,6 +3191,57 @@ const TRANSLATIONS = {
     irrModal:"الماء المقترح اليوم",
     irrNoPlants:"ازرع شيئًا لترى كمية الماء التي يحتاجها.",
     irrNoZone:"بدون منطقة",
+    kToday:"اليوم",
+    kTemp:"الحرارة",
+    kHum:"الرطوبة",
+    kWater:"الماء",
+    kPower:"الكهرباء",
+    kSun:"الشمس",
+    kRain:"المطر",
+    kTempSensor:"الدفيئة أعلى / أدنى",
+    kTempEst:"الدفيئة تقديري، أعلى / أدنى",
+    kAbove:"{h} س فوق المثالي",
+    kBelow:"{h} س تحت المثالي",
+    kOutRange:"{h} س خارج المثالي",
+    kInRange:"ضمن المثالي",
+    kHumIn:"متوسط الداخل",
+    kHumOut:"متوسط الخارج",
+    kFungusRisk:"خطر الفطريات",
+    kNoFungus:"لا خطر فطريات",
+    kWaterSub:"مروي / مقترح",
+    kWaterOnly:"مروي اليوم",
+    kEstToday:"تقديري اليوم",
+    kSunPeak:"أعلى {t} · {w} W/m²",
+    kRainTomorrow:"غدًا {v}",
+    chMax:"أعلى {v}",
+    chMin:"أدنى {v}",
+    sdInMax:"أعلى الدفيئة",
+    sdInMin:"أدنى الدفيئة",
+    sdIdeal:"النطاق المثالي",
+    sdOutMaxMin:"الخارج أعلى / أدنى",
+    sdHotHour:"أحر وقت",
+    sdHoursAbove:"ساعات فوق المثالي",
+    sdHoursBelow:"ساعات تحت المثالي",
+    sdHumAvg:"المتوسط",
+    sdHumMin:"الأدنى",
+    sdHumMax:"الأعلى",
+    sdHumIn:"الداخل (مستشعر)",
+    sdFungus:"الفطريات",
+    sdFungusNeedsBoard:"تنبيه الفطريات يحتاج لوحة Organics One.",
+    sdSuggested:"المقترح اليوم",
+    sdByZone:"حسب المنطقة",
+    sdSettings:"الإعدادات",
+    sdFlow:"التدفق لكل منطقة",
+    sdOf:"{a} من {b}",
+    sdWaterNote:"اللترات تقديرية حسب التدفق. مع لوحة Organics One تُقاس فعليًا.",
+    sdSunHours:"ساعات الشمس",
+    sdPeakW:"أقصى إشعاع",
+    sdPeakT:"وقت الذروة",
+    sdSunrise:"الشروق",
+    sdSunset:"الغروب",
+    sdRainToday:"اليوم",
+    sdRainTomorrow:"غدًا",
+    sdRainNote:"داخل الدفيئة لا يصل المطر إلى المحاصيل. الري المقترح لا يخصمه.",
     boardTitle:'لوحة ORGANICS ONE',
     boardConnect:'ربط اللوحة',
     boardSave:'اتصال',
@@ -3065,6 +3518,57 @@ const TRANSLATIONS = {
     irrModal:"Acqua consigliata oggi",
     irrNoPlants:"Pianta qualcosa per vedere quanta acqua serve.",
     irrNoZone:"senza zona",
+    kToday:"Oggi",
+    kTemp:"Temperatura",
+    kHum:"Umidità",
+    kWater:"Acqua",
+    kPower:"Elettricità",
+    kSun:"Sole",
+    kRain:"Pioggia",
+    kTempSensor:"serra max. / min.",
+    kTempEst:"serra stimata, max. / min.",
+    kAbove:"{h} h sopra l'ideale",
+    kBelow:"{h} h sotto l'ideale",
+    kOutRange:"{h} h fuori dall'ideale",
+    kInRange:"nell'ideale",
+    kHumIn:"media interna",
+    kHumOut:"media esterna",
+    kFungusRisk:"rischio funghi",
+    kNoFungus:"nessun rischio funghi",
+    kWaterSub:"irrigato / consigliato",
+    kWaterOnly:"irrigato oggi",
+    kEstToday:"stimato oggi",
+    kSunPeak:"max. {t} · {w} W/m²",
+    kRainTomorrow:"domani {v}",
+    chMax:"max. {v}",
+    chMin:"min. {v}",
+    sdInMax:"max. serra",
+    sdInMin:"min. serra",
+    sdIdeal:"intervallo ideale",
+    sdOutMaxMin:"Esterno max. / min.",
+    sdHotHour:"Ora più calda",
+    sdHoursAbove:"Ore sopra l'ideale",
+    sdHoursBelow:"Ore sotto l'ideale",
+    sdHumAvg:"media",
+    sdHumMin:"minima",
+    sdHumMax:"massima",
+    sdHumIn:"Interno (sensore)",
+    sdFungus:"Funghi",
+    sdFungusNeedsBoard:"L'avviso funghi richiede la scheda Organics One.",
+    sdSuggested:"Consigliato oggi",
+    sdByZone:"Per zona",
+    sdSettings:"Impostazioni",
+    sdFlow:"Portata per zona",
+    sdOf:"{a} di {b}",
+    sdWaterNote:"I litri sono stimati con la portata. Con la scheda Organics One sono misurati.",
+    sdSunHours:"ore di sole",
+    sdPeakW:"radiazione max.",
+    sdPeakT:"ora max.",
+    sdSunrise:"Alba",
+    sdSunset:"Tramonto",
+    sdRainToday:"oggi",
+    sdRainTomorrow:"domani",
+    sdRainNote:"Dentro la serra la pioggia non arriva alle colture. L'irrigazione consigliata non la sottrae.",
     boardTitle:'SCHEDA ORGANICS ONE',
     boardConnect:'Collega scheda',
     boardSave:'Collega',
@@ -3341,6 +3845,57 @@ const TRANSLATIONS = {
     irrModal:"Рекомендуемый полив сегодня",
     irrNoPlants:"Посадите что-нибудь, чтобы увидеть потребность в воде.",
     irrNoZone:"без зоны",
+    kToday:"Сегодня",
+    kTemp:"Температура",
+    kHum:"Влажность",
+    kWater:"Вода",
+    kPower:"Электричество",
+    kSun:"Солнце",
+    kRain:"Дождь",
+    kTempSensor:"теплица макс. / мин.",
+    kTempEst:"теплица (оценка), макс. / мин.",
+    kAbove:"{h} ч выше нормы",
+    kBelow:"{h} ч ниже нормы",
+    kOutRange:"{h} ч вне нормы",
+    kInRange:"в норме",
+    kHumIn:"среднее внутри",
+    kHumOut:"среднее снаружи",
+    kFungusRisk:"риск грибка",
+    kNoFungus:"нет риска грибка",
+    kWaterSub:"полито / рекомендовано",
+    kWaterOnly:"полито сегодня",
+    kEstToday:"оценка за сегодня",
+    kSunPeak:"макс. {t} · {w} W/m²",
+    kRainTomorrow:"завтра {v}",
+    chMax:"макс. {v}",
+    chMin:"мин. {v}",
+    sdInMax:"макс. теплица",
+    sdInMin:"мин. теплица",
+    sdIdeal:"идеальный диапазон",
+    sdOutMaxMin:"Снаружи макс. / мин.",
+    sdHotHour:"Самое жаркое время",
+    sdHoursAbove:"Часов выше нормы",
+    sdHoursBelow:"Часов ниже нормы",
+    sdHumAvg:"среднее",
+    sdHumMin:"минимум",
+    sdHumMax:"максимум",
+    sdHumIn:"Внутри (датчик)",
+    sdFungus:"Грибок",
+    sdFungusNeedsBoard:"Для предупреждения о грибке нужна плата Organics One.",
+    sdSuggested:"Рекомендуется сегодня",
+    sdByZone:"По зонам",
+    sdSettings:"Настройки",
+    sdFlow:"Расход на зону",
+    sdOf:"{a} из {b}",
+    sdWaterNote:"Литры рассчитаны по расходу. С платой Organics One они измеряются.",
+    sdSunHours:"часов солнца",
+    sdPeakW:"макс. радиация",
+    sdPeakT:"время пика",
+    sdSunrise:"Восход",
+    sdSunset:"Закат",
+    sdRainToday:"сегодня",
+    sdRainTomorrow:"завтра",
+    sdRainNote:"Внутри теплицы дождь не попадает на растения. Рекомендуемый полив его не учитывает.",
     boardTitle:'ПЛАТА ORGANICS ONE',
     boardConnect:'Подключить плату',
     boardSave:'Подключить',
@@ -4877,6 +5432,18 @@ function drawChart(host, opt){
     if(pts.length < 2) return;
     svg.appendChild(svgEl('path', { d:pts.map((p,i) => (i?'L':'M') + x(p.x).toFixed(1) + ' ' + y(p.y).toFixed(1)).join(' '), fill:'none', stroke:s.color, 'stroke-width':2, 'stroke-linejoin':'round', 'stroke-linecap':'round', 'stroke-dasharray': s.dashed ? '5 4' : '' }));
   });
+  if(opt.risk && opt.series[opt.risk.series]){
+    const pts = opt.series[opt.risk.series].pts.filter(p => p.y != null), out = p => p.y > opt.risk.hi || p.y < opt.risk.lo;
+    for(let i = 1; i < pts.length; i++){ if(!out(pts[i]) && !out(pts[i-1])) continue;
+      svg.appendChild(svgEl('line', { x1:x(pts[i-1].x), y1:y(pts[i-1].y), x2:x(pts[i].x), y2:y(pts[i].y), stroke:'#E8A33D', 'stroke-width':3, 'stroke-linecap':'round' })); }
+  }
+  (opt.marks || []).forEach(m => {
+    if(m.y == null) return;
+    const cx = x(m.x), cy = y(m.y), right = cx > W * 0.68, below = cy < T + 14;
+    svg.appendChild(svgEl('circle', { cx, cy, r:4, fill:'#fff', stroke:m.color, 'stroke-width':2.5 }));
+    const tx = svgEl('text', { x: cx + (right ? -7 : 7), y: below ? cy + 15 : cy - 7, 'text-anchor': right ? 'end' : 'start', class:'st-mark' });
+    tx.textContent = m.label; svg.appendChild(tx);
+  });
   // "now" marker
   const nowH = new Date().getHours() + new Date().getMinutes()/60;
   svg.appendChild(svgEl('line', { x1:x(nowH), x2:x(nowH), y1:T, y2:H-B, stroke:'#26433A', 'stroke-opacity':0.25, 'stroke-dasharray':'2 3' }));
@@ -4915,98 +5482,173 @@ function sensorTile(icon, label, value, live){
   return `<div class="st-sensor${live?' live':''}"><div class="ss-i">${icon}</div><div class="ss-l">${label}</div><div class="ss-v">${live ? value : t('statsNoDataShort')}</div></div>`;
 }
 
-function renderStats(){
-  const body = document.getElementById('statsBody'); if(!body) return;
-  if(document.body.classList.contains('tabs-mode') && activeTab !== 'stats') return;
-  if(statsCoords && Date.now() - statsFetchedAt > 30*60*1000 && statsFetchedAt){ fetchStatsWeather(statsCoords.lat, statsCoords.lon); return; }
-  const wx = statsWeather, hasWx = wx && wx.hourly && wx.hourly.time;
+/* ---------- Statistics v2: quick KPIs, tap for detail and settings ---------- */
+let statDetail = null;
+function fmtHM(h){ const hh = Math.floor(h), mm = Math.round((h - hh) * 60); return String(mm === 60 ? hh + 1 : hh).padStart(2,'0') + ':' + String(mm === 60 ? 0 : mm).padStart(2,'0'); }
+function fmtHours(h){ return h > 0 && h < 1 ? '< 1' : nf(h, 0); }
+function statsData(){
+  const wx = statsWeather, hasWx = !!(wx && wx.hourly && wx.hourly.time);
   const online = !!(OO && OO.info().conectado && OO.info().tarjetaEnLinea);
   const today = new Date().toDateString();
   const hourOf = iso => { const d = new Date(iso); return d.getHours() + d.getMinutes()/60; };
   const hourly = hasWx ? wx.hourly.time.map((iso, i) => ({ h:hourOf(iso), day:new Date(iso).toDateString(), t:wx.hourly.temperature_2m[i], rh:wx.hourly.relative_humidity_2m[i], sw:wx.hourly.shortwave_radiation[i], pr:wx.hourly.precipitation[i] })).filter(p => p.day === today) : [];
   const logToday = lsGet(LOG_KEY, []).filter(p => isToday(p.ts)).map(p => ({ ...p, hr: new Date(p.ts).getHours() + new Date(p.ts).getMinutes()/60 }));
-  const hasLog = logToday.filter(p => p.t != null).length >= 2;
+  const hasLog = logToday.filter(p => p.t != null).length >= 2, hasHumLog = logToday.filter(p => p.h != null).length >= 2;
   const d = hasWx && wx.daily ? wx.daily : null;
-  const city = (lastLocationMeta && lastLocationMeta.city) || '';
-  let dateTxt = new Date().toLocaleDateString(lang==='es'?'es-CL':lang, { weekday:'long', day:'numeric', month:'long' });
-  dateTxt = dateTxt.charAt(0).toUpperCase() + dateTxt.slice(1);
-  const rhAvg = hourly.length ? hourly.reduce((a,p) => a + p.rh, 0) / hourly.length : null;
+  const range = computeIdealRange();
+  const inPts = hasLog ? logToday.filter(p => p.t != null).map(p => ({ x:p.hr, y:p.t })) : hourly.map(p => ({ x:p.h, y:estimateGreenhouse(p.t, p.h) }));
+  const step = hasLog ? 5/60 : 1;
+  const inMaxP = inPts.reduce((a, p) => !a || p.y > a.y ? p : a, null), inMinP = inPts.reduce((a, p) => !a || p.y < a.y ? p : a, null);
+  const hAbove = inPts.filter(p => p.y > range.max).length * step, hBelow = inPts.filter(p => p.y < range.min).length * step;
+  const rhs = hourly.map(p => p.rh).filter(v => v != null);
+  const rhAvg = rhs.length ? rhs.reduce((a, b) => a + b, 0) / rhs.length : null;
+  const hIn = logToday.map(p => p.h).filter(v => v != null), rhIn = hasHumLog ? hIn.reduce((a, b) => a + b, 0) / hIn.length : null;
   const sunH = d && d.sunshine_duration ? d.sunshine_duration[0] / 3600 : null;
-
-  // water today
+  const peak = hourly.reduce((a, p) => p.sw != null && (!a || p.sw > a.sw) ? p : a, null);
   const irr = lsGet(IRR_KEY, []).filter(p => isToday(p.ts));
-  const minutes = irr.reduce((a,p) => a + (p.min || 0), 0);
+  const minutes = irr.reduce((a, p) => a + (p.min || 0), 0);
   let measured = null;
   const volPts = logToday.filter(p => p.vol != null);
-  if(volPts.length >= 2){ let s = 0; for(let i=1;i<volPts.length;i++){ const dv = volPts[i].vol - volPts[i-1].vol; if(dv > 0) s += dv; } measured = s; }
-  const zones = new Set(irr.filter(p => p.zone).map(p => p.zone)).size;
-  const range = computeIdealRange();
+  if(volPts.length >= 2){ let s = 0; for(let i = 1; i < volPts.length; i++){ const dv = volPts[i].vol - volPts[i-1].vol; if(dv > 0) s += dv; } measured = s; }
+  let fungus = null, soil = null;
+  if(online){ try{ fungus = fungusAlert(OO.ambiente()); const sv = OO.zonas().map(q => q.suelo).filter(v => v != null); if(sv.length) soil = sv.reduce((a, b) => a + b, 0) / sv.length; }catch(e){} }
+  return { hasWx, online, hourly, logToday, hasLog, hasHumLog, d, range, inPts, step, inMaxP, inMinP, hAbove, hBelow, rhs, rhAvg, rhIn, sunH, peak,
+    irr, minutes, measured, watered: measured != null ? measured : minutes * flowLpm(), zonesUsed: new Set(irr.filter(p => p.zone).map(p => p.zone)).size,
+    need: irrigationNeed(), pw: powerToday(), fungus, soil };
+}
+function kpiTile(k, icon, label, value, small, sub, extra){
+  return `<button class="st-kpi" type="button" data-k="${k}"><div class="kh">${icon} ${label}<i aria-hidden="true">›</i></div>
+    <div class="kv">${value}${small ? ` <small>${small}</small>` : ''}</div><div class="ks">${sub}</div>${extra || ''}</button>`;
+}
+function kpiStatus(kind, text){ return `<div class="ks kst ${kind}"><span class="kdot"></span>${text}</div>`; }
+
+function renderStats(){
+  const body = document.getElementById('statsBody'); if(!body) return;
+  if(document.body.classList.contains('tabs-mode') && activeTab !== 'stats') return;
+  if(statsCoords && Date.now() - statsFetchedAt > 30*60*1000 && statsFetchedAt){ fetchStatsWeather(statsCoords.lat, statsCoords.lon); return; }
+  const S = statsData(), d = S.d;
+  const city = (lastLocationMeta && lastLocationMeta.city) || '';
+  let dateTxt = new Date().toLocaleDateString(lang==='es'?'es-CL':lang, { weekday:'long', day:'numeric', month:'short' });
+  dateTxt = dateTxt.charAt(0).toUpperCase() + dateTxt.slice(1);
+
+  // temperature status
+  let tSt;
+  if(!S.inPts.length) tSt = '';
+  else if(S.hAbove > 0 && S.hBelow > 0) tSt = kpiStatus('warn', t('kOutRange', { h: fmtHours(S.hAbove + S.hBelow) }));
+  else if(S.hAbove > 0) tSt = kpiStatus('warn', t('kAbove', { h: fmtHours(S.hAbove) }));
+  else if(S.hBelow > 0) tSt = kpiStatus('warn', t('kBelow', { h: fmtHours(S.hBelow) }));
+  else tSt = kpiStatus('ok', t('kInRange'));
+  const hSt = S.online && S.hasHumLog ? (S.fungus ? kpiStatus('warn', t('kFungusRisk')) : kpiStatus('ok', t('kNoFungus'))) : '';
+  const need = S.need && S.need.planted ? S.need.total : null;
+  const wBar = need ? `<div class="kbar"><b style="width:${Math.min(100, Math.round(S.watered / need * 100))}%"></b></div>` : '';
+  const pwOn = S.pw.rows.length > 0;
+  const tomorrow = d && d.precipitation_sum && d.precipitation_sum[1] != null ? nf(uMM(d.precipitation_sum[1]), imperial() ? 2 : 1) + ' ' + MMU() : '-';
 
   body.innerHTML = `
-    <div class="st-head">📍 ${city ? city + ' · ' : ''}${dateTxt}</div>
-    <div class="st-tiles">
-      <div class="st-tile"><div class="tl">${t('statsOutTemp')}</div><div class="tv">${d ? nf(uT(d.temperature_2m_max[0]),0)+'° / '+nf(uT(d.temperature_2m_min[0]),0)+'°' : '-'}</div><div class="ts">${t('statsMaxMin')}</div></div>
-      <div class="st-tile"><div class="tl">${t('statsHumidity')}</div><div class="tv">${rhAvg != null ? nf(rhAvg,0)+'%' : '-'}</div><div class="ts">${t('statsAvg')}</div></div>
-      <div class="st-tile"><div class="tl">${t('statsSunHours')}</div><div class="tv">${sunH != null ? nf(sunH,1)+' h' : '-'}</div><div class="ts">${t('statsToday')}</div></div>
-      <div class="st-tile"><div class="tl">${t('statsRain')}</div><div class="tv">${d ? nf(uMM(d.precipitation_sum[0]), imperial() ? 2 : 1)+' '+MMU() : '-'}</div><div class="ts">${t('statsToday')}</div></div>
+    <div class="st-head"><b>${t('kToday')}</b><span>${city ? city + ' · ' : ''}${dateTxt}</span></div>
+    <div class="st-kpis">
+      ${kpiTile('temp', '🌡️', t('kTemp'), S.inMaxP ? (S.hasLog ? '' : '≈ ') + nf(uT(S.inMaxP.y), 0) + '°' : '-', S.inMinP ? '/ ' + nf(uT(S.inMinP.y), 0) + '°' : '', t('kTempSensor') + (S.hasLog ? '' : ' (' + t('statsEstimated') + ')'), tSt)}
+      ${kpiTile('hum', '💧', t('kHum'), S.rhIn != null ? nf(S.rhIn, 0) + '%' : S.rhAvg != null ? nf(S.rhAvg, 0) + '%' : '-', '', t(S.rhIn != null ? 'kHumIn' : 'kHumOut'), hSt)}
+      ${kpiTile('water', '🚿', t('kWater'), nf(uL(S.watered), uL(S.watered) < 10 ? 1 : 0), need ? '/ ' + fmtL(need) : LU(), t(need ? 'kWaterSub' : 'kWaterOnly'), wBar)}
+      ${kpiTile('power', '⚡', t('kPower'), pwOn ? nf(S.pw.wh / 1000, 2) : '-', pwOn ? 'kWh' : '', pwOn ? t('kEstToday') : t('powerConfigure'))}
+      ${kpiTile('sun', '☀️', t('kSun'), S.sunH != null ? nf(S.sunH, 1) : '-', S.sunH != null ? 'h' : '', S.peak && S.peak.sw > 0 ? t('kSunPeak', { t: fmtHM(Math.floor(S.peak.h)), w: nf(S.peak.sw, 0) }) : t('statsToday'))}
+      ${kpiTile('rain', '🌧️', t('kRain'), d ? nf(uMM(d.precipitation_sum[0]), imperial() ? 2 : 1) : '-', d ? MMU() : '', t('kRainTomorrow', { v: tomorrow }))}
     </div>
-    <div class="st-card"><div class="st-title">🌡️ ${t('statsTempChart')}</div><div class="st-chart" id="stTemp"></div>
-      <div class="st-note">${hasLog ? t('statsFromSensor') : t('statsEstimatedNote')}</div></div>
-    <div class="st-card"><div class="st-title">💧 ${t(logToday.filter(p => p.h != null).length >= 2 ? 'statsHumChart' : 'statsHumChartOut')}</div><div class="st-chart" id="stHum"></div></div>
+    <div class="st-card st-wide"><div class="st-title">🌡️ ${t('statsTempChart')}</div><div class="st-chart" id="stTemp"></div>
+      <div class="st-note">${S.hasLog ? t('statsFromSensor') : t('statsEstimatedNote')}</div></div>
+    <div class="st-card"><div class="st-title">💧 ${t(S.hasHumLog ? 'statsHumChart' : 'statsHumChartOut')}</div><div class="st-chart" id="stHum"></div></div>
     <div class="st-card"><div class="st-title">☀️ ${t('statsSunChart')}</div><div class="st-chart" id="stSun"></div></div>
-    <div class="st-card"><div class="st-title">🚿 ${t('statsWater')}</div>
-      <div class="st-water">
-        <div><div class="wv">${irr.length}</div><div class="wl">${t('statsIrrigations')}</div></div>
-        <div><div class="wv">${nf(minutes,0)} min</div><div class="wl">${t('statsMinutes')}${zones ? ' · '+zones+' '+t('statsZones') : ''}</div></div>
-        <div><div class="wv">${measured != null ? nf(uL(measured),0) : '≈ '+nf(uL(minutes*flowLpm()),0)} ${LU()}</div><div class="wl">${measured != null ? t('statsMeasured') : t('statsEstimated')}</div></div>
-      </div>
-      ${(() => { const nd = irrigationNeed(); if(!nd) return '';
-        if(!nd.planted) return `<div class="st-sug">💡 ${t('irrNoPlants')}</div>`;
-        let soil = null; try{ if(online){ const sv = OO.zonas().map(q => q.suelo).filter(v => v != null); if(sv.length) soil = sv.reduce((a,b) => a + b, 0) / sv.length; } }catch(e){}
-        const zs = Object.keys(nd.zones).map(Number).sort((a,b) => a - b);
-        return `<div class="st-sug">${irrSuggestText(nd.total, measured != null ? measured : minutes * flowLpm(), soil)}
-          ${zs.length ? `<div class="st-sug-z">${zs.map(z => t('zoneShort', { n:z }) + ' ' + fmtL(nd.zones[z])).join(' · ')}${nd.unzoned > 0 ? ' · ' + t('irrNoZone') + ' ' + fmtL(nd.unzoned) : ''}</div>` : ''}</div>
-          <div class="st-note">${t('irrNote')}</div>`; })()}
-      ${measured == null ? `<div class="st-note">${t('statsFlowNote',{ f:`<input type="number" id="stFlow" min="0.5" max="100" step="0.5" value="${Math.round(uL(flowLpm())*10)/10}">` })}</div>` : ''}
-      <div class="st-manual"><span>${t('statsLogManual')}</span>
-        <select id="stManMin">${[5,10,15,20,30,45,60].map(m => `<option value="${m}">${m} min</option>`).join('')}</select>
-        <button id="stManAdd">${t('statsAdd')}</button></div>
-    </div>
-    <div class="st-card"><div class="st-title">⚡ ${t('powerToday')}</div>
-      ${(() => { const pw = powerToday(); if(!pw.rows.length) return `<div class="st-note">${t('powerEmpty')}</div><div class="st-manual"><button id="stPowerCfg">${t('powerConfigure')}</button></div>`;
-        return `<div class="st-water"><div><div class="wv">≈ ${nf(pw.wh/1000, 2)} kWh</div><div class="wl">${t('statsEstimated')}${pw.tracked ? ' · '+t('powerTracked') : ''}</div></div></div>
-        <div class="pw-list">${pw.rows.map(r => `<div><span>${r.d.icon} ${t(r.d.k)} <span class="pw-dim">${r.c.n} × ${nf(r.c.w,0)} W · ${nf(r.hours,1)} h</span></span><b>${nf(r.wh,0)} Wh</b></div>`).join('')}</div>
-        <div class="st-note">${t('powerMeterNote')}</div><div class="st-manual"><button id="stPowerCfg">${t('powerConfigure')}</button></div>`; })()}
-    </div>
-    <div class="st-card"><div class="st-title">📟 ${t('statsSensors')}</div>
-      <div class="st-sensors">${(() => { const a = online ? OO.ambiente() : {}, w = online ? OO.agua() : {}, z = online ? OO.zonas() : [];
-        const soil = z.map(q => q.suelo).filter(v => v != null); const soilAvg = soil.length ? soil.reduce((x,y)=>x+y,0)/soil.length : null;
-        return [sensorTile('🌡️', t('statsInTemp'), nf(uT(a.temperatura),1)+' '+TU(), online && a.temperatura != null),
-          sensorTile('💧', t('statsInHum'), nf(a.humedad,0)+' %', online && a.humedad != null),
-          sensorTile('🫧', 'CO2', nf(a.co2,0)+' ppm', online && a.co2 != null),
-          sensorTile('💡', t('statsLight'), nf(a.luz,0)+' lx', online && a.luz != null),
-          sensorTile('🌱', t('statsSoil'), nf(soilAvg,0)+' %', online && soilAvg != null),
-          sensorTile('🛢️', t('statsTank'), nf(w.tanque,0)+' %', online && w.conTanque && w.tanque != null),
-          sensorTile('⚡', t('statsPower'), '', false)].join(''); })()}</div>
-      ${online ? '' : `<div class="st-cta"><div>${t('statsCta')}</div><a href="https://aidex.cl/invernaderos/" target="_blank" rel="noopener" class="st-cta-btn">${t('statsCtaBtn')}</a></div>`}
+    <div class="st-card st-sens-card"><div class="st-title">📟 ${t('statsSensors')}</div>
+      <div class="st-sensors">${(() => { const on = S.online, a = on ? OO.ambiente() : {}, w = on ? OO.agua() : {};
+        return [sensorTile('🌡️', t('statsInTemp'), nf(uT(a.temperatura),1)+' '+TU(), on && a.temperatura != null),
+          sensorTile('💧', t('statsInHum'), nf(a.humedad,0)+' %', on && a.humedad != null),
+          sensorTile('🌱', t('statsSoil'), nf(S.soil,0)+' %', on && S.soil != null),
+          sensorTile('🫧', 'CO2', nf(a.co2,0)+' ppm', on && a.co2 != null),
+          sensorTile('💡', t('statsLight'), nf(a.luz,0)+' lx', on && a.luz != null),
+          sensorTile('🛢️', t('statsTank'), nf(w.tanque,0)+' %', on && w.conTanque && w.tanque != null)].join(''); })()}</div>
+      ${S.online ? '' : `<div class="st-cta"><div>${t('statsCta')}</div><a href="https://aidex.cl/invernaderos/" target="_blank" rel="noopener" class="st-cta-btn">${t('statsCtaBtn')}</a></div>`}
     </div>`;
 
   const C_OUT = '#2a78d6', C_IN = '#1baf7a', C_SUN = '#eda100';
-  const inSeries = hasLog ? { name:t('statsGreenhouseSensor'), color:C_IN, pts:logToday.map(p => ({ x:p.hr, y:uT(p.t) })) }
-                          : { name:t('statsGreenhouseEst'), color:C_IN, dashed:true, pts:hourly.map(p => ({ x:p.h, y:uT(estimateGreenhouse(p.t, p.h)) })) };
-  drawChart(document.getElementById('stTemp'), { title:t('statsTempChart'), unit:TU(), band:[uT(range.min), uT(range.max)],
-    series:[{ name:t('statsOutside'), color:C_OUT, pts:hourly.map(p => ({ x:p.h, y:uT(p.t) })) }, inSeries] });
-  const humSeries = [{ name:t('statsOutside'), color:C_OUT, pts:hourly.map(p => ({ x:p.h, y:p.rh })) }];
-  if(logToday.filter(p => p.h != null).length >= 2)
-    humSeries.push({ name:t('statsGreenhouseSensor'), color:C_IN, pts:logToday.map(p => ({ x:p.hr, y:p.h })) });
+  const inSeries = { name: t(S.hasLog ? 'statsGreenhouseSensor' : 'statsGreenhouseEst'), color:C_IN, dashed: !S.hasLog, pts: S.inPts.map(p => ({ x:p.x, y:uT(p.y) })) };
+  const marks = [];
+  if(S.inMaxP) marks.push({ x:S.inMaxP.x, y:uT(S.inMaxP.y), color: S.inMaxP.y > S.range.max ? '#E8A33D' : C_IN, label: t('chMax', { v: nf(uT(S.inMaxP.y), 0) + '°' }) + ' · ' + fmtHM(S.inMaxP.x) });
+  if(S.inMinP) marks.push({ x:S.inMinP.x, y:uT(S.inMinP.y), color: S.inMinP.y < S.range.min ? '#E8A33D' : C_IN, label: t('chMin', { v: nf(uT(S.inMinP.y), 0) + '°' }) });
+  drawChart(document.getElementById('stTemp'), { title:t('statsTempChart'), unit:TU(), band:[uT(S.range.min), uT(S.range.max)], marks,
+    risk:{ series:1, step:S.step, lo:uT(S.range.min), hi:uT(S.range.max) },
+    series:[{ name:t('statsOutside'), color:C_OUT, pts:S.hourly.map(p => ({ x:p.h, y:uT(p.t) })) }, inSeries] });
+  const humSeries = [{ name:t('statsOutside'), color:C_OUT, pts:S.hourly.map(p => ({ x:p.h, y:p.rh })) }];
+  if(S.hasHumLog) humSeries.push({ name:t('statsGreenhouseSensor'), color:C_IN, pts:S.logToday.filter(p => p.h != null).map(p => ({ x:p.hr, y:p.h })) });
   drawChart(document.getElementById('stHum'), { title:t('statsHumChart'), unit:'%', min:0, max:100, series:humSeries });
-  drawChart(document.getElementById('stSun'), { title:t('statsSunChart'), unit:'W/m²', min:0, series:[{ name:t('statsSolar'), color:C_SUN, bars:true, pts:hourly.map(p => ({ x:Math.floor(p.h), y:p.sw })) }] });
+  drawChart(document.getElementById('stSun'), { title:t('statsSunChart'), unit:'W/m²', min:0, series:[{ name:t('statsSolar'), color:C_SUN, bars:true, pts:S.hourly.map(p => ({ x:Math.floor(p.h), y:p.sw })) }] });
 
-  const pcfg = document.getElementById('stPowerCfg'); if(pcfg) pcfg.addEventListener('click', openPowerSettings);
-  const flow = document.getElementById('stFlow');
-  if(flow) flow.addEventListener('change', () => { lsSet(FLOW_KEY, fromUL(Number(flow.value)) || 6); renderStats(); });
-  document.getElementById('stManAdd').addEventListener('click', () => { logIrrigation(0, Number(document.getElementById('stManMin').value), 'manual'); showToast(t('statsAdded')); });
+  body.querySelectorAll('.st-kpi').forEach(b => b.addEventListener('click', () => openStatDetail(b.dataset.k)));
+  if(statDetail) renderStatDetail();
 }
+
+/* ---- detail sheet ---- */
+function openStatDetail(k){ statDetail = k; renderStatDetail(); document.getElementById('statOverlay').classList.add('show'); }
+function closeStatDetail(){ statDetail = null; document.getElementById('statOverlay').classList.remove('show'); }
+function sdBig(items){ return `<div class="sd-big" style="grid-template-columns:repeat(${items.length},1fr)">${items.map(([v, l]) => `<div><b>${v}</b><span>${l}</span></div>`).join('')}</div>`; }
+function sdRow(k, v){ return `<div class="sd-row"><span>${k}</span><b>${v}</b></div>`; }
+function renderStatDetail(){
+  const box = document.getElementById('statBox'); if(!box || !statDetail) return;
+  const S = statsData(), d = S.d, k = statDetail;
+  const head = (icon, label) => `<div class="sd-grab"></div><div class="sd-head"><div><b>${icon} ${label}</b><span>${t('kToday')}</span></div><button class="icon-btn" id="sdClose" aria-label="Close">✕</button></div>`;
+  const deg = v => v == null ? '-' : nf(uT(v), 0) + '°';
+  let html = '';
+  if(k === 'temp'){
+    html = head('🌡️', t('kTemp')) + sdBig([[deg(S.inMaxP && S.inMaxP.y), t('sdInMax')], [deg(S.inMinP && S.inMinP.y), t('sdInMin')], [deg(S.range.min) + ' – ' + deg(S.range.max), t('sdIdeal')]])
+      + sdRow(t('sdOutMaxMin'), d ? deg(d.temperature_2m_max[0]) + ' / ' + deg(d.temperature_2m_min[0]) : '-')
+      + sdRow(t('sdHotHour'), S.inMaxP ? fmtHM(S.inMaxP.x) : '-')
+      + sdRow(t('sdHoursAbove'), fmtHours(S.hAbove) + ' h') + sdRow(t('sdHoursBelow'), fmtHours(S.hBelow) + ' h')
+      + `<div class="st-note">${S.hasLog ? t('statsFromSensor') : t('statsEstimatedNote')}</div>`;
+  } else if(k === 'hum'){
+    const mn = S.rhs.length ? Math.min(...S.rhs) : null, mx = S.rhs.length ? Math.max(...S.rhs) : null;
+    html = head('💧', t('kHum')) + `<div class="sd-sec">${t('statsOutside')}</div>`
+      + sdBig([[S.rhAvg != null ? nf(S.rhAvg, 0) + '%' : '-', t('sdHumAvg')], [mn != null ? nf(mn, 0) + '%' : '-', t('sdHumMin')], [mx != null ? nf(mx, 0) + '%' : '-', t('sdHumMax')]])
+      + (S.rhIn != null ? sdRow(t('sdHumIn'), nf(S.rhIn, 0) + '%') : '')
+      + sdRow(t('sdFungus'), S.online && S.hasHumLog ? (S.fungus ? '⚠️ ' + t('kFungusRisk') : '✓ ' + t('kNoFungus')) : '-')
+      + (S.fungus ? `<div class="sd-sug warn">${S.fungus}</div>` : '')
+      + (S.online ? '' : `<div class="st-note">${t('sdFungusNeedsBoard')}</div>`);
+  } else if(k === 'water'){
+    const nd = S.need, zs = new Set([...(nd ? Object.keys(nd.zones).map(Number) : []), ...S.irr.filter(p => p.zone).map(p => p.zone)]);
+    const zoneL = z => S.irr.filter(p => p.zone === z).reduce((a, p) => a + (p.min || 0), 0) * flowLpm();
+    const sug = nd && nd.planted ? irrSuggestText(nd.total, S.watered, S.soil).replace('💡 ' + t('irrSuggested') + ' ', '💡 ') : (nd ? '💡 ' + t('irrNoPlants') : '');
+    html = head('🚿', t('statsWater')) + sdBig([[S.irr.length, t('statsIrrigations')], [nf(S.minutes, 0) + ' min', t('statsMinutes')],
+        [(S.measured != null ? '' : '≈ ') + fmtL(S.watered), S.measured != null ? t('statsMeasured') : t('statsEstimated')]])
+      + (sug ? `<div class="sd-sec">${t('sdSuggested')}</div><div class="sd-sug">${sug}<small>${t('irrNote')}</small></div>` : '')
+      + (zs.size || (nd && nd.unzoned > 0) ? `<div class="sd-sec">${t('sdByZone')}</div>` + [...zs].sort((a, b) => a - b).map(z => sdRow(t('zoneLabel', { n:z }), nd ? t('sdOf', { a: fmtL(zoneL(z)), b: fmtL(nd.zones[z] || 0) }) : fmtL(zoneL(z)))).join('')
+          + (nd && nd.unzoned > 0 ? sdRow(sentenceCase(t('irrNoZone')), t('irrSuggested') + ' ' + fmtL(nd.unzoned)) : '') : '')
+      + `<div class="sd-sec">${t('sdSettings')}</div>`
+      + `<div class="sd-row"><span>${t('sdFlow')}</span><span><input type="number" id="sdFlow" min="0.5" max="100" step="0.5" value="${Math.round(uL(flowLpm())*10)/10}"> ${LU()}/min</span></div>`
+      + `<div class="sd-row"><span>${t('statsLogManual').replace(/[:：]\s*$/, '')}</span><span><select id="sdManMin">${[5,10,15,20,30,45,60].map(m => `<option value="${m}">${m} min</option>`).join('')}</select> <button class="sd-btn" id="sdManAdd">${t('statsAdd')}</button></span></div>`
+      + (S.measured == null ? `<div class="st-note">${t('sdWaterNote')}</div>` : '');
+  } else if(k === 'power'){
+    const pw = S.pw;
+    html = head('⚡', t('kPower')) + (pw.rows.length ? sdBig([['≈ ' + nf(pw.wh / 1000, 2) + ' kWh', t('statsEstimated') + (pw.tracked ? ' · ' + t('powerTracked') : '')]])
+        + `<div class="pw-list">${pw.rows.map(r => `<div><span>${r.d.icon} ${t(r.d.k)} <span class="pw-dim">${r.c.n} × ${nf(r.c.w,0)} W · ${nf(r.hours,1)} h</span></span><b>${nf(r.wh,0)} Wh</b></div>`).join('')}</div>`
+      : `<div class="st-note">${t('powerEmpty')}</div>`)
+      + `<div class="sd-actions"><button class="sd-btn" id="sdPowerCfg">${t('powerConfigure')}</button></div><div class="st-note">${t('powerMeterNote')}</div>`;
+  } else if(k === 'sun'){
+    const wd = lastWeatherData && lastWeatherData.daily, tm = iso => iso ? new Date(iso).toLocaleTimeString(lang==='es'?'es-CL':lang, { hour:'2-digit', minute:'2-digit' }) : '-';
+    html = head('☀️', t('kSun')) + sdBig([[S.sunH != null ? nf(S.sunH, 1) + ' h' : '-', t('sdSunHours')], [S.peak ? nf(S.peak.sw, 0) + ' W/m²' : '-', t('sdPeakW')], [S.peak && S.peak.sw > 0 ? fmtHM(Math.floor(S.peak.h)) : '-', t('sdPeakT')]])
+      + sdRow(t('sdSunrise'), tm(wd && wd.sunrise && wd.sunrise[0])) + sdRow(t('sdSunset'), tm(wd && wd.sunset && wd.sunset[0]));
+  } else if(k === 'rain'){
+    const mm = i => d && d.precipitation_sum && d.precipitation_sum[i] != null ? nf(uMM(d.precipitation_sum[i]), imperial() ? 2 : 1) + ' ' + MMU() : '-';
+    html = head('🌧️', t('kRain')) + sdBig([[mm(0), t('sdRainToday')], [mm(1), t('sdRainTomorrow')]]) + `<div class="st-note">${t('sdRainNote')}</div>`;
+  }
+  box.innerHTML = html;
+  document.getElementById('sdClose').onclick = closeStatDetail;
+  const fl = document.getElementById('sdFlow');
+  if(fl) fl.addEventListener('change', () => { lsSet(FLOW_KEY, fromUL(Number(fl.value)) || 6); renderStats(); });
+  const add = document.getElementById('sdManAdd');
+  if(add) add.onclick = () => { logIrrigation(0, Number(document.getElementById('sdManMin').value), 'manual'); showToast(t('statsAdded')); renderStatDetail(); };
+  const pc = document.getElementById('sdPowerCfg');
+  if(pc) pc.onclick = () => { closeStatDetail(); openPowerSettings(); };
+}
+document.getElementById('statOverlay').addEventListener('click', e => { if(e.target.id === 'statOverlay') closeStatDetail(); });
+document.addEventListener('keydown', e => { if(e.key === 'Escape' && statDetail) closeStatDetail(); });
 window.addEventListener('resize', () => { clearTimeout(window._stRs); window._stRs = setTimeout(renderStats, 250); });
 
 /* ---------- Electricity estimate: watts per device x time on ---------- */
