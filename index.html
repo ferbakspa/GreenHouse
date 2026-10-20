@@ -96,6 +96,17 @@
 
 
   /* ---------- Statistics ---------- */
+  .pw-box{ max-width:420px; max-height:90vh; overflow:auto; }
+  .pw-help{ font-size:12px !important; color: var(--pine-soft) !important; margin:0 0 10px !important; }
+  .pw-head, .pw-row{ display:grid; grid-template-columns: 1fr 58px 70px; gap:6px; align-items:center; }
+  .pw-row.manual, .pw-head:has(span:nth-child(4)){ grid-template-columns: 1fr 52px 64px 58px; }
+  .pw-head{ font-size:10.5px; color: var(--pine-soft); font-weight:700; text-align:center; margin-bottom:4px; }
+  .pw-row{ font-size:13px; color: var(--pine-dark); padding:5px 0; border-top:1px solid var(--bg-warm); }
+  .pw-row input{ width:100%; padding:6px 6px; border:1.5px solid var(--soil-line); border-radius:8px; font:inherit; font-size:13px; text-align:center; background:#fff; box-sizing:border-box; }
+  .pw-list{ margin-top:8px; font-size:12.5px; }
+  .pw-list > div{ display:flex; justify-content:space-between; gap:8px; padding:5px 0; border-top:1px solid var(--bg-warm); color: var(--pine-dark); }
+  .pw-dim{ color: var(--pine-soft); font-size:11.5px; }
+
   .st-head{ font-size:12.5px; color: var(--pine-soft); margin:-4px 0 12px; font-weight:600; }
   .st-tiles{ display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; margin-bottom:14px; }
   .st-tile{ background: var(--bg-warm); border-radius:12px; padding:10px 11px; }
@@ -537,6 +548,7 @@
   <p><a href="terms.html" target="_blank" rel="noopener" id="consentTermsLink"></a> · <a href="privacy.html" target="_blank" rel="noopener" id="consentPrivacyLink"></a></p>
   <button id="consentAccept"></button>
 </div></div>
+<div class="consent-overlay grid-overlay" id="powerOverlay" role="dialog" aria-modal="true"><div class="consent-box grid-box pw-box" id="powerBox"></div></div>
 <div class="sheet-backdrop" id="sheetBackdrop"></div>
 <nav class="tabbar" id="tabbar" aria-label="Sections">
   <button data-tab="env"><span class="ti">🌤️</span><span class="tl" id="tabEnvL">Environment</span></button>
@@ -709,6 +721,17 @@ const TRANSLATIONS = {
     statsGreenhouseEst:'Greenhouse (estimate)',
     statsOutside:'Outside',
     statsSolar:'Solar radiation',
+    powerToday:'Electricity today',
+    powerTitle:'Greenhouse equipment',
+    powerHelp:'Enter how many of each device you have and its power in watts. Example: 4 fluorescent tubes of 20 W.',
+    powerQty:'Qty.',
+    powerHours:'h/day',
+    powerBoardNote:'With the Organics One board, on-time is measured automatically from each output and the pump.',
+    powerManualNote:'Without a board, enter how many hours a day each device is usually on.',
+    powerEmpty:'Set up your equipment (lights, fan, pump...) to estimate today\'s electricity use.',
+    powerConfigure:'Set up equipment',
+    powerTracked:'from real on-time',
+    powerMeterNote:'Estimate. For real consumption, install a Wi-Fi energy meter in your electrical panel.',
     boardTitle:'ORGANICS ONE BOARD', boardConnect:'Connect board', boardSave:'Connect', boardDisc:'Disconnect', boardForget:'Forget', boardServer:'Server (EMQX host)', boardUser:'User', boardPass:'Password', boardInv:'Greenhouse name', boardOff:'Not connected', boardOn:'Board online', boardNoBoard:'Board offline', boardUpdate:'Update firmware', boardTemp:'Temperature', boardHum:'Humidity', boardVpd:'VPD', boardSoil:'Soil', boardValveOpen:'watering', boardZone:'Zone', boardAlarm:'Alarm', boardConnecting:'Connecting…', boardLiveTemp:'Real sensor',
     useAutoLocation:'📍 Use automatic location', locationManualLabel:'Manual location',
     locationApprox:'Approximate location', locationPrecise:'Precise location',
@@ -863,6 +886,17 @@ const TRANSLATIONS = {
     statsGreenhouseEst:'Invernadero (estimada)',
     statsOutside:'Exterior',
     statsSolar:'Radiación solar',
+    powerToday:'Electricidad de hoy',
+    powerTitle:'Equipos del invernadero',
+    powerHelp:'Indica cuántos equipos tienes de cada tipo y su potencia en watts. Ejemplo: 4 fluorescentes de 20 W.',
+    powerQty:'Cant.',
+    powerHours:'h/día',
+    powerBoardNote:'Con la tarjeta Organics One, el tiempo encendido se mide solo en cada salida y en la bomba.',
+    powerManualNote:'Sin tarjeta, indica cuántas horas al día suele estar encendido cada equipo.',
+    powerEmpty:'Configura tus equipos (luces, ventilador, bomba...) para estimar el consumo eléctrico del día.',
+    powerConfigure:'Configurar equipos',
+    powerTracked:'con tiempo real encendido',
+    powerMeterNote:'Estimación. Para el consumo real, instala un medidor de energía con Wi-Fi en el tablero eléctrico.',
     boardTitle:'TARJETA ORGANICS ONE', boardConnect:'Conectar tarjeta', boardSave:'Conectar', boardDisc:'Desconectar', boardForget:'Olvidar', boardServer:'Servidor (host de EMQX)', boardUser:'Usuario', boardPass:'Clave', boardInv:'Nombre del invernadero', boardOff:'Sin conexión', boardOn:'Tarjeta en línea', boardNoBoard:'Tarjeta desconectada', boardUpdate:'Actualizar firmware', boardTemp:'Temperatura', boardHum:'Humedad', boardVpd:'VPD', boardSoil:'Suelo', boardValveOpen:'regando', boardZone:'Zona', boardAlarm:'Alarma', boardConnecting:'Conectando…', boardLiveTemp:'Sensor real',
     useAutoLocation:'📍 Usar ubicación automática', locationManualLabel:'Ubicación manual',
     locationApprox:'Ubicación aproximada', locationPrecise:'Ubicación precisa',
@@ -1016,6 +1050,17 @@ const TRANSLATIONS = {
     statsGreenhouseEst:'Serre (estimée)',
     statsOutside:'Extérieur',
     statsSolar:'Rayonnement solaire',
+    powerToday:'Électricité du jour',
+    powerTitle:'Équipements de la serre',
+    powerHelp:'Indiquez combien d\'appareils de chaque type vous avez et leur puissance en watts. Exemple : 4 tubes fluorescents de 20 W.',
+    powerQty:'Qté',
+    powerHours:'h/jour',
+    powerBoardNote:'Avec la carte Organics One, le temps de fonctionnement est mesuré automatiquement sur chaque sortie et la pompe.',
+    powerManualNote:'Sans carte, indiquez combien d\'heures par jour chaque appareil est allumé en général.',
+    powerEmpty:'Configurez vos équipements (lampes, ventilateur, pompe...) pour estimer la consommation du jour.',
+    powerConfigure:'Configurer les équipements',
+    powerTracked:'temps réel de fonctionnement',
+    powerMeterNote:'Estimation. Pour la consommation réelle, installez un compteur d\'énergie Wi-Fi dans le tableau électrique.',
     boardTitle:'CARTE ORGANICS ONE',
     boardConnect:'Connecter la carte',
     boardSave:'Connecter',
@@ -1210,6 +1255,17 @@ const TRANSLATIONS = {
     statsGreenhouseEst:'Estufa (estimada)',
     statsOutside:'Externo',
     statsSolar:'Radiação solar',
+    powerToday:'Eletricidade de hoje',
+    powerTitle:'Equipamentos da estufa',
+    powerHelp:'Informe quantos equipamentos de cada tipo você tem e a potência em watts. Exemplo: 4 lâmpadas fluorescentes de 20 W.',
+    powerQty:'Qtd.',
+    powerHours:'h/dia',
+    powerBoardNote:'Com a placa Organics One, o tempo ligado é medido automaticamente em cada saída e na bomba.',
+    powerManualNote:'Sem placa, informe quantas horas por dia cada equipamento costuma ficar ligado.',
+    powerEmpty:'Configure seus equipamentos (luzes, ventilador, bomba...) para estimar o consumo elétrico do dia.',
+    powerConfigure:'Configurar equipamentos',
+    powerTracked:'com tempo real ligado',
+    powerMeterNote:'Estimativa. Para o consumo real, instale um medidor de energia Wi-Fi no quadro elétrico.',
     boardTitle:'PLACA ORGANICS ONE',
     boardConnect:'Conectar placa',
     boardSave:'Conectar',
@@ -1404,6 +1460,17 @@ const TRANSLATIONS = {
     statsGreenhouseEst:'Gewächshaus (geschätzt)',
     statsOutside:'Außen',
     statsSolar:'Sonnenstrahlung',
+    powerToday:'Strom heute',
+    powerTitle:'Geräte im Gewächshaus',
+    powerHelp:'Gib an, wie viele Geräte jeder Art du hast und ihre Leistung in Watt. Beispiel: 4 Leuchtstoffröhren mit 20 W.',
+    powerQty:'Anz.',
+    powerHours:'h/Tag',
+    powerBoardNote:'Mit der Organics-One-Platine wird die Laufzeit jedes Ausgangs und der Pumpe automatisch gemessen.',
+    powerManualNote:'Ohne Platine gib an, wie viele Stunden pro Tag jedes Gerät üblicherweise läuft.',
+    powerEmpty:'Richte deine Geräte ein (Licht, Ventilator, Pumpe...), um den heutigen Stromverbrauch zu schätzen.',
+    powerConfigure:'Geräte einrichten',
+    powerTracked:'mit echter Laufzeit',
+    powerMeterNote:'Schätzung. Für den echten Verbrauch installiere einen WLAN-Energiezähler im Schaltschrank.',
     boardTitle:'ORGANICS-ONE-PLATINE',
     boardConnect:'Platine verbinden',
     boardSave:'Verbinden',
@@ -1598,6 +1665,17 @@ const TRANSLATIONS = {
     statsGreenhouseEst:'温室（估算）',
     statsOutside:'室外',
     statsSolar:'太阳辐射',
+    powerToday:'今日用电',
+    powerTitle:'温室设备',
+    powerHelp:'填写每种设备的数量和功率（瓦）。例如：4 支 20 W 荧光灯。',
+    powerQty:'数量',
+    powerHours:'小时/天',
+    powerBoardNote:'连接 Organics One 控制板后，每路输出和水泵的运行时间会自动测量。',
+    powerManualNote:'没有控制板时，请填写每台设备每天大约运行几小时。',
+    powerEmpty:'设置你的设备（灯、风扇、水泵……）以估算今天的用电量。',
+    powerConfigure:'设置设备',
+    powerTracked:'按实际运行时间',
+    powerMeterNote:'估算值。如需实际用电量，请在电箱中安装 Wi-Fi 电能表。',
     boardTitle:'ORGANICS ONE 控制板',
     boardConnect:'连接控制板',
     boardSave:'连接',
@@ -1792,6 +1870,17 @@ const TRANSLATIONS = {
     statsGreenhouseEst:'ग्रीनहाउस (अनुमान)',
     statsOutside:'बाहर',
     statsSolar:'सौर विकिरण',
+    powerToday:'आज की बिजली',
+    powerTitle:'ग्रीनहाउस उपकरण',
+    powerHelp:'हर प्रकार के उपकरण की संख्या और वाट में शक्ति लिखें। उदाहरण: 20 W की 4 फ्लोरोसेंट ट्यूब।',
+    powerQty:'संख्या',
+    powerHours:'घं/दिन',
+    powerBoardNote:'Organics One बोर्ड के साथ, हर आउटपुट और पंप का चलने का समय अपने आप मापा जाता है।',
+    powerManualNote:'बोर्ड के बिना, लिखें कि हर उपकरण रोज़ लगभग कितने घंटे चलता है।',
+    powerEmpty:'आज की बिजली खपत का अनुमान लगाने के लिए अपने उपकरण (लाइट, पंखा, पंप...) सेट करें।',
+    powerConfigure:'उपकरण सेट करें',
+    powerTracked:'असल चलने के समय से',
+    powerMeterNote:'अनुमान। असल खपत के लिए बिजली पैनल में Wi-Fi ऊर्जा मीटर लगाएँ।',
     boardTitle:'ORGANICS ONE बोर्ड',
     boardConnect:'बोर्ड कनेक्ट करें',
     boardSave:'कनेक्ट करें',
@@ -1986,6 +2075,17 @@ const TRANSLATIONS = {
     statsGreenhouseEst:'الدفيئة (تقدير)',
     statsOutside:'الخارج',
     statsSolar:'الإشعاع الشمسي',
+    powerToday:'كهرباء اليوم',
+    powerTitle:'معدات الدفيئة',
+    powerHelp:'أدخل عدد كل نوع من المعدات وقدرته بالواط. مثال: 4 مصابيح فلورسنت بقدرة 20 واط.',
+    powerQty:'العدد',
+    powerHours:'ساعة/يوم',
+    powerBoardNote:'مع لوحة Organics One يُقاس وقت التشغيل تلقائيًا لكل مخرج وللمضخة.',
+    powerManualNote:'بدون لوحة، أدخل عدد الساعات التي يعمل فيها كل جهاز يوميًا عادةً.',
+    powerEmpty:'اضبط معداتك (إضاءة، مروحة، مضخة...) لتقدير استهلاك الكهرباء اليوم.',
+    powerConfigure:'ضبط المعدات',
+    powerTracked:'بوقت التشغيل الفعلي',
+    powerMeterNote:'تقدير. للاستهلاك الفعلي ركّب عداد طاقة بشبكة Wi-Fi في لوحة الكهرباء.',
     boardTitle:'لوحة ORGANICS ONE',
     boardConnect:'ربط اللوحة',
     boardSave:'اتصال',
@@ -2180,6 +2280,17 @@ const TRANSLATIONS = {
     statsGreenhouseEst:'Serra (stimata)',
     statsOutside:'Esterno',
     statsSolar:'Radiazione solare',
+    powerToday:'Elettricità di oggi',
+    powerTitle:'Dispositivi della serra',
+    powerHelp:'Indica quanti dispositivi hai per tipo e la loro potenza in watt. Esempio: 4 tubi fluorescenti da 20 W.',
+    powerQty:'Q.tà',
+    powerHours:'h/giorno',
+    powerBoardNote:'Con la scheda Organics One il tempo di accensione di ogni uscita e della pompa si misura da solo.',
+    powerManualNote:'Senza scheda, indica quante ore al giorno resta acceso di solito ogni dispositivo.',
+    powerEmpty:'Configura i tuoi dispositivi (luci, ventilatore, pompa...) per stimare il consumo elettrico di oggi.',
+    powerConfigure:'Configura dispositivi',
+    powerTracked:'con tempo reale di accensione',
+    powerMeterNote:'Stima. Per il consumo reale installa un contatore di energia Wi-Fi nel quadro elettrico.',
     boardTitle:'SCHEDA ORGANICS ONE',
     boardConnect:'Collega scheda',
     boardSave:'Collega',
@@ -2374,6 +2485,17 @@ const TRANSLATIONS = {
     statsGreenhouseEst:'Теплица (оценка)',
     statsOutside:'Снаружи',
     statsSolar:'Солнечная радиация',
+    powerToday:'Электричество сегодня',
+    powerTitle:'Оборудование теплицы',
+    powerHelp:'Укажите количество устройств каждого типа и их мощность в ваттах. Пример: 4 люминесцентные лампы по 20 Вт.',
+    powerQty:'Кол.',
+    powerHours:'ч/день',
+    powerBoardNote:'С платой Organics One время работы каждого выхода и насоса измеряется автоматически.',
+    powerManualNote:'Без платы укажите, сколько часов в день обычно работает каждое устройство.',
+    powerEmpty:'Настройте оборудование (свет, вентилятор, насос...), чтобы оценить расход электроэнергии за день.',
+    powerConfigure:'Настроить оборудование',
+    powerTracked:'по реальному времени работы',
+    powerMeterNote:'Оценка. Для реального расхода установите Wi-Fi счётчик энергии в электрощите.',
     boardTitle:'ПЛАТА ORGANICS ONE',
     boardConnect:'Подключить плату',
     boardSave:'Подключить',
@@ -3696,6 +3818,7 @@ function initBoard(){
   OO.on('*', boardChanged);
   OO.on('auto/event', v => { try{ const e = JSON.parse(v); if(e.action === 'irrigate' && e.state === 'open' && e.duration_s) logIrrigation(e.zone || 0, Math.round(e.duration_s/60), 'auto'); }catch(err){} });
   OO.onConexion(() => setTimeout(logSensors, 3000));
+  OO.on('*', () => { clearTimeout(window._pwT); window._pwT = setTimeout(trackPower, 400); });
   B('boardConnect').onclick = () => {
     const form = B('boardForm');
     if(!form.classList.contains('open')){
@@ -3756,6 +3879,7 @@ function logSensors(){
   }catch(e){}
 }
 setInterval(logSensors, 60000);
+setInterval(() => { if(typeof trackPower === 'function') trackPower(); }, 60000);
 /* irrigation log: orders from the app, automatic events from the board, or manual entries */
 function logIrrigation(zone, minutes, source){
   const irr = lsGet(IRR_KEY, []), now = Date.now();
@@ -3899,6 +4023,12 @@ function renderStats(){
         <select id="stManMin">${[5,10,15,20,30,45,60].map(m => `<option value="${m}">${m} min</option>`).join('')}</select>
         <button id="stManAdd">${t('statsAdd')}</button></div>
     </div>
+    <div class="st-card"><div class="st-title">⚡ ${t('powerToday')}</div>
+      ${(() => { const pw = powerToday(); if(!pw.rows.length) return `<div class="st-note">${t('powerEmpty')}</div><div class="st-manual"><button id="stPowerCfg">${t('powerConfigure')}</button></div>`;
+        return `<div class="st-water"><div><div class="wv">≈ ${nf(pw.wh/1000, 2)} kWh</div><div class="wl">${t('statsEstimated')}${pw.tracked ? ' · '+t('powerTracked') : ''}</div></div></div>
+        <div class="pw-list">${pw.rows.map(r => `<div><span>${r.d.icon} ${t(r.d.k)} <span class="pw-dim">${r.c.n} × ${nf(r.c.w,0)} W · ${nf(r.hours,1)} h</span></span><b>${nf(r.wh,0)} Wh</b></div>`).join('')}</div>
+        <div class="st-note">${t('powerMeterNote')}</div><div class="st-manual"><button id="stPowerCfg">${t('powerConfigure')}</button></div>`; })()}
+    </div>
     <div class="st-card"><div class="st-title">📟 ${t('statsSensors')}</div>
       <div class="st-sensors">${(() => { const a = online ? OO.ambiente() : {}, w = online ? OO.agua() : {}, z = online ? OO.zonas() : [];
         const soil = z.map(q => q.suelo).filter(v => v != null); const soilAvg = soil.length ? soil.reduce((x,y)=>x+y,0)/soil.length : null;
@@ -3923,11 +4053,73 @@ function renderStats(){
   drawChart(document.getElementById('stHum'), { title:t('statsHumChart'), unit:'%', min:0, max:100, series:humSeries });
   drawChart(document.getElementById('stSun'), { title:t('statsSunChart'), unit:'W/m²', min:0, series:[{ name:t('statsSolar'), color:C_SUN, bars:true, pts:hourly.map(p => ({ x:Math.floor(p.h), y:p.sw })) }] });
 
+  const pcfg = document.getElementById('stPowerCfg'); if(pcfg) pcfg.addEventListener('click', openPowerSettings);
   const flow = document.getElementById('stFlow');
   if(flow) flow.addEventListener('change', () => { lsSet(FLOW_KEY, Number(flow.value) || 6); renderStats(); });
   document.getElementById('stManAdd').addEventListener('click', () => { logIrrigation(0, Number(document.getElementById('stManMin').value), 'manual'); showToast(t('statsAdded')); });
 }
 window.addEventListener('resize', () => { clearTimeout(window._stRs); window._stRs = setTimeout(renderStats, 250); });
+
+/* ---------- Electricity estimate: watts per device x time on ---------- */
+const POWER_KEY = 'gp.power.v1';
+const POWER_DEVICES = [ {id:'grow_light', icon:'💡', k:'o_grow_light'}, {id:'work_light', icon:'🔦', k:'o_work_light'}, {id:'fan', icon:'🌀', k:'o_fan'},
+  {id:'extractor', icon:'🌬️', k:'o_extractor'}, {id:'pump', icon:'⛽', k:'boardPump'}, {id:'spare', icon:'🔌', k:'o_spare'} ];
+function todayKey(){ const d = new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+function powerCfg(){
+  const p = lsGet(POWER_KEY, {}); p.dev = p.dev || {}; p.use = p.use || { day: todayKey(), on:{}, since:{} };
+  if(p.use.day !== todayKey()){            // new day: close running timers at midnight and start fresh
+    const mid = new Date(); mid.setHours(0,0,0,0);
+    const since = {}; Object.keys(p.use.since || {}).forEach(id => { if(p.use.since[id]) since[id] = mid.getTime(); });
+    p.use = { day: todayKey(), on:{}, since };
+  }
+  return p;
+}
+function trackPower(){
+  try{
+    if(!OO || !OO.info().conectado || !OO.info().tarjetaEnLinea) return;
+    const p = powerCfg(), now = Date.now(), outs = OO.salidas(), w = OO.agua();
+    const state = Object.assign({}, outs, { pump: w.bomba === 'on' });
+    POWER_DEVICES.forEach(({id}) => {
+      if(!(id in state)) return;
+      const on = !!state[id], since = p.use.since[id];
+      if(on && !since) p.use.since[id] = now;
+      if(!on && since){ p.use.on[id] = (p.use.on[id] || 0) + (now - since); p.use.since[id] = null; }
+    });
+    p.use.tracked = true; lsSet(POWER_KEY, p);
+  }catch(e){}
+}
+function powerToday(){
+  const p = powerCfg(), now = Date.now(), rows = [];
+  let wh = 0;
+  POWER_DEVICES.forEach(d => {
+    const c = p.dev[d.id]; if(!c || !(c.n > 0) || !(c.w > 0)) return;
+    const ms = (p.use.on[d.id] || 0) + (p.use.since[d.id] ? now - p.use.since[d.id] : 0);
+    const hours = p.use.tracked ? ms / 3600000 : (Number(c.h) || 0);
+    const e = c.n * c.w * hours; wh += e;
+    rows.push({ d, c, hours, wh:e });
+  });
+  return { wh, rows, tracked: !!p.use.tracked };
+}
+function openPowerSettings(){
+  const p = powerCfg(), board = !!(OO && OO.info().conectado);
+  const box = document.getElementById('powerBox');
+  box.innerHTML = `<div class="grid-box-head"><div class="gear-wrap"><div class="gear-icon">⚡</div><div><div class="eyebrow">${t('powerTitle')}</div></div></div>
+      <button class="icon-btn" id="powerClose" aria-label="Close">✕</button></div>
+    <p class="pw-help">${t('powerHelp')}</p>
+    <div class="pw-head"><span></span><span>${t('powerQty')}</span><span>W</span>${board ? '' : `<span>${t('powerHours')}</span>`}</div>
+    ${POWER_DEVICES.map(d => { const c = p.dev[d.id] || {}; return `<div class="pw-row${board?'':' manual'}"><span>${d.icon} ${t(d.k)}</span>
+      <input type="number" min="0" max="99" step="1" data-id="${d.id}" data-f="n" value="${c.n || ''}" placeholder="0">
+      <input type="number" min="0" max="5000" step="1" data-id="${d.id}" data-f="w" value="${c.w || ''}" placeholder="0">
+      ${board ? '' : `<input type="number" min="0" max="24" step="0.5" data-id="${d.id}" data-f="h" value="${c.h || ''}" placeholder="0">`}</div>`; }).join('')}
+    <p class="pw-help">${board ? t('powerBoardNote') : t('powerManualNote')}</p>
+    <button id="powerDone">${t('modalDone')}</button>`;
+  const save = () => { const q = powerCfg(); box.querySelectorAll('input[data-id]').forEach(i => { q.dev[i.dataset.id] = q.dev[i.dataset.id] || {}; q.dev[i.dataset.id][i.dataset.f] = Number(i.value) || 0; }); lsSet(POWER_KEY, q); };
+  box.querySelectorAll('input').forEach(i => i.addEventListener('input', save));
+  const close = () => { save(); document.getElementById('powerOverlay').classList.remove('show'); renderStats(); };
+  document.getElementById('powerClose').onclick = close; document.getElementById('powerDone').onclick = close;
+  document.getElementById('powerOverlay').onclick = e => { if(e.target.id === 'powerOverlay') close(); };
+  document.getElementById('powerOverlay').classList.add('show');
+}
 
 /* ---------- Tabs on phones/tablets ---------- */
 const TAB_ORDER = ['env','room','stats'];
