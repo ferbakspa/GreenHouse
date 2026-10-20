@@ -165,16 +165,27 @@
   body.tabs-mode .water-on .tab-plant-bar{ display:none; }
   .water-on .legend{ visibility:hidden; height:0; margin:0; }
   .wb-chips{ display:flex; gap:6px; flex-wrap:wrap; }
-  .wb-chip{ display:inline-flex; align-items:center; gap:6px; border:1.5px solid var(--soil-line); background:#fff; border-radius:999px; padding:5px 11px; font:700 12.5px 'Public Sans', sans-serif; color: var(--pine-dark); cursor:pointer; }
-  .wb-chip .wb-dot{ width:10px; height:10px; border-radius:50%; background:var(--zc); }
-  .wb-chip.on{ border-color:var(--zc, #5C7268); box-shadow:0 0 0 3px color-mix(in srgb, var(--zc, #5C7268) 22%, transparent); }
+  .wb-chip{ border:1.5px solid var(--soil-line); background:#fff; border-radius:999px; padding:6px 12px; font:700 12.5px 'Public Sans', sans-serif; color: var(--pine-dark); cursor:pointer; }
+  .wb-chip.on{ border-color:#2a78d6; background:#2a78d6; color:#fff; }
   .wb-chip.erase{ color: var(--pine-soft); }
-  .wb-line{ font-size:12.5px; color: var(--pine-soft); margin-top:8px; line-height:1.4; }
+  .wb-chip.erase.on{ background: var(--pine-soft); border-color: var(--pine-soft); color:#fff; }
+  .wb-line{ font-size:12.5px; color: var(--pine-soft); margin-top:6px; line-height:1.4; }
   .wb-line b{ color: var(--pine-dark); }
-  #room.water-mode .cell .inner{ opacity:.3; filter:grayscale(.4); }
-  #room.water-mode .cell::after{ display:none !important; }
-  #room.water-mode .cell.wz::before{ content:''; position:absolute; inset:0; background:var(--zc); opacity:var(--za); pointer-events:none; z-index:1; }
-  #room.water-mode .zb{ position:absolute; top:3px; left:4px; z-index:2; font:800 10px 'Public Sans', sans-serif; color:#fff; background:var(--zc); border-radius:6px; padding:1px 5px; pointer-events:none; }
+  .wb-legend{ display:flex; align-items:center; justify-content:space-between; gap:10px; font-size:12px; font-weight:700; color: var(--pine-dark); }
+  .wb-scale{ display:flex; align-items:center; gap:6px; font-weight:600; color: var(--pine-soft); font-size:11.5px; }
+  .wb-scale i{ display:block; width:90px; height:10px; border-radius:999px; background:linear-gradient(90deg, rgba(42,120,214,0.10), rgba(42,120,214,0.80)); box-shadow: inset 0 0 0 1px rgba(42,120,214,0.25); }
+  .wb-actions{ margin-top:8px; display:flex; justify-content:flex-end; }
+  .wb-edit, .wb-done{ font:700 12.5px 'Public Sans', sans-serif; border-radius:10px; padding:7px 12px; cursor:pointer; }
+  .wb-edit{ border:1.5px solid var(--soil-line); background:#fff; color: var(--pine-dark); }
+  .wb-done{ border:none; background: var(--pine-dark); color:#fff; }
+  #room.water-mode .cell .inner{ opacity:.28; filter:grayscale(.5); }
+  #room.water-mode .cell.planted{ background-color:#EFE9DD; background-image:none; }
+  #room.water-mode .cell.wz::before{ content:''; position:absolute; inset:0; background:#2a78d6; opacity:var(--za); pointer-events:none; z-index:1; }
+  #room.water-mode .cell.wz::after{ content:''; display:block !important; position:absolute; inset:0; pointer-events:none; z-index:2; animation:none;
+    box-shadow: inset 0 calc(var(--zt,1)*2px) 0 0 #fff, inset calc(var(--zr,1)*-2px) 0 0 0 #fff, inset 0 calc(var(--zb,1)*-2px) 0 0 #fff, inset calc(var(--zl,1)*2px) 0 0 0 #fff; border:none; }
+  #room.water-mode .cell.wz-focus::after{ box-shadow: inset 0 calc(var(--zt,1)*3px) 0 0 #1C2E27, inset calc(var(--zr,1)*-3px) 0 0 0 #1C2E27, inset 0 calc(var(--zb,1)*-3px) 0 0 #1C2E27, inset calc(var(--zl,1)*3px) 0 0 0 #1C2E27; }
+  #room.water-mode .zb{ position:absolute; top:3px; left:3px; z-index:3; font:800 10px 'Public Sans', sans-serif; color:#1C2E27; background:#fff; border-radius:6px; padding:1px 5px; pointer-events:none; box-shadow:0 1px 2px rgba(0,0,0,0.15); white-space:nowrap; }
+  #room.zone-edit .cell{ cursor:crosshair; }
 
   /* ---------- Statistics ---------- */
   #statsPanel .panel-head{ display:flex; align-items:center; justify-content:space-between; }
@@ -869,6 +880,12 @@ const TRANSLATIONS = {
     exportTextSub:'Sends a text summary',
     exportDownloaded:'File downloaded',
     exportNoShare:'Sharing is not available on this device',
+    zoneShort:'Z{n}',
+    zoneRemove:'Remove zone',
+    zoneEdit:'Edit zones',
+    zoneTapHint:'Tap a block to see its zone',
+    zoneNoneYet:'No zones yet. Tap Edit zones to mark which blocks each zone waters.',
+    zoneWaterToday:'Water today',
     boardTitle:'ORGANICS ONE BOARD', boardConnect:'Connect board', boardSave:'Connect', boardDisc:'Disconnect', boardForget:'Forget', boardServer:'Server (EMQX host)', boardUser:'User', boardPass:'Password', boardInv:'Greenhouse name', boardOff:'Not connected', boardOn:'Board online', boardNoBoard:'Board offline', boardUpdate:'Update firmware', boardTemp:'Temperature', boardHum:'Humidity', boardVpd:'VPD', boardSoil:'Soil', boardValveOpen:'watering', boardZone:'Zone', boardAlarm:'Alarm', boardConnecting:'Connecting…', boardLiveTemp:'Real sensor',
     useAutoLocation:'📍 Use automatic location', locationManualLabel:'Manual location',
     locationApprox:'Approximate location', locationPrecise:'Precise location',
@@ -1075,6 +1092,12 @@ const TRANSLATIONS = {
     exportTextSub:'Envía un resumen en texto',
     exportDownloaded:'Archivo descargado',
     exportNoShare:'Este dispositivo no permite compartir',
+    zoneShort:'Z{n}',
+    zoneRemove:'Quitar zona',
+    zoneEdit:'Editar zonas',
+    zoneTapHint:'Toca un bloque para ver su zona',
+    zoneNoneYet:'Aún no hay zonas. Toca Editar zonas para marcar qué bloques riega cada zona.',
+    zoneWaterToday:'Agua de hoy',
     boardTitle:'TARJETA ORGANICS ONE', boardConnect:'Conectar tarjeta', boardSave:'Conectar', boardDisc:'Desconectar', boardForget:'Olvidar', boardServer:'Servidor (host de EMQX)', boardUser:'Usuario', boardPass:'Clave', boardInv:'Nombre del invernadero', boardOff:'Sin conexión', boardOn:'Tarjeta en línea', boardNoBoard:'Tarjeta desconectada', boardUpdate:'Actualizar firmware', boardTemp:'Temperatura', boardHum:'Humedad', boardVpd:'VPD', boardSoil:'Suelo', boardValveOpen:'regando', boardZone:'Zona', boardAlarm:'Alarma', boardConnecting:'Conectando…', boardLiveTemp:'Sensor real',
     useAutoLocation:'📍 Usar ubicación automática', locationManualLabel:'Ubicación manual',
     locationApprox:'Ubicación aproximada', locationPrecise:'Ubicación precisa',
@@ -1280,6 +1303,12 @@ const TRANSLATIONS = {
     exportTextSub:'Envoie un résumé en texte',
     exportDownloaded:'Fichier téléchargé',
     exportNoShare:'Le partage n\'est pas disponible sur cet appareil',
+    zoneShort:'Z{n}',
+    zoneRemove:'Retirer la zone',
+    zoneEdit:'Modifier les zones',
+    zoneTapHint:'Touchez un bloc pour voir sa zone',
+    zoneNoneYet:'Pas encore de zones. Touchez Modifier les zones pour indiquer les blocs arrosés par chaque zone.',
+    zoneWaterToday:'Eau du jour',
     boardTitle:'CARTE ORGANICS ONE',
     boardConnect:'Connecter la carte',
     boardSave:'Connecter',
@@ -1526,6 +1555,12 @@ const TRANSLATIONS = {
     exportTextSub:'Envia um resumo em texto',
     exportDownloaded:'Arquivo baixado',
     exportNoShare:'Este dispositivo não permite compartilhar',
+    zoneShort:'Z{n}',
+    zoneRemove:'Tirar zona',
+    zoneEdit:'Editar zonas',
+    zoneTapHint:'Toque em um bloco para ver a zona',
+    zoneNoneYet:'Ainda não há zonas. Toque em Editar zonas para marcar os blocos de cada zona.',
+    zoneWaterToday:'Água de hoje',
     boardTitle:'PLACA ORGANICS ONE',
     boardConnect:'Conectar placa',
     boardSave:'Conectar',
@@ -1772,6 +1807,12 @@ const TRANSLATIONS = {
     exportTextSub:'Sendet eine Textzusammenfassung',
     exportDownloaded:'Datei heruntergeladen',
     exportNoShare:'Teilen ist auf diesem Gerät nicht verfügbar',
+    zoneShort:'Z{n}',
+    zoneRemove:'Zone entfernen',
+    zoneEdit:'Zonen bearbeiten',
+    zoneTapHint:'Tippe auf ein Feld, um seine Zone zu sehen',
+    zoneNoneYet:'Noch keine Zonen. Tippe auf Zonen bearbeiten, um die Felder jeder Zone festzulegen.',
+    zoneWaterToday:'Wasser heute',
     boardTitle:'ORGANICS-ONE-PLATINE',
     boardConnect:'Platine verbinden',
     boardSave:'Verbinden',
@@ -2018,6 +2059,12 @@ const TRANSLATIONS = {
     exportTextSub:'发送文字摘要',
     exportDownloaded:'文件已下载',
     exportNoShare:'此设备不支持分享',
+    zoneShort:'区{n}',
+    zoneRemove:'移除区域',
+    zoneEdit:'编辑区域',
+    zoneTapHint:'点击地块查看其区域',
+    zoneNoneYet:'还没有区域。点击“编辑区域”标记每个区域灌溉的地块。',
+    zoneWaterToday:'今日用水',
     boardTitle:'ORGANICS ONE 控制板',
     boardConnect:'连接控制板',
     boardSave:'连接',
@@ -2264,6 +2311,12 @@ const TRANSLATIONS = {
     exportTextSub:'टेक्स्ट सारांश भेजता है',
     exportDownloaded:'फ़ाइल डाउनलोड हुई',
     exportNoShare:'इस डिवाइस पर साझा करना उपलब्ध नहीं है',
+    zoneShort:'क्षे{n}',
+    zoneRemove:'क्षेत्र हटाएँ',
+    zoneEdit:'क्षेत्र संपादित करें',
+    zoneTapHint:'क्षेत्र देखने के लिए खाने पर टैप करें',
+    zoneNoneYet:'अभी कोई क्षेत्र नहीं। हर क्षेत्र के खाने चुनने के लिए क्षेत्र संपादित करें पर टैप करें।',
+    zoneWaterToday:'आज का पानी',
     boardTitle:'ORGANICS ONE बोर्ड',
     boardConnect:'बोर्ड कनेक्ट करें',
     boardSave:'कनेक्ट करें',
@@ -2510,6 +2563,12 @@ const TRANSLATIONS = {
     exportTextSub:'يرسل ملخصًا نصيًا',
     exportDownloaded:'تم تنزيل الملف',
     exportNoShare:'المشاركة غير متاحة على هذا الجهاز',
+    zoneShort:'م{n}',
+    zoneRemove:'إزالة المنطقة',
+    zoneEdit:'تعديل المناطق',
+    zoneTapHint:'المس مربعًا لرؤية منطقته',
+    zoneNoneYet:'لا توجد مناطق بعد. المس تعديل المناطق لتحديد مربعات كل منطقة.',
+    zoneWaterToday:'مياه اليوم',
     boardTitle:'لوحة ORGANICS ONE',
     boardConnect:'ربط اللوحة',
     boardSave:'اتصال',
@@ -2756,6 +2815,12 @@ const TRANSLATIONS = {
     exportTextSub:'Invia un riepilogo in testo',
     exportDownloaded:'File scaricato',
     exportNoShare:'La condivisione non è disponibile su questo dispositivo',
+    zoneShort:'Z{n}',
+    zoneRemove:'Togli zona',
+    zoneEdit:'Modifica zone',
+    zoneTapHint:'Tocca un blocco per vedere la sua zona',
+    zoneNoneYet:'Nessuna zona ancora. Tocca Modifica zone per indicare i blocchi di ogni zona.',
+    zoneWaterToday:'Acqua di oggi',
     boardTitle:'SCHEDA ORGANICS ONE',
     boardConnect:'Collega scheda',
     boardSave:'Collega',
@@ -3002,6 +3067,12 @@ const TRANSLATIONS = {
     exportTextSub:'Отправляет текстовую сводку',
     exportDownloaded:'Файл скачан',
     exportNoShare:'На этом устройстве нельзя поделиться',
+    zoneShort:'З{n}',
+    zoneRemove:'Убрать зону',
+    zoneEdit:'Изменить зоны',
+    zoneTapHint:'Коснитесь клетки, чтобы увидеть её зону',
+    zoneNoneYet:'Зон пока нет. Нажмите «Изменить зоны», чтобы отметить клетки каждой зоны.',
+    zoneWaterToday:'Вода сегодня',
     boardTitle:'ПЛАТА ORGANICS ONE',
     boardConnect:'Подключить плату',
     boardSave:'Подключить',
@@ -3589,6 +3660,7 @@ function renderRoom(){
     }
   }
   room.classList.toggle('water-mode', waterMode);
+  room.classList.toggle('zone-edit', waterMode && zoneEdit);
   applyTempWarnings();
   if(waterMode) renderWaterBar();
 }
@@ -3601,7 +3673,7 @@ function plantCellDuringDrag(r,c){
   return true;
 }
 function startDrag(r,c){
-  if(waterMode){ dragging = true; dragKeys = new Set(); document.body.classList.add('dragging'); paintZone(r, c); return; }
+  if(waterMode){ if(!zoneEdit){ waterTap(r, c); return; } dragging = true; dragKeys = new Set(); document.body.classList.add('dragging'); paintZone(r, c); return; }
   if(!selectedVeg){ showToast(t('toastPickPlant')); return; }
   dragging = true; dragKeys = new Set();
   document.body.classList.add('dragging');
@@ -4699,9 +4771,8 @@ function openPowerSettings(){
 }
 
 /* ---------- Irrigation view: blocks coloured by irrigation zone ---------- */
-let waterMode = false, zoneBrush = 1;
-const ZONE_COLORS = ['#2a78d6','#eb6834','#1baf7a','#eda100','#e87ba4','#008300','#6250d6','#e34948'];
-function zoneColor(n){ return ZONE_COLORS[(n - 1) % ZONE_COLORS.length]; }
+let waterMode = false, zoneEdit = false, zoneBrush = 1, zoneFocus = null;
+const WATER_BLUE = '#2a78d6';
 function zoneCount(){
   let n = 4;
   try{ if(OO && OO.info().conectado) n = Math.max(n, OO.zonas().length); }catch(e){}
@@ -4713,16 +4784,26 @@ function zoneStats(n){
   const min = irr.reduce((a,p) => a + (p.min || 0), 0);
   let soil = null;
   try{ if(OO && OO.info().conectado){ const z = OO.zonas().find(q => q.zona === n); if(z) soil = z.suelo; } }catch(e){}
-  return { min, liters: min * flowLpm(), soil };
+  return { min, liters: min * flowLpm(), soil, times: irr.length };
 }
+function maxZoneLiters(){ return Math.max(0, ...Array.from({ length: zoneCount() }, (_, i) => zoneStats(i + 1).liters)); }
+/* sequential scale, one hue: more blue = more water today */
 function decorateZoneCell(cell, key){
-  const z = (state.irrZones || {})[key]; if(!z) return;
-  const maxMin = Math.max(1, ...Array.from({ length: zoneCount() }, (_, i) => zoneStats(i + 1).min));
-  const st = zoneStats(z);
+  const zones = state.irrZones || {}, z = zones[key];
+  const [r, c] = key.split('-').map(Number), tr = isTransposed();
+  if(!z){ cell.classList.add('wz-none'); return; }
+  const mx = maxZoneLiters(), st = zoneStats(z);
   cell.classList.add('wz');
-  cell.style.setProperty('--zc', zoneColor(z));
-  cell.style.setProperty('--za', (0.22 + 0.5 * (st.min / maxMin)).toFixed(2));
-  const b = document.createElement('span'); b.className = 'zb'; b.textContent = z; cell.appendChild(b);
+  cell.style.setProperty('--za', mx > 0 ? (0.12 + 0.68 * (st.liters / mx)).toFixed(2) : '0.08');
+  if(zoneFocus === z) cell.classList.add('wz-focus');
+  // white divider only where the neighbour belongs to another zone
+  const nb = (rr, cc) => zones[rr + '-' + cc];
+  const up = tr ? nb(r, c-1) : nb(r-1, c), down = tr ? nb(r, c+1) : nb(r+1, c), left = tr ? nb(r-1, c) : nb(r, c-1), right = tr ? nb(r+1, c) : nb(r, c+1);
+  cell.style.setProperty('--zt', up === z ? 0 : 1); cell.style.setProperty('--zb', down === z ? 0 : 1);
+  cell.style.setProperty('--zl', left === z ? 0 : 1); cell.style.setProperty('--zr', right === z ? 0 : 1);
+  // the zone number once per zone (its first block)
+  const first = Object.keys(zones).filter(k => zones[k] === z).sort((p, q) => { const [a1,b1] = p.split('-').map(Number), [a2,b2] = q.split('-').map(Number); return tr ? (b1 - b2 || a1 - a2) : (a1 - a2 || b1 - b2); })[0];
+  if(first === key){ const bd = document.createElement('span'); bd.className = 'zb'; bd.textContent = t('zoneShort', { n: z }); cell.appendChild(bd); }
 }
 function paintZone(r, c){
   const key = r + '-' + c; if(dragKeys.has(key)) return;
@@ -4731,20 +4812,33 @@ function paintZone(r, c){
   if(zoneBrush === 0) delete state.irrZones[key]; else state.irrZones[key] = zoneBrush;
   renderRoom();
 }
+function waterTap(r, c){ const z = (state.irrZones || {})[r + '-' + c]; zoneFocus = z || null; renderRoom(); }
 function renderWaterBar(){
   const bar = document.getElementById('waterBar'); if(!bar) return;
   if(!waterMode){ bar.innerHTML = ''; return; }
-  const n = zoneCount(), st = zoneBrush ? zoneStats(zoneBrush) : null;
-  const assigned = Object.values(state.irrZones || {}).filter(z => z === zoneBrush).length;
+  const n = zoneCount(), any = Object.keys(state.irrZones || {}).length > 0;
+  if(zoneEdit){
+    bar.innerHTML = `<div class="wb-line" style="margin:0 0 8px">${t('zonePaintHint')}</div>
+      <div class="wb-chips">${Array.from({ length: n }, (_, i) => i + 1).map(z => `<button class="wb-chip${z === zoneBrush ? ' on' : ''}" data-z="${z}">${t('zoneLabel', { n: z })}</button>`).join('')}
+        <button class="wb-chip erase${zoneBrush === 0 ? ' on' : ''}" data-z="0">✕ ${t('zoneRemove')}</button></div>
+      <div class="wb-actions"><button class="wb-done" id="zoneDone">✓ ${t('modalDone')}</button></div>`;
+    bar.querySelectorAll('.wb-chip').forEach(b => b.addEventListener('click', () => { zoneBrush = Number(b.dataset.z); renderWaterBar(); }));
+    document.getElementById('zoneDone').onclick = () => { zoneEdit = false; renderRoom(); };
+    return;
+  }
+  const mx = maxZoneLiters();
   let line;
-  if(!zoneBrush) line = t('zoneEraseHint');
-  else if(!assigned) line = t('zonePaintHint');
-  else line = `<b>${t('zoneLabel', { n: zoneBrush })}</b> · ${st.min ? t('zoneToday', { l: nf(st.liters, 0) }) + ' (' + t('statsEstimated') + ')' : t('zoneNoWater')}${st.soil != null ? ' · ' + t('zoneSoil', { s: nf(st.soil, 0) }) : ''}`;
-  bar.innerHTML = `<div class="wb-chips">${Array.from({ length: n }, (_, i) => i + 1).map(z => `<button class="wb-chip${z === zoneBrush ? ' on' : ''}" data-z="${z}" style="--zc:${zoneColor(z)}"><span class="wb-dot"></span>${z}</button>`).join('')}<button class="wb-chip erase${zoneBrush === 0 ? ' on' : ''}" data-z="0">⌫</button></div><div class="wb-line">${line}</div>`;
-  bar.querySelectorAll('.wb-chip').forEach(b => b.addEventListener('click', () => { zoneBrush = Number(b.dataset.z); renderWaterBar(); }));
+  if(!any) line = t('zoneNoneYet');
+  else if(zoneFocus){ const st = zoneStats(zoneFocus);
+    line = `<b>${t('zoneLabel', { n: zoneFocus })}</b> · ${st.min ? t('zoneToday', { l: nf(st.liters, 0) }) + ' · ' + nf(st.min, 0) + ' min (' + t('statsEstimated') + ')' : t('zoneNoWater')}${st.soil != null ? ' · ' + t('zoneSoil', { s: nf(st.soil, 0) }) : ''}`; }
+  else line = t('zoneTapHint');
+  bar.innerHTML = `<div class="wb-legend"><span>${t('zoneWaterToday')}</span><span class="wb-scale"><span>0 L</span><i></i><span>${nf(mx, 0)} L</span></span></div>
+    <div class="wb-line">${line}</div>
+    <div class="wb-actions"><button class="wb-edit" id="zoneEditBtn">✏️ ${t('zoneEdit')}</button></div>`;
+  document.getElementById('zoneEditBtn').onclick = () => { zoneEdit = true; zoneFocus = null; if(!zoneBrush) zoneBrush = 1; renderRoom(); };
 }
 function toggleWater(){
-  waterMode = !waterMode; hideVegTooltip();
+  waterMode = !waterMode; zoneEdit = false; zoneFocus = null; hideVegTooltip();
   const btn = document.getElementById('waterToggle');
   btn.classList.toggle('on', waterMode); btn.setAttribute('aria-pressed', String(waterMode));
   document.getElementById('roomPanel').classList.toggle('water-on', waterMode);
