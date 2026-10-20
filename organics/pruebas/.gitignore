@@ -4,3 +4,4 @@ passwd
 ordenes.jsonl
 *.log
 *.png
+__pycache__/
