@@ -157,6 +157,7 @@
       radial-gradient(circle at 15% 70%, rgba(0,0,0,0.08) 1px, transparent 1.6px);
     background-size: 13px 13px;
   }
+  .cell.planted.temp-warn::after{ content:''; position:absolute; inset:0; background: rgba(255, 214, 64, 0.12); pointer-events:none; }
   .cell.planted .inner{ width:100%; height:100%; background: transparent; display:flex; align-items:center; justify-content:center; font-size: clamp(14px, 5vw, 24px); position:relative; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4)); }
   .cell.planted .prog-track{ position:absolute; left:14%; right:14%; bottom:9%; height:3px; border-radius:3px; background: rgba(0,0,0,0.25); overflow:hidden; }
   .cell.planted .prog-fill{ height:100%; background: var(--ring-color); }
@@ -2083,6 +2084,17 @@ function applyWoodEdges(cell, r, c, transposed){
   cell.style.borderRight  = rightPlanted  ? 'none' : edge;
 }
 
+let currentSensorTemp = null;
+function applyTempWarnings(){
+  const room = document.getElementById('room'); if(!room) return;
+  room.querySelectorAll('.cell.planted').forEach(cell => {
+    const p = state.plantings[cell.dataset.r + '-' + cell.dataset.c];
+    const veg = p && VEG_MAP[p.vegId];
+    const out = currentSensorTemp !== null && veg && veg.tMin != null && veg.tMax != null
+      && (currentSensorTemp < veg.tMin || currentSensorTemp > veg.tMax);
+    cell.classList.toggle('temp-warn', !!out);
+  });
+}
 function renderRoom(){
   const room = document.getElementById('room');
   const mobile = isTransposed();
@@ -2122,6 +2134,7 @@ function renderRoom(){
       room.appendChild(cell);
     }
   }
+  applyTempWarnings();
 }
 
 function plantCellDuringDrag(r,c){
@@ -2622,6 +2635,8 @@ function renderEnvConditions(data){
   const boardTemp = boardAmbient().temperatura;
   const sensorTemp = boardTemp !== null && boardTemp !== undefined ? Math.round(boardTemp*10)/10
     : (outdoorTemp !== null ? computeGreenhouseTemp(outdoorTemp) : null);
+  currentSensorTemp = sensorTemp;
+  applyTempWarnings();
   const idealRange = computeIdealRange();
   const weatherIconEl = document.getElementById('weatherIcon');
   weatherIconEl.textContent = weatherCodeToIcon(wcode);
