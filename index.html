@@ -157,7 +157,9 @@
       radial-gradient(circle at 15% 70%, rgba(0,0,0,0.08) 1px, transparent 1.6px);
     background-size: 13px 13px;
   }
-  .cell.planted.temp-warn::after{ content:''; position:absolute; inset:0; background: rgba(255, 214, 64, 0.12); pointer-events:none; }
+  .cell.planted.temp-warn::after{ content:''; position:absolute; inset:0; border-radius:3px; pointer-events:none; box-shadow: inset 0 0 0 3px #FFC83D, inset 0 0 8px 1px rgba(255,200,61,0.55); animation: tempWarnPulse 2.2s ease-in-out infinite; }
+  @keyframes tempWarnPulse{ 0%,100%{ opacity:1; } 50%{ opacity:.55; } }
+  @media (prefers-reduced-motion: reduce){ .cell.planted.temp-warn::after{ animation:none; } }
   .cell.planted .inner{ width:100%; height:100%; background: transparent; display:flex; align-items:center; justify-content:center; font-size: clamp(14px, 5vw, 24px); position:relative; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4)); }
   .cell.planted .prog-track{ position:absolute; left:14%; right:14%; bottom:9%; height:3px; border-radius:3px; background: rgba(0,0,0,0.25); overflow:hidden; }
   .cell.planted .prog-fill{ height:100%; background: var(--ring-color); }
