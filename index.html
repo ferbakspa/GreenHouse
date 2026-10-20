@@ -134,7 +134,9 @@
   .stepper button{ width:28px; height:28px; border-radius:50%; border:none; background: var(--bg-warm); color: var(--pine); font-size:15px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; transition: background .15s, transform .1s; }
   .stepper button:hover{ background: var(--soil-line); }
   .stepper button:active{ transform: scale(0.92); }
-  .stepper .val{ font-family:'JetBrains Mono', monospace; font-weight:500; font-size:13.5px; width: 26px; text-align:center; }
+  .stepper .val{ font-family:'JetBrains Mono', monospace; font-weight:500; font-size:13.5px; min-width: 54px; text-align:center; white-space:nowrap; }
+  .cell-size-hint{ font-size:12px; color: var(--pine-soft); margin:10px 0 2px; display:flex; align-items:center; gap:7px; }
+  .cell-size-hint .sq{ width:14px; height:14px; border-radius:3px; background: var(--soil); box-shadow: inset 0 0 0 2px #C9A16D; flex:0 0 auto; }
 
   /* Room */
   .room-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; gap:8px; flex-wrap:wrap; }
@@ -388,6 +390,7 @@
           <span id="widthLabel">Width</span>
           <div class="stepper"><button id="colsDown">−</button><div class="val" id="colsVal">6</div><button id="colsUp">+</button></div>
         </div>
+        <div class="cell-size-hint"><span class="sq"></span><span id="cellSizeHint">Each square is 50 × 50 cm</span></div>
       </div>
       <button id="gridDone">OK</button>
     </div></div>
@@ -397,7 +400,6 @@
       <div class="room-header">
         <span class="eyebrow" id="roomTitle">GREENHOUSE LAYOUT</span>
         <div class="room-header-right">
-          <button class="icon-btn" id="rotateRoomBtn" title="Rotate 90°">⟳</button>
           <button class="icon-btn spin" id="refreshRoomBtn" title="Refresh">↻</button>
           <button class="grid-size-label" id="gridSizeLabel" type="button">6 × 6 grid</button>
         </div>
@@ -509,7 +511,7 @@ const TRANSLATIONS = {
     cancelBtn:'Cancel', generateBtn:'Generate & add', generatingBtn:'Generating icon…',
     roomTitle:'GREENHOUSE LAYOUT', roomLegend:'🟫 empty block · tap a planted block for details · drag to plant a row',
     gridLabel:'{r} × {c} grid', refreshedToast:'Refreshed',
-    gridSettingsTitle:'GRID SETTINGS', heightLabel:'Height', widthLabel:'Width',
+    gridSettingsTitle:'GRID SETTINGS', heightLabel:'Length', widthLabel:'Width',
     envTitle:'ENVIRONMENT', envLoading:'Locating…',
     envNoLocation:"Couldn't determine your location automatically.",
     envFetchError:"Couldn't load weather data right now.",
@@ -578,6 +580,7 @@ const TRANSLATIONS = {
     consentAccept:'I understand and accept',
     termsLabel:'Terms of use',
     privacyLabel:'Privacy policy',
+    cellSizeHint:'Each block is 50 × 50 cm',
     boardTitle:'ORGANICS ONE BOARD', boardConnect:'Connect board', boardSave:'Connect', boardDisc:'Disconnect', boardForget:'Forget', boardServer:'Server (EMQX host)', boardUser:'User', boardPass:'Password', boardInv:'Greenhouse name', boardOff:'Not connected', boardOn:'Board online', boardNoBoard:'Board offline', boardUpdate:'Update firmware', boardTemp:'Temperature', boardHum:'Humidity', boardVpd:'VPD', boardSoil:'Soil', boardValveOpen:'watering', boardZone:'Zone', boardAlarm:'Alarm', boardConnecting:'Connecting…', boardLiveTemp:'Real sensor',
     useAutoLocation:'📍 Use automatic location', locationManualLabel:'Manual location',
     locationApprox:'Approximate location', locationPrecise:'Precise location',
@@ -596,8 +599,8 @@ const TRANSLATIONS = {
     toastPickPlant:'Pick a plant from the library first 🌱',
     toastPlanted:'Planted {name} in block {r}-{c}', toastPlantedMulti:'Planted {name} in {n} blocks',
     toastCleared:'Block cleared',
-    toastMaxHeight:'Maximum height is 12 blocks', toastMinHeight:'Minimum height is 2 blocks',
-    toastMaxWidth:'Maximum width is 12 blocks', toastMinWidth:'Minimum width is 2 blocks',
+    toastMaxHeight:'Maximum length is 6 m (12 blocks)', toastMinHeight:'Minimum length is 1 m (2 blocks)',
+    toastMaxWidth:'Maximum width is 6 m (12 blocks)', toastMinWidth:'Minimum width is 1 m (2 blocks)',
     toastGiveName:'Give your plant a name first', toastAlreadyLibrary:'{name} is already in your library — selected it for you',
     toastAdded:'Added {name} to your library {icon}', toastSaveFail:"Couldn't save — your changes may not persist.",
     grown:'grown', toGo:'to go', day:'day', days:'days',
@@ -617,7 +620,7 @@ const TRANSLATIONS = {
     cancelBtn:'Cancelar', generateBtn:'Generar y añadir', generatingBtn:'Generando icono…',
     roomTitle:'DISEÑO DEL INVERNADERO', roomLegend:'🟫 bloque vacío · toca un bloque plantado para ver detalles · arrastra para plantar una fila',
     gridLabel:'cuadrícula {r} × {c}', refreshedToast:'Actualizado',
-    gridSettingsTitle:'AJUSTES DE LA CUADRÍCULA', heightLabel:'Alto', widthLabel:'Ancho',
+    gridSettingsTitle:'AJUSTES DE LA CUADRÍCULA', heightLabel:'Largo', widthLabel:'Ancho',
     envTitle:'ENTORNO', envLoading:'Localizando…',
     envNoLocation:'No se pudo determinar tu ubicación automáticamente.',
     envFetchError:'No se pudieron cargar los datos meteorológicos.',
@@ -686,6 +689,7 @@ const TRANSLATIONS = {
     consentAccept:'Entiendo y acepto',
     termsLabel:'Términos de uso',
     privacyLabel:'Política de privacidad',
+    cellSizeHint:'Cada bloque mide 50 × 50 cm',
     boardTitle:'TARJETA ORGANICS ONE', boardConnect:'Conectar tarjeta', boardSave:'Conectar', boardDisc:'Desconectar', boardForget:'Olvidar', boardServer:'Servidor (host de EMQX)', boardUser:'Usuario', boardPass:'Clave', boardInv:'Nombre del invernadero', boardOff:'Sin conexión', boardOn:'Tarjeta en línea', boardNoBoard:'Tarjeta desconectada', boardUpdate:'Actualizar firmware', boardTemp:'Temperatura', boardHum:'Humedad', boardVpd:'VPD', boardSoil:'Suelo', boardValveOpen:'regando', boardZone:'Zona', boardAlarm:'Alarma', boardConnecting:'Conectando…', boardLiveTemp:'Sensor real',
     useAutoLocation:'📍 Usar ubicación automática', locationManualLabel:'Ubicación manual',
     locationApprox:'Ubicación aproximada', locationPrecise:'Ubicación precisa',
@@ -704,8 +708,8 @@ const TRANSLATIONS = {
     toastPickPlant:'Primero elige una planta de la biblioteca 🌱',
     toastPlanted:'Plantado {name} en el bloque {r}-{c}', toastPlantedMulti:'Plantado {name} en {n} bloques',
     toastCleared:'Bloque vaciado',
-    toastMaxHeight:'La altura máxima es 12 bloques', toastMinHeight:'La altura mínima es 2 bloques',
-    toastMaxWidth:'El ancho máximo es 12 bloques', toastMinWidth:'El ancho mínimo es 2 bloques',
+    toastMaxHeight:'El largo máximo es 6 m (12 bloques)', toastMinHeight:'El largo mínimo es 1 m (2 bloques)',
+    toastMaxWidth:'El ancho máximo es 6 m (12 bloques)', toastMinWidth:'El ancho mínimo es 1 m (2 bloques)',
     toastGiveName:'Primero dale un nombre a tu planta', toastAlreadyLibrary:'{name} ya está en tu biblioteca — la seleccionamos por ti',
     toastAdded:'Se añadió {name} a tu biblioteca {icon}', toastSaveFail:'No se pudo guardar — es posible que tus cambios no persistan.',
     grown:'crecido', toGo:'restantes', day:'día', days:'días',
@@ -725,7 +729,7 @@ const TRANSLATIONS = {
     cancelBtn:'Annuler', generateBtn:'Générer et ajouter', generatingBtn:"Génération de l'icône…",
     roomTitle:'PLAN DE LA SERRE', roomLegend:'🟫 bloc vide · touchez un bloc planté pour les détails · glissez pour planter une rangée',
     gridLabel:'grille {r} × {c}', refreshedToast:'Actualisé',
-    gridSettingsTitle:'PARAMÈTRES DE LA GRILLE', heightLabel:'Hauteur', widthLabel:'Largeur',
+    gridSettingsTitle:'PARAMÈTRES DE LA GRILLE', heightLabel:'Longueur', widthLabel:'Largeur',
     envTitle:'ENVIRONNEMENT', envLoading:'Localisation…',
     envNoLocation:"Impossible de déterminer votre position automatiquement.",
     envFetchError:"Impossible de charger les données météo pour le moment.",
@@ -793,6 +797,7 @@ const TRANSLATIONS = {
     consentAccept:'Je comprends et j\'accepte',
     termsLabel:'Conditions d\'utilisation',
     privacyLabel:'Politique de confidentialité',
+    cellSizeHint:'Chaque case mesure 50 × 50 cm',
     boardTitle:'CARTE ORGANICS ONE',
     boardConnect:'Connecter la carte',
     boardSave:'Connecter',
@@ -852,8 +857,8 @@ const TRANSLATIONS = {
     toastPickPlant:"Choisissez d'abord une plante dans la bibliothèque 🌱",
     toastPlanted:'{name} planté dans le bloc {r}-{c}', toastPlantedMulti:'{name} planté dans {n} blocs',
     toastCleared:'Bloc vidé',
-    toastMaxHeight:'La hauteur maximale est de 12 blocs', toastMinHeight:'La hauteur minimale est de 2 blocs',
-    toastMaxWidth:'La largeur maximale est de 12 blocs', toastMinWidth:'La largeur minimale est de 2 blocs',
+    toastMaxHeight:'La longueur maximale est de 6 m (12 cases)', toastMinHeight:'La longueur minimale est de 1 m (2 cases)',
+    toastMaxWidth:'La largeur maximale est de 6 m (12 cases)', toastMinWidth:'La largeur minimale est de 1 m (2 cases)',
     toastGiveName:"Donnez d'abord un nom à votre plante", toastAlreadyLibrary:'{name} est déjà dans votre bibliothèque — sélectionnée pour vous',
     toastAdded:'{name} ajouté à votre bibliothèque {icon}', toastSaveFail:"Impossible d'enregistrer — vos modifications pourraient ne pas être conservées.",
     grown:'poussé', toGo:'restants', day:'jour', days:'jours',
@@ -873,7 +878,7 @@ const TRANSLATIONS = {
     cancelBtn:'Cancelar', generateBtn:'Gerar e adicionar', generatingBtn:'Gerando ícone…',
     roomTitle:'LAYOUT DA ESTUFA', roomLegend:'🟫 bloco vazio · toque em um bloco plantado para detalhes · arraste para plantar uma fileira',
     gridLabel:'grade {r} × {c}', refreshedToast:'Atualizado',
-    gridSettingsTitle:'CONFIGURAÇÕES DA GRADE', heightLabel:'Altura', widthLabel:'Largura',
+    gridSettingsTitle:'CONFIGURAÇÕES DA GRADE', heightLabel:'Comprimento', widthLabel:'Largura',
     envTitle:'AMBIENTE', envLoading:'Localizando…',
     envNoLocation:'Não foi possível determinar sua localização automaticamente.',
     envFetchError:'Não foi possível carregar os dados do clima agora.',
@@ -941,6 +946,7 @@ const TRANSLATIONS = {
     consentAccept:'Entendo e aceito',
     termsLabel:'Termos de uso',
     privacyLabel:'Política de privacidade',
+    cellSizeHint:'Cada quadrado mede 50 × 50 cm',
     boardTitle:'PLACA ORGANICS ONE',
     boardConnect:'Conectar placa',
     boardSave:'Conectar',
@@ -1000,8 +1006,8 @@ const TRANSLATIONS = {
     toastPickPlant:'Escolha uma planta da biblioteca primeiro 🌱',
     toastPlanted:'{name} plantado no bloco {r}-{c}', toastPlantedMulti:'{name} plantado em {n} blocos',
     toastCleared:'Bloco limpo',
-    toastMaxHeight:'A altura máxima é 12 blocos', toastMinHeight:'A altura mínima é 2 blocos',
-    toastMaxWidth:'A largura máxima é 12 blocos', toastMinWidth:'A largura mínima é 2 blocos',
+    toastMaxHeight:'O comprimento máximo é 6 m (12 quadrados)', toastMinHeight:'O comprimento mínimo é 1 m (2 quadrados)',
+    toastMaxWidth:'A largura máxima é 6 m (12 quadrados)', toastMinWidth:'A largura mínima é 1 m (2 quadrados)',
     toastGiveName:'Dê um nome à sua planta primeiro', toastAlreadyLibrary:'{name} já está na sua biblioteca — selecionamos para você',
     toastAdded:'{name} adicionado à sua biblioteca {icon}', toastSaveFail:'Não foi possível salvar — suas alterações podem não persistir.',
     grown:'crescido', toGo:'restantes', day:'dia', days:'dias',
@@ -1021,7 +1027,7 @@ const TRANSLATIONS = {
     cancelBtn:'Abbrechen', generateBtn:'Erstellen & hinzufügen', generatingBtn:'Symbol wird erstellt…',
     roomTitle:'GEWÄCHSHAUS-LAYOUT', roomLegend:'🟫 leeres Feld · tippe auf ein bepflanztes Feld für Details · ziehen, um eine Reihe zu bepflanzen',
     gridLabel:'{r} × {c} Raster', refreshedToast:'Aktualisiert',
-    gridSettingsTitle:'RASTEREINSTELLUNGEN', heightLabel:'Höhe', widthLabel:'Breite',
+    gridSettingsTitle:'RASTEREINSTELLUNGEN', heightLabel:'Länge', widthLabel:'Breite',
     envTitle:'UMGEBUNG', envLoading:'Standort wird ermittelt…',
     envNoLocation:'Dein Standort konnte nicht automatisch ermittelt werden.',
     envFetchError:'Wetterdaten konnten gerade nicht geladen werden.',
@@ -1089,6 +1095,7 @@ const TRANSLATIONS = {
     consentAccept:'Ich verstehe und akzeptiere',
     termsLabel:'Nutzungsbedingungen',
     privacyLabel:'Datenschutzerklärung',
+    cellSizeHint:'Jedes Feld misst 50 × 50 cm',
     boardTitle:'ORGANICS-ONE-PLATINE',
     boardConnect:'Platine verbinden',
     boardSave:'Verbinden',
@@ -1148,8 +1155,8 @@ const TRANSLATIONS = {
     toastPickPlant:'Wähle zuerst eine Pflanze aus der Bibliothek 🌱',
     toastPlanted:'{name} in Feld {r}-{c} gepflanzt', toastPlantedMulti:'{name} in {n} Feldern gepflanzt',
     toastCleared:'Feld geleert',
-    toastMaxHeight:'Maximale Höhe ist 12 Felder', toastMinHeight:'Minimale Höhe ist 2 Felder',
-    toastMaxWidth:'Maximale Breite ist 12 Felder', toastMinWidth:'Minimale Breite ist 2 Felder',
+    toastMaxHeight:'Maximale Länge: 6 m (12 Felder)', toastMinHeight:'Minimale Länge: 1 m (2 Felder)',
+    toastMaxWidth:'Maximale Breite: 6 m (12 Felder)', toastMinWidth:'Minimale Breite: 1 m (2 Felder)',
     toastGiveName:'Gib deiner Pflanze zuerst einen Namen', toastAlreadyLibrary:'{name} ist bereits in deiner Bibliothek — für dich ausgewählt',
     toastAdded:'{name} zu deiner Bibliothek hinzugefügt {icon}', toastSaveFail:'Speichern fehlgeschlagen — deine Änderungen bleiben möglicherweise nicht erhalten.',
     grown:'gewachsen', toGo:'verbleibend', day:'Tag', days:'Tage',
@@ -1169,7 +1176,7 @@ const TRANSLATIONS = {
     cancelBtn:'取消', generateBtn:'生成并添加', generatingBtn:'正在生成图标…',
     roomTitle:'温室布局', roomLegend:'🟫 空格 · 点击已种植的格子查看详情 · 拖动可整行种植',
     gridLabel:'{r} × {c} 网格', refreshedToast:'已刷新',
-    gridSettingsTitle:'网格设置', heightLabel:'高度', widthLabel:'宽度',
+    gridSettingsTitle:'网格设置', heightLabel:'长度', widthLabel:'宽度',
     envTitle:'环境', envLoading:'正在定位…',
     envNoLocation:'无法自动确定您的位置。',
     envFetchError:'暂时无法加载天气数据。',
@@ -1237,6 +1244,7 @@ const TRANSLATIONS = {
     consentAccept:'我已了解并接受',
     termsLabel:'使用条款',
     privacyLabel:'隐私政策',
+    cellSizeHint:'每格 50 × 50 厘米',
     boardTitle:'ORGANICS ONE 控制板',
     boardConnect:'连接控制板',
     boardSave:'连接',
@@ -1296,8 +1304,8 @@ const TRANSLATIONS = {
     toastPickPlant:'请先从植物库中选择一种植物 🌱',
     toastPlanted:'已在 {r}-{c} 格种植{name}', toastPlantedMulti:'已在 {n} 个格子种植{name}',
     toastCleared:'格子已清空',
-    toastMaxHeight:'最大高度为 12 格', toastMinHeight:'最小高度为 2 格',
-    toastMaxWidth:'最大宽度为 12 格', toastMinWidth:'最小宽度为 2 格',
+    toastMaxHeight:'最大长度为 6 米（12 格）', toastMinHeight:'最小长度为 1 米（2 格）',
+    toastMaxWidth:'最大宽度为 6 米（12 格）', toastMinWidth:'最小宽度为 1 米（2 格）',
     toastGiveName:'请先为您的植物命名', toastAlreadyLibrary:'{name} 已在您的植物库中 — 已为您选中',
     toastAdded:'已将 {name} 添加到您的植物库 {icon}', toastSaveFail:'保存失败 — 您的更改可能不会保留。',
     grown:'已生长', toGo:'剩余', day:'天', days:'天',
@@ -1317,7 +1325,7 @@ const TRANSLATIONS = {
     cancelBtn:'रद्द करें', generateBtn:'बनाएं और जोड़ें', generatingBtn:'आइकन बनाया जा रहा है…',
     roomTitle:'ग्रीनहाउस लेआउट', roomLegend:'🟫 खाली ब्लॉक · विवरण के लिए लगाए गए ब्लॉक पर टैप करें · पंक्ति में लगाने के लिए खींचें',
     gridLabel:'{r} × {c} ग्रिड', refreshedToast:'ताज़ा किया गया',
-    gridSettingsTitle:'ग्रिड सेटिंग्स', heightLabel:'ऊँचाई', widthLabel:'चौड़ाई',
+    gridSettingsTitle:'ग्रिड सेटिंग्स', heightLabel:'लंबाई', widthLabel:'चौड़ाई',
     envTitle:'वातावरण', envLoading:'स्थान खोजा जा रहा है…',
     envNoLocation:'आपका स्थान स्वचालित रूप से निर्धारित नहीं किया जा सका।',
     envFetchError:'अभी मौसम डेटा लोड नहीं हो सका।',
@@ -1385,6 +1393,7 @@ const TRANSLATIONS = {
     consentAccept:'मैं समझता/समझती हूँ और स्वीकार करता/करती हूँ',
     termsLabel:'उपयोग की शर्तें',
     privacyLabel:'गोपनीयता नीति',
+    cellSizeHint:'हर खाना 50 × 50 सेमी का है',
     boardTitle:'ORGANICS ONE बोर्ड',
     boardConnect:'बोर्ड कनेक्ट करें',
     boardSave:'कनेक्ट करें',
@@ -1444,8 +1453,8 @@ const TRANSLATIONS = {
     toastPickPlant:'पहले पुस्तकालय से एक पौधा चुनें 🌱',
     toastPlanted:'ब्लॉक {r}-{c} में {name} लगाया गया', toastPlantedMulti:'{n} ब्लॉक में {name} लगाया गया',
     toastCleared:'ब्लॉक खाली किया गया',
-    toastMaxHeight:'अधिकतम ऊँचाई 12 ब्लॉक है', toastMinHeight:'न्यूनतम ऊँचाई 2 ब्लॉक है',
-    toastMaxWidth:'अधिकतम चौड़ाई 12 ब्लॉक है', toastMinWidth:'न्यूनतम चौड़ाई 2 ब्लॉक है',
+    toastMaxHeight:'अधिकतम लंबाई 6 मी (12 खाने)', toastMinHeight:'न्यूनतम लंबाई 1 मी (2 खाने)',
+    toastMaxWidth:'अधिकतम चौड़ाई 6 मी (12 खाने)', toastMinWidth:'न्यूनतम चौड़ाई 1 मी (2 खाने)',
     toastGiveName:'पहले अपने पौधे को नाम दें', toastAlreadyLibrary:'{name} पहले से आपकी लाइब्रेरी में है — आपके लिए चुन लिया गया',
     toastAdded:'{name} आपकी लाइब्रेरी में जोड़ा गया {icon}', toastSaveFail:'सेव नहीं हो सका — आपके बदलाव सुरक्षित नहीं रह सकते।',
     grown:'विकसित', toGo:'शेष', day:'दिन', days:'दिन',
@@ -1465,7 +1474,7 @@ const TRANSLATIONS = {
     cancelBtn:'إلغاء', generateBtn:'إنشاء وإضافة', generatingBtn:'جارٍ إنشاء الأيقونة…',
     roomTitle:'تخطيط الدفيئة', roomLegend:'🟫 مربع فارغ · اضغط على مربع مزروع لعرض التفاصيل · اسحب لزراعة صف كامل',
     gridLabel:'شبكة {r} × {c}', refreshedToast:'تم التحديث',
-    gridSettingsTitle:'إعدادات الشبكة', heightLabel:'الارتفاع', widthLabel:'العرض',
+    gridSettingsTitle:'إعدادات الشبكة', heightLabel:'الطول', widthLabel:'العرض',
     envTitle:'البيئة', envLoading:'جارٍ تحديد الموقع…',
     envNoLocation:'تعذّر تحديد موقعك تلقائيًا.',
     envFetchError:'تعذّر تحميل بيانات الطقس الآن.',
@@ -1533,6 +1542,7 @@ const TRANSLATIONS = {
     consentAccept:'أفهم وأوافق',
     termsLabel:'شروط الاستخدام',
     privacyLabel:'سياسة الخصوصية',
+    cellSizeHint:'كل مربع 50 × 50 سم',
     boardTitle:'لوحة ORGANICS ONE',
     boardConnect:'ربط اللوحة',
     boardSave:'اتصال',
@@ -1592,8 +1602,8 @@ const TRANSLATIONS = {
     toastPickPlant:'اختر نبتة من المكتبة أولاً 🌱',
     toastPlanted:'تمت زراعة {name} في المربع {r}-{c}', toastPlantedMulti:'تمت زراعة {name} في {n} مربعات',
     toastCleared:'تم إفراغ المربع',
-    toastMaxHeight:'الحد الأقصى للارتفاع هو 12 مربعًا', toastMinHeight:'الحد الأدنى للارتفاع هو 2 مربع',
-    toastMaxWidth:'الحد الأقصى للعرض هو 12 مربعًا', toastMinWidth:'الحد الأدنى للعرض هو 2 مربع',
+    toastMaxHeight:'أقصى طول 6 م (12 مربعًا)', toastMinHeight:'أدنى طول 1 م (مربعان)',
+    toastMaxWidth:'أقصى عرض 6 م (12 مربعًا)', toastMinWidth:'أدنى عرض 1 م (مربعان)',
     toastGiveName:'أعطِ نبتتك اسمًا أولاً', toastAlreadyLibrary:'{name} موجودة بالفعل في مكتبتك — تم اختيارها لك',
     toastAdded:'تمت إضافة {name} إلى مكتبتك {icon}', toastSaveFail:'تعذّر الحفظ — قد لا تُحفظ تغييراتك.',
     grown:'نما', toGo:'متبقٍ', day:'يوم', days:'أيام',
@@ -1613,7 +1623,7 @@ const TRANSLATIONS = {
     cancelBtn:'Annulla', generateBtn:'Genera e aggiungi', generatingBtn:'Generazione icona…',
     roomTitle:'LAYOUT DELLA SERRA', roomLegend:'🟫 blocco vuoto · tocca un blocco piantato per i dettagli · trascina per piantare una fila',
     gridLabel:'griglia {r} × {c}', refreshedToast:'Aggiornato',
-    gridSettingsTitle:'IMPOSTAZIONI GRIGLIA', heightLabel:'Altezza', widthLabel:'Larghezza',
+    gridSettingsTitle:'IMPOSTAZIONI GRIGLIA', heightLabel:'Lunghezza', widthLabel:'Larghezza',
     envTitle:'AMBIENTE', envLoading:'Localizzazione…',
     envNoLocation:'Impossibile determinare automaticamente la tua posizione.',
     envFetchError:'Impossibile caricare i dati meteo al momento.',
@@ -1681,6 +1691,7 @@ const TRANSLATIONS = {
     consentAccept:'Ho capito e accetto',
     termsLabel:'Termini di utilizzo',
     privacyLabel:'Informativa sulla privacy',
+    cellSizeHint:'Ogni casella misura 50 × 50 cm',
     boardTitle:'SCHEDA ORGANICS ONE',
     boardConnect:'Collega scheda',
     boardSave:'Collega',
@@ -1740,8 +1751,8 @@ const TRANSLATIONS = {
     toastPickPlant:'Scegli prima una pianta dalla libreria 🌱',
     toastPlanted:'{name} piantato nel blocco {r}-{c}', toastPlantedMulti:'{name} piantato in {n} blocchi',
     toastCleared:'Blocco svuotato',
-    toastMaxHeight:"L'altezza massima è 12 blocchi", toastMinHeight:"L'altezza minima è 2 blocchi",
-    toastMaxWidth:'La larghezza massima è 12 blocchi', toastMinWidth:'La larghezza minima è 2 blocchi',
+    toastMaxHeight:'La lunghezza massima è 6 m (12 caselle)', toastMinHeight:'La lunghezza minima è 1 m (2 caselle)',
+    toastMaxWidth:'La larghezza massima è 6 m (12 caselle)', toastMinWidth:'La larghezza minima è 1 m (2 caselle)',
     toastGiveName:'Dai prima un nome alla tua pianta', toastAlreadyLibrary:'{name} è già nella tua libreria — selezionata per te',
     toastAdded:'{name} aggiunta alla tua libreria {icon}', toastSaveFail:'Impossibile salvare — le modifiche potrebbero non essere mantenute.',
     grown:'cresciuto', toGo:'rimanenti', day:'giorno', days:'giorni',
@@ -1761,7 +1772,7 @@ const TRANSLATIONS = {
     cancelBtn:'Отмена', generateBtn:'Создать и добавить', generatingBtn:'Создание иконки…',
     roomTitle:'ПЛАН ТЕПЛИЦЫ', roomLegend:'🟫 пустая клетка · нажмите на посаженную клетку для подробностей · перетащите, чтобы засадить ряд',
     gridLabel:'сетка {r} × {c}', refreshedToast:'Обновлено',
-    gridSettingsTitle:'НАСТРОЙКИ СЕТКИ', heightLabel:'Высота', widthLabel:'Ширина',
+    gridSettingsTitle:'НАСТРОЙКИ СЕТКИ', heightLabel:'Длина', widthLabel:'Ширина',
     envTitle:'СРЕДА', envLoading:'Определение местоположения…',
     envNoLocation:'Не удалось автоматически определить ваше местоположение.',
     envFetchError:'Не удалось загрузить данные о погоде.',
@@ -1829,6 +1840,7 @@ const TRANSLATIONS = {
     consentAccept:'Понимаю и принимаю',
     termsLabel:'Условия использования',
     privacyLabel:'Политика конфиденциальности',
+    cellSizeHint:'Каждая клетка 50 × 50 см',
     boardTitle:'ПЛАТА ORGANICS ONE',
     boardConnect:'Подключить плату',
     boardSave:'Подключить',
@@ -1888,8 +1900,8 @@ const TRANSLATIONS = {
     toastPickPlant:'Сначала выберите растение из библиотеки 🌱',
     toastPlanted:'{name} посажено в клетке {r}-{c}', toastPlantedMulti:'{name} посажено в {n} клетках',
     toastCleared:'Клетка очищена',
-    toastMaxHeight:'Максимальная высота — 12 клеток', toastMinHeight:'Минимальная высота — 2 клетки',
-    toastMaxWidth:'Максимальная ширина — 12 клеток', toastMinWidth:'Минимальная ширина — 2 клетки',
+    toastMaxHeight:'Максимальная длина 6 м (12 клеток)', toastMinHeight:'Минимальная длина 1 м (2 клетки)',
+    toastMaxWidth:'Максимальная ширина 6 м (12 клеток)', toastMinWidth:'Минимальная ширина 1 м (2 клетки)',
     toastGiveName:'Сначала дайте название вашему растению', toastAlreadyLibrary:'{name} уже есть в вашей библиотеке — выбрано для вас',
     toastAdded:'{name} добавлено в вашу библиотеку {icon}', toastSaveFail:'Не удалось сохранить — изменения могут не сохраниться.',
     grown:'выросло', toGo:'осталось', day:'день', days:'дней',
@@ -2192,11 +2204,15 @@ document.addEventListener('keydown', e => { if(e.key === 'Escape') closeGridSett
 /* ---------- Render ---------- */
 function render(){ if(typeof renderConsentTexts==='function') renderConsentTexts(); if(typeof renderIconPicker==='function') renderIconPicker(); if(typeof renderBoard==='function' && window.OrganicsOne && document.getElementById('boardCard')) renderBoard(); renderDims(); renderCatPills(); renderVegList(); renderRoom(); renderHeaderPills(); renderRipenessAlerts(); refreshEnvIfLoaded(); }
 function refreshEnvIfLoaded(){ if(lastWeatherData) renderEnvConditions(lastWeatherData); }
+const CELL_M = 0.5;   /* each grid square is 50 x 50 cm */
+function fmtM(n){ return (n * CELL_M).toLocaleString(lang==='es'?'es-CL':lang, { maximumFractionDigits:1 }); }
+function fmtArea(r,c){ return (r * c * CELL_M * CELL_M).toLocaleString(lang==='es'?'es-CL':lang, { maximumFractionDigits:2 }); }
 function renderDims(){
-  document.getElementById('rowsVal').textContent = state.rows;
-  document.getElementById('colsVal').textContent = state.cols;
-  document.getElementById('dimSummary').textContent = `${state.rows} × ${state.cols}`;
-  document.getElementById('gridSizeLabel').textContent = t('gridLabel', { r: state.rows, c: state.cols });
+  document.getElementById('rowsVal').textContent = fmtM(state.rows) + ' m';
+  document.getElementById('colsVal').textContent = fmtM(state.cols) + ' m';
+  document.getElementById('dimSummary').textContent = `${fmtM(state.rows)} × ${fmtM(state.cols)} m · ${fmtArea(state.rows, state.cols)} m²`;
+  document.getElementById('gridSizeLabel').textContent = `${fmtM(state.rows)} × ${fmtM(state.cols)} m`;
+  document.getElementById('cellSizeHint').textContent = t('cellSizeHint');
 }
 
 function renderCatPills(){
@@ -2284,7 +2300,8 @@ let dragging = false;
 let dragKeys = new Set();
 
 function isMobileView(){ return window.matchMedia('(max-width: 700px)').matches; }
-function isTransposed(){ return isMobileView() !== state.roomRotated; }
+/* No manual rotation: the long side runs vertically on phones and horizontally on wider screens */
+function isTransposed(){ return isMobileView() ? state.cols > state.rows : state.rows > state.cols; }
 
 const WOOD_COLOR = '#C9A16D';
 function isCellPlanted(r, c){
@@ -2435,11 +2452,6 @@ document.addEventListener('touchmove', (e) => {
   if(cellEl && cellEl.dataset.r !== undefined) continueDrag(parseInt(cellEl.dataset.r,10), parseInt(cellEl.dataset.c,10));
 }, { passive:false });
 
-document.getElementById('rotateRoomBtn').addEventListener('click', () => {
-  state.roomRotated = !state.roomRotated;
-  saveState();
-  renderRoom();
-});
 document.getElementById('refreshRoomBtn').addEventListener('click', () => { renderRoom(); showToast(t('refreshedToast')); });
 
 let _mobileViewState = isMobileView();

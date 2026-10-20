@@ -1,4 +1,4 @@
-const CACHE_NAME = 'greenhouse-planner-v4';
+const CACHE_NAME = 'greenhouse-planner-v5';
 const CORE_ASSETS = [
   './',
   './index.html',
@@ -24,7 +24,7 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Network-first for external APIs (weather/geolocation/AI), cache-first for the app shell itself.
+// External APIs go straight to the network; app pages are network-first; other app files stale-while-revalidate.
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
   const isAppShell = url.origin === self.location.origin;
@@ -34,6 +34,24 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // Pages (index.html): network first so updates show on the first load; cached copy only when offline.
+  const isPage = event.request.mode === 'navigate' || url.pathname.endsWith('.html') || url.pathname.endsWith('/');
+  if (isPage) {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          if (response && response.status === 200) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+          }
+          return response;
+        })
+        .catch(() => caches.match(event.request).then((c) => c || caches.match('./index.html')))
+    );
+    return;
+  }
+
+  // Other files (icons, scripts): cached copy first, refreshed in the background.
   event.respondWith(
     caches.match(event.request).then((cached) => {
       const fetchPromise = fetch(event.request)
