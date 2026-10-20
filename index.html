@@ -400,7 +400,6 @@
       <div class="room-header">
         <span class="eyebrow" id="roomTitle">GREENHOUSE LAYOUT</span>
         <div class="room-header-right">
-          <button class="icon-btn spin" id="refreshRoomBtn" title="Refresh">↻</button>
           <button class="grid-size-label" id="gridSizeLabel" type="button">6 × 6 grid</button>
         </div>
       </div>
@@ -2452,7 +2451,6 @@ document.addEventListener('touchmove', (e) => {
   if(cellEl && cellEl.dataset.r !== undefined) continueDrag(parseInt(cellEl.dataset.r,10), parseInt(cellEl.dataset.c,10));
 }, { passive:false });
 
-document.getElementById('refreshRoomBtn').addEventListener('click', () => { renderRoom(); showToast(t('refreshedToast')); });
 
 let _mobileViewState = isMobileView();
 let _resizeTimer = null;
