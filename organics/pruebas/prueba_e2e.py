@@ -45,7 +45,7 @@ with sync_playwright() as p:
     # conexión correcta
     pg.fill("#clave", "clave-app"); pg.click("#btnConectar")
     pg.wait_for_selector("text=Tarjeta en línea", timeout=15000)
-    pg.wait_for_selector("text=Firmware 1.03", timeout=5000)
+    pg.wait_for_selector("text=Firmware 1.04", timeout=5000)
     time.sleep(0.6)
     check("23.4 °C" in pg.text_content("#ambiente"), "temperatura en tarjeta de ambiente")
     check("612 ppm" in pg.text_content("#ambiente"), "CO2 en ambiente")
@@ -76,6 +76,22 @@ with sync_playwright() as p:
     pg.fill("#reglas", "no es json"); pg.click("#btnEnviarReglas")
     check("JSON" in pg.text_content("#errReglas"), "JSON inválido detectado en la app")
 
+    # fuente de agua: rechazo con riego en curso, luego cambio a red
+    check("tanque (agua lluvia)" in pg.text_content("#fuenteTxt"), "fuente inicial tanque")
+    check("Tanque" in pg.text_content("#agua") and pg.is_visible("#btnRearmar"), "con tanque se ven tanque y rearme")
+    pg.click("#btnRed")
+    pg.wait_for_function("document.getElementById('errAgua').textContent.includes('riego en curso')", timeout=12000)
+    pg.click("button[data-z='1'][data-s='0']")
+    pg.wait_for_function("OrganicsOne.zonas()[0].valvulaAbierta === false", timeout=5000)
+    pg.click("#btnRed")
+    pg.wait_for_function("document.getElementById('fuenteTxt').textContent.includes('red')", timeout=12000)
+    time.sleep(0.4)
+    check(pg.text_content("#errAgua") == "", "cambio a red sin error: " + pg.text_content("#errAgua"))
+    check("Tanque" not in pg.text_content("#agua") and "Caudal" in pg.text_content("#agua"), "con red se oculta el tanque")
+    check(not pg.is_visible("#btnRearmar"), "con red se oculta el rearme de bomba")
+    r = pg.evaluate("OrganicsOne.fuenteAgua('lluvia').then(()=>'ok', e=>e.message)")
+    check("mains" in r, "fuente inválida rechazada en la app")
+
     # audio opcional
     check(pg.is_visible("#secAudio"), "panel de audio visible con módulo en línea")
     pg.click("#btnAudioPlay")
@@ -99,12 +115,13 @@ with sync_playwright() as p:
     todos = pg.text_content("#todos")
     check("irrigation/set" not in todos and "pump/reset" not in todos, "las órdenes propias no se guardan como estado")
     check(not errores, "errores de JavaScript: " + "; ".join(errores))
-        b.close()
+    pg.screenshot(path=os.path.join(E, "prueba.png"), full_page=True)
+    b.close()
 
 # lo que recibió el Gateway simulado
 ordenes = [json.loads(l) for l in open(REG)]
 subs = [o["sub"] for o in ordenes]
-check("zone/1/irrigation/set" in subs and "window/2/set" in subs and "output/fan/set" in subs and "pump/reset" in subs, "órdenes recibidas: " + str(subs))
+check("zone/1/irrigation/set" in subs and "window/2/set" in subs and "output/fan/set" in subs and "pump/reset" in subs and "water/source/set" in subs, "órdenes recibidas: " + str(subs))
 check(all(not o["retain"] for o in ordenes), "ninguna orden retenida")
 check(all(o["qos"] == 1 for o in ordenes), "todas las órdenes con QoS 1")
 check(any(o["sub"] == "zone/1/irrigation/set" and o["v"] == "60" for o in ordenes), "riego de 60 s")

@@ -1,6 +1,6 @@
 # Contrato tarjeta y app (Organics One + Greenhouse Planner)
 
-**Versión 1.0, 2026-10-19.** Corresponde a: firmware del Gateway v1.03, firmware del nodo v1.01, módulo de audio v1.00.
+**Versión 1.1, 2026-10-20.** Corresponde a: firmware del Gateway v1.04, firmware del nodo v1.01, módulo de audio v1.00.
 
 Este documento es la única fuente de verdad de cómo conversan la tarjeta y la app. Lo mantiene el proyecto de hardware (Organics One), a partir del firmware real.
 
@@ -59,6 +59,7 @@ Todos bajo `greenhouse/{id}/`. `{n}` = número de zona (1, 2...) o de ventana (1
 | `ambient/light` | lux | Solo si hay sensor de luz |
 | `ambient/leaf_wetness` | % | Hoja mojada (0 seca, 100 mojada) |
 | `ambient/leaf_wetness_mv` | mV | Valor crudo, para calibrar |
+| `water/source` | `mains` / `tank` | Fuente de agua. `mains`: red (tubería), sin bomba. `tank`: tanque (agua lluvia) con bomba |
 | `tank/level` | % | Nivel de tanque |
 | `tank/level_mv` | mV | Valor crudo, para calibrar |
 | `tank/float` | `ok` / `low` | Flotador de nivel crítico |
@@ -78,7 +79,7 @@ Todos bajo `greenhouse/{id}/`. `{n}` = número de zona (1, 2...) o de ventana (1
 | `gateway/auto` | JSON | Reglas automáticas vigentes. Mismo formato que `gateway/auto/set` |
 | `auto/event` | JSON | **No retenido.** Cada acción automática. Ver más abajo |
 
-**`gateway/info`:** `{"fw":"1.03","ip":"192.168.1.40","network":"ethernet","uptime_s":86400,"free_heap":120000,"zones":2,"time":"2026-10-19 15:30","auto":1}`. `time` queda vacío si la tarjeta aún no tiene hora de internet.
+**`gateway/info`:** `{"fw":"1.04","ip":"192.168.1.40","network":"ethernet","uptime_s":86400,"free_heap":120000,"zones":2,"time":"2026-10-19 15:30","auto":1,"water":"tank"}`. `time` queda vacío si la tarjeta aún no tiene hora de internet. `water` repite la fuente de agua.
 
 **Alarmas (`alarm/{nombre}`):**
 
@@ -90,7 +91,7 @@ Todos bajo `greenhouse/{id}/`. `{n}` = número de zona (1, 2...) o de ventana (1
 | `adc` | Falla del conversor de las entradas analógicas |
 | `pump_dry_run` | Bomba en seco. Queda bloqueada hasta `pump/reset` |
 | `pump_overcurrent` | Sobrecorriente de bomba. Queda bloqueada hasta `pump/reset` |
-| `tank_low` | Tanque bajo. Se rearma sola cuando vuelve el agua |
+| `tank_low` | Tanque bajo. Se rearma sola cuando vuelve el agua. Con fuente `mains` queda siempre en `0` |
 | `irrigation_stop` | Paro de riego físico activado |
 | `tamper` | Puerta del gabinete abierta |
 | `io_outputs` / `io_inputs` | Falla de salidas o entradas de la tarjeta |
@@ -120,10 +121,22 @@ QoS 1, **no retenidas**, bajo `greenhouse/{id}/`.
 | `pump/reset` | (cualquiera) | Rearma la bomba después de una alarma |
 | `gateway/refresh` | (cualquiera) | La tarjeta republica todos sus estados |
 | `gateway/auto/set` | JSON parcial | Cambia reglas automáticas. Responde en `gateway/auto/result` (`ok` o `error: motivo`) |
+| `water/source/set` | `mains` / `tank` | Cambia la fuente de agua. Se aplica al instante y queda guardada. Se rechaza si hay un riego abierto o en cola. Responde en `water/source/result` (`ok` o `error: motivo`) |
 
 **Lo manual manda:** una orden manual (riego, ventana, ventilador o luz de cultivo) pausa por 60 minutos la regla automática de ese equipo.
 
 Órdenes de instalación, que la app de uso diario no debe ofrecer: `gateway/config/set` (JSON, la tarjeta se reinicia; respuesta en `gateway/config/result`) y `gateway/restart`.
+
+## Fuente de agua
+
+El invernadero puede regar desde la red (tubería de la casa) o desde un tanque de agua lluvia con bomba. Se elige una a la vez con `water/source/set`; es la persona quien la elige, porque depende de cómo está conectada el agua.
+
+| Fuente | La tarjeta | La app muestra |
+|---|---|---|
+| `mains` (red) | No usa la bomba. `tank_low` queda en `0` | Caudal y litros. Oculta tanque, flotador y bomba |
+| `tank` (tanque) | Usa la bomba y bloquea el riego con tanque bajo, bomba en seco o sobrecorriente | Nivel del tanque, flotador, bomba, caudal y litros |
+
+Antes de cambiar a `tank`, la app debe advertir que se necesita la bomba instalada. Si `water/source` no llega (firmware anterior a 1.04), la app asume `tank` y muestra todo.
 
 ## Reglas automáticas (`gateway/auto/set`)
 
@@ -214,3 +227,4 @@ c.publish(P + 'zone/1/irrigation/set', '600', { qos: 1, retain: false });
 | Versión | Fecha | Cambio |
 |---|---|---|
 | 1.0 | 2026-10-19 | Primera versión: Gateway v1.03, nodo v1.01, audio v1.00 |
+| 1.1 | 2026-10-20 | Fuente de agua seleccionable (`water/source`, `water/source/set`), Gateway v1.04 |

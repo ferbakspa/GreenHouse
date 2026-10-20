@@ -1,4 +1,4 @@
-"""Gateway Organics One simulado (contrato v1.0) para probar organics/conexion.js.
+"""Gateway Organics One simulado (contrato v1.1) para probar organics/conexion.js.
 Registra cada orden recibida (topic, payload, retain) en ordenes.jsonl."""
 import json, sys, threading, time
 import paho.mqtt.client as mqtt
@@ -6,6 +6,7 @@ import paho.mqtt.client as mqtt
 P = "greenhouse/invernadero1/"
 REG = sys.argv[1] if len(sys.argv) > 1 else "ordenes.jsonl"
 estado = {}
+fuente = {"v": "tank"}
 reglas = {"active": 1, "zones": [{"zone": 1, "soil": {"on": 0, "min": 35, "duration_s": 600, "wait_min": 60, "max_day": 6, "from_h": 0, "to_h": 0}, "schedule": []},
                                  {"zone": 2, "soil": {"on": 0, "min": 35, "duration_s": 600, "wait_min": 60, "max_day": 6, "from_h": 0, "to_h": 0}, "schedule": []}],
           "vent": {"on": 0, "open_c": 28, "close_c": 25, "open_pct": 100, "open_rh": 0}, "fan": {"on": 0, "on_c": 30, "off_c": 28},
@@ -23,7 +24,7 @@ def pub(sub, v, ret=True):
 
 def publicar_todo():
     pub("gateway/status", "online")
-    pub("gateway/info", json.dumps({"fw": "1.03", "ip": "192.168.1.40", "network": "ethernet", "uptime_s": 120, "free_heap": 120000, "zones": 2, "time": "2026-10-19 16:40", "auto": 1}))
+    pub("gateway/info", json.dumps({"fw": "1.04", "ip": "192.168.1.40", "network": "ethernet", "uptime_s": 120, "free_heap": 120000, "zones": 2, "time": "2026-10-19 16:40", "auto": 1, "water": fuente["v"]}))
     for z, (s1, s2) in {1: ("31.5", "33.1"), 2: ("48.0", "null")}.items():
         pub(f"zone/{z}/online", "1"); pub(f"zone/{z}/soil1", s1); pub(f"zone/{z}/soil2", s2)
         pub(f"zone/{z}/valve", estado.get(f"zone/{z}/valve", "0")); pub(f"zone/{z}/flags", "0")
@@ -31,6 +32,7 @@ def publicar_todo():
         pub(f"zone/{z}/irrigation", estado.get(f"zone/{z}/irrigation", '{"state":"closed","remaining_s":0}'))
     for k, v in {"temperature": "23.4", "humidity": "71.0", "vpd": "0.84", "co2": "612", "light": "15400", "leaf_wetness": "12"}.items():
         pub("ambient/" + k, v)
+    pub("water/source", fuente["v"])
     pub("tank/level", "80"); pub("tank/float", "ok"); pub("pump/state", "off"); pub("flow/main", "0.00"); pub("flow/main_volume", "40.2")
     for n in range(1, 6):
         pub(f"window/{n}/position", estado.get(f"window/{n}/position", "0")); pub(f"window/{n}/state", "stopped"); pub(f"window/{n}/alarm", "none")
@@ -60,7 +62,8 @@ def al_mensaje(cl, ud, m):
         z = sub.split("/")[1]; s = int(v) if v.isdigit() else 0
         pub(f"zone/{z}/valve", "1" if s else "0")
         pub(f"zone/{z}/irrigation", json.dumps({"state": "open" if s else "closed", "remaining_s": s}))
-        pub("auto/event", json.dumps({"zone": int(z), "action": "irrigate", "reason": "soil", "soil": 31.5, "duration_s": 600, "state": "open"}), False)
+        if s:
+            pub("auto/event", json.dumps({"zone": int(z), "action": "irrigate", "reason": "soil", "soil": 31.5, "duration_s": 600, "state": "open"}), False)
     elif sub.startswith("window/"):
         n = sub.split("/")[1]; pos = {"open": 100, "close": 0}.get(v, int(v) if v.isdigit() else None)
         if pos is not None: pub(f"window/{n}/position", pos)
@@ -78,6 +81,15 @@ def al_mensaje(cl, ud, m):
             pub("gateway/auto", json.dumps(reglas)); pub("gateway/auto/result", "ok", False)
         except Exception as e:
             pub("gateway/auto/result", "error: " + str(e), False)
+    elif sub == "water/source/set":
+        if v not in ("mains", "tank"):
+            pub("water/source/result", "error: valor invalido, use mains o tank", False)
+        elif any(estado.get(f"zone/{z}/valve") == "1" for z in (1, 2)):
+            pub("water/source/result", "error: hay riego en curso, detengalo primero", False)
+        else:
+            fuente["v"] = v
+            pub("water/source", v)
+            pub("water/source/result", "ok", False)
     elif sub == "gateway/refresh":
         publicar_todo()
     elif sub.startswith("audio/"):
