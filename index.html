@@ -95,6 +95,68 @@
   .pick-plant-cancel.show{ display:block; }
 
 
+
+  /* ---------- Environment: modern dashboard ---------- */
+  #envPanel{ background:none; box-shadow:none; padding:0; min-width:0; max-width:100%; }
+  .env-hero, .env-bento, #envConditions{ min-width:0; max-width:100%; }
+  #envPanel .panel-head{ padding:0 4px; margin-bottom:10px; }
+  #envPanel .location-row{ display:none; }
+  .env-hero{ position:relative; overflow:hidden; border-radius:24px; padding:17px 17px 15px; color:#fff; box-shadow:0 14px 30px rgba(38,67,58,0.18); text-shadow:0 1px 2px rgba(0,0,0,0.12); }
+  .env-hero > *{ position:relative; }
+  .env-hero.w-sunny{ background:linear-gradient(160deg,#2F8FDB 0%,#57B3EA 50%,#F7C76A 125%); }
+  .env-hero.w-partly{ background:linear-gradient(160deg,#3E8FCB 0%,#74B3DD 52%,#E7CB86 125%); }
+  .env-hero.w-cloudy{ background:linear-gradient(160deg,#5F7889 0%,#8AA1AF 55%,#BAC6CC 120%); }
+  .env-hero.w-rain{ background:linear-gradient(160deg,#34506E 0%,#587794 55%,#88A0B3 120%); }
+  .env-hero.w-storm{ background:linear-gradient(160deg,#252F48 0%,#424E6B 55%,#6F7B96 120%); }
+  .env-hero.w-snow{ background:linear-gradient(160deg,#7F98B8 0%,#A9BED6 55%,#D9E5F1 120%); }
+  .env-hero.w-night{ background:linear-gradient(160deg,#10203A 0%,#1E3A63 55%,#38578A 120%); }
+  .eh-glow{ position:absolute !important; right:-34px; top:-34px; width:160px; height:160px; border-radius:50%; pointer-events:none; background:radial-gradient(circle,#FFE59A 0,#FFD15C 38%,rgba(255,209,92,0) 70%); opacity:.85; }
+  .w-cloudy .eh-glow, .w-rain .eh-glow, .w-storm .eh-glow, .w-snow .eh-glow{ opacity:.25; }
+  .w-night .eh-glow{ background:radial-gradient(circle,#F4F1DE 0,#D9D6C2 30%,rgba(217,214,194,0) 62%); opacity:.55; }
+  .eh-top{ display:flex; align-items:center; gap:6px; font-weight:700; font-size:14px; min-width:0; }
+  .eh-city{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; flex:0 1 auto; min-width:0; }
+  .eh-edit{ border:none; background:none; color:inherit; cursor:pointer; font-size:12px; padding:2px; opacity:.85; }
+  .eh-pill{ margin-left:auto; font-size:11px; font-weight:700; background:rgba(255,255,255,0.22); padding:4px 9px; border-radius:999px; backdrop-filter:blur(6px); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:58%; flex:0 1 auto; }
+  .eh-sub{ font-size:12px; opacity:.92; margin-top:2px; }
+  .eh-big{ display:flex; align-items:flex-end; gap:12px; margin-top:12px; min-width:0; }
+  .eh-meta{ min-width:0; overflow-wrap:anywhere; }
+  .eh-n{ font:700 62px/0.9 'Fraunces', serif; letter-spacing:-1px; white-space:nowrap; }
+  .eh-n small{ font-size:28px; vertical-align:top; }
+  .eh-meta{ padding-bottom:6px; font-size:12.5px; line-height:1.45; }
+  .eh-meta b{ font-size:13.5px; }
+  .eh-trend{ margin-top:8px; font-size:12px; font-weight:700; opacity:.95; }
+  .eh-range{ margin-top:14px; }
+  .eh-track{ position:relative; height:10px; border-radius:999px; background:rgba(255,255,255,0.28); }
+  .eh-ok{ position:absolute; top:0; bottom:0; border-radius:999px; background:rgba(255,255,255,0.78); }
+  .eh-mark{ position:absolute; top:-5px; width:20px; height:20px; border-radius:50%; background:#fff; border:4px solid #2E9E5B; box-shadow:0 2px 6px rgba(0,0,0,0.25); transform:translateX(-50%); }
+  .eh-mark.out{ border-color:#F5B60A; }
+  .eh-ends{ display:flex; justify-content:space-between; gap:6px; font-size:11px; margin-top:6px; opacity:.95; text-align:center; }
+  .eh-status{ margin-top:12px; display:flex; align-items:center; gap:8px; background:rgba(255,255,255,0.95); border-radius:12px; padding:8px 10px; font-size:12.5px; font-weight:700; text-shadow:none; line-height:1.35; }
+  .eh-status .dot{ flex:0 0 auto; width:8px; height:8px; border-radius:50%; }
+  .eh-status.ok{ color:#1F6E3F; } .eh-status.ok .dot{ background:#2E9E5B; box-shadow:0 0 0 4px rgba(46,158,91,0.2); }
+  .eh-status.warn{ color:#7A4B00; } .eh-status.warn .dot{ background:#F5B60A; box-shadow:0 0 0 4px rgba(245,182,10,0.25); animation: tempWarnPulse 2.2s ease-in-out infinite; }
+  .eh-status.neutral{ color: var(--pine-soft); } .eh-status.neutral .dot{ background:#B8C2BC; }
+  .eh-risk{ margin-top:8px; background:rgba(255,255,255,0.2); border-radius:12px; padding:7px 10px; font-size:12px; font-weight:700; backdrop-filter:blur(6px); }
+  .env-bento{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px; margin-top:12px; }
+  .eb-tile{ background:#fff; border-radius:18px; padding:12px 13px; box-shadow:0 2px 8px rgba(38,67,58,0.06); min-width:0; }
+  .eb-h{ display:flex; align-items:center; gap:6px; font-size:11.5px; font-weight:700; color: var(--pine-soft); }
+  .eb-v{ font:700 26px/1.1 'Fraunces', serif; color: var(--pine-dark); margin-top:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .eb-v.small{ font-size:19px; white-space:normal; }
+  .eb-s{ font-size:11.5px; color: var(--pine-soft); margin-top:2px; }
+  .eb-meter{ height:6px; border-radius:999px; background:#E3EDF5; margin-top:8px; overflow:hidden; }
+  .eb-meter i{ display:block; height:100%; border-radius:999px; background:#3A8FD0; }
+  .eh-arc{ display:block; margin-top:4px; }
+  #envPanel .board-card{ background:#fff; border-radius:18px; padding:12px 13px; margin:12px 0 0; box-shadow:0 2px 8px rgba(38,67,58,0.06); }
+  #envPanel .alerts-title-row{ background:#fff; border-radius:18px 18px 0 0; padding:12px 13px 4px; margin:12px 0 0; box-shadow:0 2px 8px rgba(38,67,58,0.06); }
+  #envAlerts{ background:#fff; padding:6px 13px 4px; display:flex; gap:8px; overflow-x:auto; box-shadow:0 6px 8px rgba(38,67,58,0.05); }
+  #envAlerts .no-alerts{ padding:4px 0 6px; }
+  #envAlerts .alert-row{ flex:0 0 auto; display:flex; align-items:center; gap:8px; background: var(--bg); border-radius:14px; padding:8px 11px; margin:0; cursor:pointer; }
+  #envAlerts .hv-e{ font-size:20px; }
+  #envAlerts .an{ font-size:12.5px; font-weight:700; color: var(--pine-dark); }
+  #envAlerts .ready-tag, #envAlerts .soon-tag{ display:inline-block; margin-top:1px; font-size:11px; }
+  #envPanel .estimate-note{ background:#fff; border-radius:0 0 18px 18px; padding:6px 13px 12px; margin-top:0; box-shadow:0 6px 8px rgba(38,67,58,0.05); }
+  #envPanel .manual-location-form, #envPanel .use-auto-location{ margin-bottom:10px; }
+
   /* ---------- Statistics ---------- */
   .pw-box{ max-width:420px; max-height:90vh; overflow:auto; }
   .pw-help{ font-size:12px !important; color: var(--pine-soft) !important; margin:0 0 10px !important; }
@@ -735,6 +797,28 @@ const TRANSLATIONS = {
     powerTracked:'from real on-time',
     powerMeterNote:'Estimate. For real consumption, install a Wi-Fi energy meter in your electrical panel.',
     boardLearn:'Don\'t have a board? Learn about Organics One',
+    envGreenhouse:'Greenhouse',
+    envSensor:'sensor',
+    envEstimated:'estimate',
+    envOutside:'Outside',
+    envMaxMin:'max {a}° / min {b}°',
+    envIdeal:'Ideal range {a}–{b} °C',
+    envAllGood:'All good: your crops are within range',
+    envPlantFirst:'Plant something to see its ideal range',
+    envHot:'{names}: too hot',
+    envCold:'{names}: too cold',
+    envTrendUp:'rising {d}° in the last hour',
+    envTrendDown:'falling {d}° in the last hour',
+    envDew:'Dew point',
+    envDewMargin:'margin {d}°',
+    envCondRisk:'Condensation risk: air is {d}° from the dew point',
+    envFrost:'Frost risk tonight (min {d}°)',
+    envDewNight:'Dew likely tonight',
+    envSunsetIn:'in {h} h {m} min',
+    envSunsetPast:'already set',
+    envSunToday:'Sun today',
+    envInHum:'Inside humidity',
+    envOutHum:'Outdoor humidity',
     boardTitle:'ORGANICS ONE BOARD', boardConnect:'Connect board', boardSave:'Connect', boardDisc:'Disconnect', boardForget:'Forget', boardServer:'Server (EMQX host)', boardUser:'User', boardPass:'Password', boardInv:'Greenhouse name', boardOff:'Not connected', boardOn:'Board online', boardNoBoard:'Board offline', boardUpdate:'Update firmware', boardTemp:'Temperature', boardHum:'Humidity', boardVpd:'VPD', boardSoil:'Soil', boardValveOpen:'watering', boardZone:'Zone', boardAlarm:'Alarm', boardConnecting:'Connecting…', boardLiveTemp:'Real sensor',
     useAutoLocation:'📍 Use automatic location', locationManualLabel:'Manual location',
     locationApprox:'Approximate location', locationPrecise:'Precise location',
@@ -901,6 +985,28 @@ const TRANSLATIONS = {
     powerTracked:'con tiempo real encendido',
     powerMeterNote:'Estimación. Para el consumo real, instala un medidor de energía con Wi-Fi en el tablero eléctrico.',
     boardLearn:'¿No tienes tarjeta? Conoce Organics One',
+    envGreenhouse:'Invernadero',
+    envSensor:'sensor',
+    envEstimated:'estimada',
+    envOutside:'Exterior',
+    envMaxMin:'máx. {a}° / mín. {b}°',
+    envIdeal:'Rango ideal {a}–{b} °C',
+    envAllGood:'Todo en orden: tus cultivos están en su rango',
+    envPlantFirst:'Planta algo para ver su rango ideal',
+    envHot:'{names} con exceso de calor',
+    envCold:'{names} con falta de calor',
+    envTrendUp:'subiendo {d}° en la última hora',
+    envTrendDown:'bajando {d}° en la última hora',
+    envDew:'Punto de rocío',
+    envDewMargin:'margen {d}°',
+    envCondRisk:'Riesgo de condensación: el aire está a {d}° del punto de rocío',
+    envFrost:'Riesgo de helada esta noche (mín. {d}°)',
+    envDewNight:'Rocío probable esta noche',
+    envSunsetIn:'en {h} h {m} min',
+    envSunsetPast:'ya se puso',
+    envSunToday:'Sol hoy',
+    envInHum:'Humedad interior',
+    envOutHum:'Humedad exterior',
     boardTitle:'TARJETA ORGANICS ONE', boardConnect:'Conectar tarjeta', boardSave:'Conectar', boardDisc:'Desconectar', boardForget:'Olvidar', boardServer:'Servidor (host de EMQX)', boardUser:'Usuario', boardPass:'Clave', boardInv:'Nombre del invernadero', boardOff:'Sin conexión', boardOn:'Tarjeta en línea', boardNoBoard:'Tarjeta desconectada', boardUpdate:'Actualizar firmware', boardTemp:'Temperatura', boardHum:'Humedad', boardVpd:'VPD', boardSoil:'Suelo', boardValveOpen:'regando', boardZone:'Zona', boardAlarm:'Alarma', boardConnecting:'Conectando…', boardLiveTemp:'Sensor real',
     useAutoLocation:'📍 Usar ubicación automática', locationManualLabel:'Ubicación manual',
     locationApprox:'Ubicación aproximada', locationPrecise:'Ubicación precisa',
@@ -1066,6 +1172,28 @@ const TRANSLATIONS = {
     powerTracked:'temps réel de fonctionnement',
     powerMeterNote:'Estimation. Pour la consommation réelle, installez un compteur d\'énergie Wi-Fi dans le tableau électrique.',
     boardLearn:'Pas de carte ? Découvrez Organics One',
+    envGreenhouse:'Serre',
+    envSensor:'capteur',
+    envEstimated:'estimée',
+    envOutside:'Extérieur',
+    envMaxMin:'max {a}° / min {b}°',
+    envIdeal:'Plage idéale {a}–{b} °C',
+    envAllGood:'Tout va bien : vos cultures sont dans leur plage',
+    envPlantFirst:'Plantez quelque chose pour voir sa plage idéale',
+    envHot:'{names} : trop chaud',
+    envCold:'{names} : trop froid',
+    envTrendUp:'en hausse de {d}° sur la dernière heure',
+    envTrendDown:'en baisse de {d}° sur la dernière heure',
+    envDew:'Point de rosée',
+    envDewMargin:'marge {d}°',
+    envCondRisk:'Risque de condensation : l\'air est à {d}° du point de rosée',
+    envFrost:'Risque de gel cette nuit (min {d}°)',
+    envDewNight:'Rosée probable cette nuit',
+    envSunsetIn:'dans {h} h {m} min',
+    envSunsetPast:'déjà couché',
+    envSunToday:'Soleil aujourd\'hui',
+    envInHum:'Humidité intérieure',
+    envOutHum:'Humidité extérieure',
     boardTitle:'CARTE ORGANICS ONE',
     boardConnect:'Connecter la carte',
     boardSave:'Connecter',
@@ -1272,6 +1400,28 @@ const TRANSLATIONS = {
     powerTracked:'com tempo real ligado',
     powerMeterNote:'Estimativa. Para o consumo real, instale um medidor de energia Wi-Fi no quadro elétrico.',
     boardLearn:'Não tem a placa? Conheça a Organics One',
+    envGreenhouse:'Estufa',
+    envSensor:'sensor',
+    envEstimated:'estimada',
+    envOutside:'Externo',
+    envMaxMin:'máx. {a}° / mín. {b}°',
+    envIdeal:'Faixa ideal {a}–{b} °C',
+    envAllGood:'Tudo certo: seus cultivos estão na faixa',
+    envPlantFirst:'Plante algo para ver a faixa ideal',
+    envHot:'{names} com calor demais',
+    envCold:'{names} com frio demais',
+    envTrendUp:'subindo {d}° na última hora',
+    envTrendDown:'caindo {d}° na última hora',
+    envDew:'Ponto de orvalho',
+    envDewMargin:'margem {d}°',
+    envCondRisk:'Risco de condensação: o ar está a {d}° do ponto de orvalho',
+    envFrost:'Risco de geada esta noite (mín. {d}°)',
+    envDewNight:'Orvalho provável esta noite',
+    envSunsetIn:'em {h} h {m} min',
+    envSunsetPast:'já se pôs',
+    envSunToday:'Sol hoje',
+    envInHum:'Umidade interna',
+    envOutHum:'Umidade externa',
     boardTitle:'PLACA ORGANICS ONE',
     boardConnect:'Conectar placa',
     boardSave:'Conectar',
@@ -1478,6 +1628,28 @@ const TRANSLATIONS = {
     powerTracked:'mit echter Laufzeit',
     powerMeterNote:'Schätzung. Für den echten Verbrauch installiere einen WLAN-Energiezähler im Schaltschrank.',
     boardLearn:'Keine Platine? Organics One kennenlernen',
+    envGreenhouse:'Gewächshaus',
+    envSensor:'Sensor',
+    envEstimated:'geschätzt',
+    envOutside:'Außen',
+    envMaxMin:'max. {a}° / min. {b}°',
+    envIdeal:'Idealbereich {a}–{b} °C',
+    envAllGood:'Alles in Ordnung: deine Kulturen sind im Bereich',
+    envPlantFirst:'Pflanze etwas, um den Idealbereich zu sehen',
+    envHot:'{names}: zu heiß',
+    envCold:'{names}: zu kalt',
+    envTrendUp:'steigt um {d}° in der letzten Stunde',
+    envTrendDown:'fällt um {d}° in der letzten Stunde',
+    envDew:'Taupunkt',
+    envDewMargin:'Abstand {d}°',
+    envCondRisk:'Kondensationsrisiko: Luft ist {d}° vom Taupunkt entfernt',
+    envFrost:'Frostgefahr heute Nacht (min. {d}°)',
+    envDewNight:'Tau heute Nacht wahrscheinlich',
+    envSunsetIn:'in {h} Std. {m} Min.',
+    envSunsetPast:'schon untergegangen',
+    envSunToday:'Sonne heute',
+    envInHum:'Innenfeuchte',
+    envOutHum:'Außenfeuchte',
     boardTitle:'ORGANICS-ONE-PLATINE',
     boardConnect:'Platine verbinden',
     boardSave:'Verbinden',
@@ -1684,6 +1856,28 @@ const TRANSLATIONS = {
     powerTracked:'按实际运行时间',
     powerMeterNote:'估算值。如需实际用电量，请在电箱中安装 Wi-Fi 电能表。',
     boardLearn:'还没有控制板？了解 Organics One',
+    envGreenhouse:'温室',
+    envSensor:'传感器',
+    envEstimated:'估算',
+    envOutside:'室外',
+    envMaxMin:'最高 {a}° / 最低 {b}°',
+    envIdeal:'理想范围 {a}–{b} °C',
+    envAllGood:'一切正常：作物都在适宜范围内',
+    envPlantFirst:'种植作物后可查看理想范围',
+    envHot:'{names}：温度过高',
+    envCold:'{names}：温度过低',
+    envTrendUp:'过去一小时上升 {d}°',
+    envTrendDown:'过去一小时下降 {d}°',
+    envDew:'露点',
+    envDewMargin:'差值 {d}°',
+    envCondRisk:'有结露风险：空气距离露点仅 {d}°',
+    envFrost:'今晚有霜冻风险（最低 {d}°）',
+    envDewNight:'今晚可能有露水',
+    envSunsetIn:'还有 {h} 小时 {m} 分钟',
+    envSunsetPast:'已日落',
+    envSunToday:'今日日照',
+    envInHum:'室内湿度',
+    envOutHum:'室外湿度',
     boardTitle:'ORGANICS ONE 控制板',
     boardConnect:'连接控制板',
     boardSave:'连接',
@@ -1890,6 +2084,28 @@ const TRANSLATIONS = {
     powerTracked:'असल चलने के समय से',
     powerMeterNote:'अनुमान। असल खपत के लिए बिजली पैनल में Wi-Fi ऊर्जा मीटर लगाएँ।',
     boardLearn:'बोर्ड नहीं है? Organics One के बारे में जानें',
+    envGreenhouse:'ग्रीनहाउस',
+    envSensor:'सेंसर',
+    envEstimated:'अनुमानित',
+    envOutside:'बाहर',
+    envMaxMin:'अधि. {a}° / न्यून. {b}°',
+    envIdeal:'आदर्श सीमा {a}–{b} °C',
+    envAllGood:'सब ठीक है: आपकी फसलें सीमा में हैं',
+    envPlantFirst:'आदर्श सीमा देखने के लिए कुछ बोएँ',
+    envHot:'{names}: बहुत गर्मी',
+    envCold:'{names}: बहुत ठंड',
+    envTrendUp:'पिछले घंटे में {d}° बढ़ा',
+    envTrendDown:'पिछले घंटे में {d}° घटा',
+    envDew:'ओस बिंदु',
+    envDewMargin:'अंतर {d}°',
+    envCondRisk:'संघनन का जोखिम: हवा ओस बिंदु से {d}° दूर है',
+    envFrost:'आज रात पाले का जोखिम (न्यून. {d}°)',
+    envDewNight:'आज रात ओस की संभावना',
+    envSunsetIn:'{h} घं {m} मि में',
+    envSunsetPast:'ढल चुका',
+    envSunToday:'आज की धूप',
+    envInHum:'अंदर की नमी',
+    envOutHum:'बाहरी नमी',
     boardTitle:'ORGANICS ONE बोर्ड',
     boardConnect:'बोर्ड कनेक्ट करें',
     boardSave:'कनेक्ट करें',
@@ -2096,6 +2312,28 @@ const TRANSLATIONS = {
     powerTracked:'بوقت التشغيل الفعلي',
     powerMeterNote:'تقدير. للاستهلاك الفعلي ركّب عداد طاقة بشبكة Wi-Fi في لوحة الكهرباء.',
     boardLearn:'ليست لديك لوحة؟ تعرّف على Organics One',
+    envGreenhouse:'الدفيئة',
+    envSensor:'مستشعر',
+    envEstimated:'تقديرية',
+    envOutside:'الخارج',
+    envMaxMin:'أعلى {a}° / أدنى {b}°',
+    envIdeal:'النطاق المثالي {a}–{b} °C',
+    envAllGood:'كل شيء على ما يرام: محاصيلك ضمن النطاق',
+    envPlantFirst:'ازرع شيئًا لترى نطاقه المثالي',
+    envHot:'{names}: حرارة زائدة',
+    envCold:'{names}: برودة زائدة',
+    envTrendUp:'ارتفاع {d}° في الساعة الأخيرة',
+    envTrendDown:'انخفاض {d}° في الساعة الأخيرة',
+    envDew:'نقطة الندى',
+    envDewMargin:'الفارق {d}°',
+    envCondRisk:'خطر تكاثف: الهواء على بُعد {d}° من نقطة الندى',
+    envFrost:'خطر صقيع الليلة (أدنى {d}°)',
+    envDewNight:'ندى محتمل الليلة',
+    envSunsetIn:'بعد {h} س {m} د',
+    envSunsetPast:'غربت بالفعل',
+    envSunToday:'الشمس اليوم',
+    envInHum:'الرطوبة الداخلية',
+    envOutHum:'الرطوبة الخارجية',
     boardTitle:'لوحة ORGANICS ONE',
     boardConnect:'ربط اللوحة',
     boardSave:'اتصال',
@@ -2302,6 +2540,28 @@ const TRANSLATIONS = {
     powerTracked:'con tempo reale di accensione',
     powerMeterNote:'Stima. Per il consumo reale installa un contatore di energia Wi-Fi nel quadro elettrico.',
     boardLearn:'Non hai la scheda? Scopri Organics One',
+    envGreenhouse:'Serra',
+    envSensor:'sensore',
+    envEstimated:'stimata',
+    envOutside:'Esterno',
+    envMaxMin:'max {a}° / min {b}°',
+    envIdeal:'Intervallo ideale {a}–{b} °C',
+    envAllGood:'Tutto bene: le tue colture sono nell\'intervallo',
+    envPlantFirst:'Pianta qualcosa per vedere l\'intervallo ideale',
+    envHot:'{names}: troppo caldo',
+    envCold:'{names}: troppo freddo',
+    envTrendUp:'in salita di {d}° nell\'ultima ora',
+    envTrendDown:'in calo di {d}° nell\'ultima ora',
+    envDew:'Punto di rugiada',
+    envDewMargin:'margine {d}°',
+    envCondRisk:'Rischio condensa: l\'aria è a {d}° dal punto di rugiada',
+    envFrost:'Rischio gelo stanotte (min {d}°)',
+    envDewNight:'Rugiada probabile stanotte',
+    envSunsetIn:'tra {h} h {m} min',
+    envSunsetPast:'già tramontato',
+    envSunToday:'Sole oggi',
+    envInHum:'Umidità interna',
+    envOutHum:'Umidità esterna',
     boardTitle:'SCHEDA ORGANICS ONE',
     boardConnect:'Collega scheda',
     boardSave:'Collega',
@@ -2508,6 +2768,28 @@ const TRANSLATIONS = {
     powerTracked:'по реальному времени работы',
     powerMeterNote:'Оценка. Для реального расхода установите Wi-Fi счётчик энергии в электрощите.',
     boardLearn:'Нет платы? Узнайте об Organics One',
+    envGreenhouse:'Теплица',
+    envSensor:'датчик',
+    envEstimated:'оценка',
+    envOutside:'Снаружи',
+    envMaxMin:'макс. {a}° / мин. {b}°',
+    envIdeal:'Идеальный диапазон {a}–{b} °C',
+    envAllGood:'Всё в порядке: культуры в своём диапазоне',
+    envPlantFirst:'Посадите что-нибудь, чтобы увидеть идеальный диапазон',
+    envHot:'{names}: слишком жарко',
+    envCold:'{names}: мало тепла',
+    envTrendUp:'рост на {d}° за последний час',
+    envTrendDown:'снижение на {d}° за последний час',
+    envDew:'Точка росы',
+    envDewMargin:'запас {d}°',
+    envCondRisk:'Риск конденсата: воздух в {d}° от точки росы',
+    envFrost:'Риск заморозка ночью (мин. {d}°)',
+    envDewNight:'Ночью вероятна роса',
+    envSunsetIn:'через {h} ч {m} мин',
+    envSunsetPast:'уже село',
+    envSunToday:'Солнце сегодня',
+    envInHum:'Влажность внутри',
+    envOutHum:'Влажность снаружи',
     boardTitle:'ПЛАТА ORGANICS ONE',
     boardConnect:'Подключить плату',
     boardSave:'Подключить',
@@ -3510,7 +3792,7 @@ function showLocationError(){
 async function fetchWeatherFor(latitude, longitude, cityName, precision){
   const condEl = document.getElementById('envConditions');
   try{
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code&daily=sunset&timezone=auto&temperature_unit=celsius`;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code&daily=sunset,sunrise,temperature_2m_max,temperature_2m_min&timezone=auto&temperature_unit=celsius`;
     const res = await fetch(url);
     const data = await res.json();
     lastWeatherData = data;
@@ -3580,72 +3862,135 @@ function computeIdealRange(){
   return { min, max };
 }
 
+function weatherKind(code, night){
+  if(code == null) return night ? 'night' : 'partly';
+  if(code >= 95) return 'storm';
+  if((code >= 71 && code <= 77) || code === 85 || code === 86) return 'snow';
+  if((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) return night ? 'night' : 'rain';
+  if(night) return 'night';
+  if(code === 0) return 'sunny';
+  if(code <= 2) return 'partly';
+  return 'cloudy';
+}
+function dewPoint(tc, rh){ const a = 17.62, b = 243.12, g = Math.log(Math.max(1, rh) / 100) + a * tc / (b + tc); return b * g / (a - g); }
+function sentenceCase(x){ x = String(x || ''); return /[a-zà-ÿ]/i.test(x) ? x.charAt(0).toUpperCase() + x.slice(1).toLowerCase() : x; }
+function n1(v){ return Number(v).toLocaleString(lang==='es'?'es-CL':lang, { maximumFractionDigits:1 }); }
 function renderEnvConditions(data){
   const condEl = document.getElementById('envConditions');
-  const cityText = (lastLocationMeta && lastLocationMeta.city) ? lastLocationMeta.city : '—';
+  const cityText = (lastLocationMeta && lastLocationMeta.city) ? lastLocationMeta.city : '-';
   const precisionKey = lastLocationMeta && lastLocationMeta.precision === 'manual' ? 'locationManualLabel'
     : lastLocationMeta && lastLocationMeta.precision === 'precise' ? 'locationPrecise' : 'locationApprox';
-  document.getElementById('locationName').textContent = lastLocationMeta && lastLocationMeta.city
-    ? `${cityText} · ${t(precisionKey)}` : cityText;
+  document.getElementById('locationName').textContent = cityText;
 
   const outdoorTemp = data.current ? data.current.temperature_2m : null;
   const humidity = data.current ? data.current.relative_humidity_2m : null;
   const wcode = data.current ? (data.current.weather_code ?? data.current.weathercode) : null;
-  const sunsetIso = data.daily && data.daily.sunset ? data.daily.sunset[0] : null;
-  let sunsetLabel = '—', lightsValue = t('lightsNatural'), lightsSub = '';
+  const dly = data.daily || {};
+  const sunsetIso = dly.sunset ? dly.sunset[0] : null, sunriseIso = dly.sunrise ? dly.sunrise[0] : null;
+  const now = new Date();
+  let sunsetLabel = '-', sunsetSub = '', lightsValue = t('lightsNatural'), lightsSub = '', night = now.getHours() < 6 || now.getHours() >= 21;
   if(sunsetIso){
     const sunset = new Date(sunsetIso);
-    sunsetLabel = sunset.toLocaleTimeString(lang==='es'?'es-ES':undefined, { hour:'2-digit', minute:'2-digit', hour12:false });
-    const msToSunset = sunset - new Date();
-    if(msToSunset < 0){ lightsValue = t('lightsOn'); lightsSub = t('lightsPast'); }
-    else if(msToSunset < 60*60*1000){ lightsSub = t('lightsSoon'); }
-    else{ lightsSub = t('hoursUntilSunset', { h: Math.floor(msToSunset/3600000) }); }
+    sunsetLabel = sunset.toLocaleTimeString(lang==='es'?'es-CL':lang, { hour:'2-digit', minute:'2-digit', hour12:false });
+    const ms = sunset - now;
+    if(ms < 0){ lightsValue = t('lightsOn'); lightsSub = t('lightsPast'); sunsetSub = t('envSunsetPast'); night = true; }
+    else{ lightsSub = ms < 3600000 ? t('lightsSoon') : t('hoursUntilSunset', { h: Math.floor(ms/3600000) });
+      sunsetSub = t('envSunsetIn', { h: Math.floor(ms/3600000), m: Math.floor(ms/60000) % 60 }); }
+    if(sunriseIso && now < new Date(sunriseIso)) night = true;
   }
-  const boardTemp = boardAmbient().temperatura;
-  const sensorTemp = boardTemp !== null && boardTemp !== undefined ? Math.round(boardTemp*10)/10
-    : (outdoorTemp !== null ? computeGreenhouseTemp(outdoorTemp) : null);
+  const amb = boardAmbient();
+  const live = amb.temperatura !== null && amb.temperatura !== undefined;
+  const sensorTemp = live ? Math.round(amb.temperatura*10)/10 : (outdoorTemp !== null ? computeGreenhouseTemp(outdoorTemp) : null);
   currentSensorTemp = sensorTemp;
   applyTempWarnings();
   const idealRange = computeIdealRange();
+  const hasPlants = Object.keys(state.plantings).length > 0;
   const weatherIconEl = document.getElementById('weatherIcon');
   weatherIconEl.textContent = weatherCodeToIcon(wcode);
-  weatherIconEl.style.background = wcode !== null && wcode !== undefined ? weatherCodeToBg(wcode) : 'transparent';
-
-  condEl.innerHTML = `
-    <div class="env-metric-big">
-      <div class="left">
-        <div class="emoji">🌡️</div>
-        <div><div class="label">${t('sensorCardLabel')}</div><div class="value">${sensorTemp !== null ? sensorTemp + '°C' : '—'}</div></div>
-      </div>
-      <div class="range"><div class="rlabel">${t('idealRangeLabel')}</div><div class="rvalue">${idealRange.min}°–${idealRange.max}°C</div></div>
-    </div>
-    <div class="env-grid-2">
-      <div class="env-chip temp"><div class="chiphead">🌤️ ${t('outdoorTemp')}</div><div class="val">${outdoorTemp !== null ? Math.round(outdoorTemp) + '°C' : '—'}</div></div>
-      <div class="env-chip humidity"><div class="chiphead">💧 ${t('humidityLabel')}</div><div class="val">${humidity !== null ? Math.round(humidity) + '%' : '—'}</div></div>
-    </div>
-    <div class="env-grid-2">
-      <div class="env-chip sunset"><div class="chiphead">🌇 ${t('sunsetLabelSub')}</div><div class="val">${sunsetLabel}</div><div class="sub">${lightsSub}</div></div>
-      <div class="env-chip lights"><div class="chiphead">💡 ${t('lightsLabelSub')}</div><div class="val" style="font-size:13px;">${lightsValue}</div></div>
-    </div>
-  `;
   const weatherKey = weatherCodeToKey(wcode);
-  const weatherEl = document.getElementById('weatherDesc');
-  if(weatherKey){ weatherEl.textContent = weatherCodeToIcon(wcode) + ' ' + t(weatherKey); weatherEl.style.display = 'flex'; }
-  else { weatherEl.style.display = 'none'; }
+  document.getElementById('weatherDesc').style.display = 'none';
 
-  if(sensorTemp !== null){
-    const status = checkTempRangeStatus(sensorTemp);
-    if(status !== null){
-      const statusEl = document.createElement('div');
-      if(status.length === 0){ statusEl.className = 'range-status ok'; statusEl.textContent = t('withinRange'); }
-      else{
-        statusEl.className = 'range-status warn';
-        const names = status.slice(0,3).join(', ') + (status.length > 3 ? '…' : '');
-        statusEl.textContent = t('outOfRange', { names });
-      }
-      condEl.appendChild(statusEl);
+  // status: which crops are too hot / too cold (silenced blocks excluded)
+  const hot = new Set(), cold = new Set();
+  Object.entries(state.plantings).forEach(([k,p]) => { if(isTempMuted(k)) return; const st = tempStatus(VEG_MAP[p.vegId]); if(!st) return; (st.kind === 'hot' ? hot : cold).add(getVegName(VEG_MAP[p.vegId])); });
+  const list = setx => { const a = [...setx]; return a.slice(0,3).join(', ') + (a.length > 3 ? '…' : ''); };
+  let statusCls = 'neutral', statusTxt = t('envPlantFirst');
+  if(hasPlants && sensorTemp !== null){
+    if(!hot.size && !cold.size){ statusCls = 'ok'; statusTxt = t('envAllGood'); }
+    else { statusCls = 'warn'; statusTxt = [hot.size ? t('envHot', { names:list(hot) }) : '', cold.size ? t('envCold', { names:list(cold) }) : ''].filter(Boolean).join(' · '); }
+  }
+  // range bar
+  let lo = Math.min(idealRange.min - 6, sensorTemp !== null ? sensorTemp - 3 : idealRange.min - 6), hi = Math.max(idealRange.max + 6, sensorTemp !== null ? sensorTemp + 3 : idealRange.max + 6);
+  lo = Math.floor(lo / 5) * 5; hi = Math.ceil(hi / 5) * 5;
+  const pct = v => Math.max(0, Math.min(100, (v - lo) / (hi - lo) * 100));
+  const inRange = sensorTemp !== null && sensorTemp >= idealRange.min && sensorTemp <= idealRange.max;
+  // trend (sensor only): change over the last hour
+  let trend = '';
+  if(live && typeof lsGet === 'function'){
+    const log = lsGet(LOG_KEY, []).filter(p => p.t != null && Date.now() - p.ts < 75*60000);
+    if(log.length >= 2 && Date.now() - log[0].ts > 45*60000){
+      const d = Math.round((sensorTemp - log[0].t) * 10) / 10;
+      if(Math.abs(d) >= 0.5) trend = `<div class="eh-trend">${d > 0 ? '↗' : '↘'} ${t(d > 0 ? 'envTrendUp' : 'envTrendDown', { d: n1(Math.abs(d)) })}</div>`;
     }
   }
+  // risk lines: condensation inside (sensor) or dew/frost tonight (local forecast)
+  let risk = '', dewTile = null;
+  if(live && amb.humedad != null){
+    const dp = dewPoint(amb.temperatura, amb.humedad), margin = amb.temperatura - dp;
+    dewTile = { dp, margin };
+    if(margin < 2) risk = `<div class="eh-risk">💧 ${t('envCondRisk', { d: n1(Math.max(0, margin)) })}</div>`;
+  } else if(typeof statsWeather !== 'undefined' && statsWeather && statsWeather.hourly){
+    const H = statsWeather.hourly, nowMs = Date.now(), until = new Date(); until.setDate(until.getDate() + 1); until.setHours(9,0,0,0);
+    let minT = null, minRh = null;
+    H.time.forEach((iso, i) => { const tms = new Date(iso).getTime(); if(tms > nowMs && tms <= until.getTime() && (minT === null || H.temperature_2m[i] < minT)){ minT = H.temperature_2m[i]; minRh = H.relative_humidity_2m[i]; } });
+    if(minT !== null){
+      if(minT <= 1) risk = `<div class="eh-risk">❄️ ${t('envFrost', { d: n1(minT) })}</div>`;
+      else if(minT - dewPoint(minT, minRh) <= 1.5) risk = `<div class="eh-risk">💧 ${t('envDewNight')}</div>`;
+    }
+  }
+  const mx = dly.temperature_2m_max ? dly.temperature_2m_max[0] : null, mn = dly.temperature_2m_min ? dly.temperature_2m_min[0] : null;
+  let dateTxt = now.toLocaleDateString(lang==='es'?'es-CL':lang, { weekday:'long', day:'numeric', month:'long' });
+  dateTxt = dateTxt.charAt(0).toUpperCase() + dateTxt.slice(1);
+  const timeTxt = now.toLocaleTimeString(lang==='es'?'es-CL':lang, { hour:'2-digit', minute:'2-digit', hour12:false });
+  // day progress arc for the sun tile
+  let sunPct = null;
+  if(sunriseIso && sunsetIso){ const sr = new Date(sunriseIso), ss = new Date(sunsetIso); sunPct = Math.max(0, Math.min(1, (now - sr) / (ss - sr))); }
+  const sunH = (typeof statsWeather !== 'undefined' && statsWeather && statsWeather.daily && statsWeather.daily.sunshine_duration) ? statsWeather.daily.sunshine_duration[0] / 3600 : null;
+  const arc = p => { if(p === null) return ''; const x = 6 + 128 * p, y = 28 - 4 * 22 * p * (1 - p) * 1.0 * 1.0 * 1.0; const cx = 70, cy = -16;
+    const bez = q => [ (1-q)*(1-q)*6 + 2*(1-q)*q*cx + q*q*134, (1-q)*(1-q)*28 + 2*(1-q)*q*cy + q*q*28 ];
+    const [px,py] = bez(p); const mid = bez(p/2);
+    return `<svg class="eh-arc" viewBox="0 0 140 32" width="100%" height="30" aria-hidden="true"><path d="M6 28 Q70 -16 134 28" fill="none" stroke="#EDEFE6" stroke-width="4" stroke-linecap="round"/><path d="M6 28 Q${(6+cx)/2*0+((1-p)*6+p*cx).toFixed(1)} ${((1-p)*28+p*cy).toFixed(1)} ${px.toFixed(1)} ${py.toFixed(1)}" fill="none" stroke="#E8A33D" stroke-width="4" stroke-linecap="round"/><circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="5" fill="#FFC83D" stroke="#fff" stroke-width="2"/></svg>`; };
+  const humTile = live && amb.humedad != null
+    ? { k:'envInHum', v:Math.round(amb.humedad) } : { k:'envOutHum', v: humidity !== null ? Math.round(humidity) : null };
+  const kind = weatherKind(wcode, night);
+
+  condEl.innerHTML = `
+    <div class="env-hero w-${kind}">
+      <div class="eh-glow"></div>
+      <div class="eh-top"><span class="eh-city">📍 ${cityText}</span><button class="eh-edit" id="heroEdit" aria-label="${t('locationManualLabel')}">✏️</button>
+        ${weatherKey ? `<span class="eh-pill">${night && wcode !== null && wcode <= 2 ? '🌙' : weatherCodeToIcon(wcode)} ${t(weatherKey)}</span>` : ''}</div>
+      <div class="eh-sub">${dateTxt} · ${timeTxt} · ${t(precisionKey)}</div>
+      <div class="eh-big">
+        <div class="eh-n">${sensorTemp !== null ? n1(sensorTemp) : '-'}<small>°</small></div>
+        <div class="eh-meta"><b>${t('envGreenhouse')}</b> · ${live ? t('envSensor') : t('envEstimated')}<br>${t('envOutside')} ${outdoorTemp !== null ? Math.round(outdoorTemp) + '°' : '-'}${mx !== null && mn !== null ? ' · ' + t('envMaxMin', { a:Math.round(mx), b:Math.round(mn) }) : ''}</div>
+      </div>
+      ${trend}
+      ${hasPlants && sensorTemp !== null ? `<div class="eh-range">
+        <div class="eh-track"><div class="eh-ok" style="left:${pct(idealRange.min)}%;right:${100 - pct(idealRange.max)}%"></div><div class="eh-mark ${inRange && statusCls !== 'warn' ? 'in' : 'out'}" style="left:${pct(sensorTemp)}%"></div></div>
+        <div class="eh-ends"><span>${lo}°</span><span>${t('envIdeal', { a:idealRange.min, b:idealRange.max })}</span><span>${hi}°</span></div></div>` : ''}
+      <div class="eh-status ${statusCls}"><span class="dot"></span><span>${statusTxt}</span></div>
+      ${risk}
+    </div>
+    <div class="env-bento">
+      <div class="eb-tile"><div class="eb-h">💧 ${t(humTile.k)}</div><div class="eb-v">${humTile.v !== null ? humTile.v + '%' : '-'}</div><div class="eb-meter"><i style="width:${humTile.v || 0}%"></i></div></div>
+      <div class="eb-tile"><div class="eb-h">🌇 ${sentenceCase(t('sunsetLabelSub'))}</div><div class="eb-v">${sunsetLabel}</div><div class="eb-s">${sunsetSub}</div></div>
+      <div class="eb-tile"><div class="eb-h">💡 ${sentenceCase(t('lightsLabelSub'))}</div><div class="eb-v small">${lightsValue}</div><div class="eb-s">${lightsSub}</div></div>
+      ${dewTile
+        ? `<div class="eb-tile"><div class="eb-h">🌫️ ${t('envDew')}</div><div class="eb-v">${n1(dewTile.dp)}°</div><div class="eb-s">${t('envDewMargin', { d:n1(dewTile.margin) })}</div></div>`
+        : `<div class="eb-tile"><div class="eb-h">☀️ ${t('envSunToday')}</div><div class="eb-v">${sunH !== null ? n1(sunH) + ' h' : (weatherKey ? weatherCodeToIcon(wcode) : '-')}</div>${arc(sunPct)}</div>`}
+    </div>`;
+  const he = document.getElementById('heroEdit');
+  if(he) he.addEventListener('click', () => document.getElementById('locationEditLink').click());
 }
 
 function checkTempRangeStatus(sensorTemp){
@@ -3686,13 +4031,7 @@ function renderRipenessAlerts(){
     const [r,c] = e.key.split('-').map(n => parseInt(n,10)+1);
     const ripe = e.daysLeft <= 0;
     const tag = ripe ? `<span class="ready-tag">${t('readyTag')}</span>` : `<span class="soon-tag">${t('soonTag', { d: e.daysLeft })}</span>`;
-    return `<div class="alert-row" data-key="${e.key}">
-      <div class="aleft">
-        <div class="icon-tile-sm">${e.veg.icon}</div>
-        <div><div class="an">${getVegName(e.veg)}</div><div class="ad">${fmtDate(state.plantings[e.key].plantedDate)}</div></div>
-      </div>
-      ${tag}
-    </div>`;
+    return `<div class="alert-row" data-key="${e.key}"><span class="hv-e">${e.veg.icon}</span><div><div class="an">${getVegName(e.veg)}</div>${tag}</div></div>`;
   }).join('');
   el.querySelectorAll('.alert-row').forEach(node => {
     node.addEventListener('click', () => { const [r,c] = node.dataset.key.split('-').map(Number); openModal(r,c); });
@@ -3904,10 +4243,10 @@ function logIrrigation(zone, minutes, source){
 async function fetchStatsWeather(lat, lon){
   statsCoords = { lat, lon };
   try{
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,relative_humidity_2m,shortwave_radiation,precipitation&daily=temperature_2m_max,temperature_2m_min,sunshine_duration,precipitation_sum&forecast_days=1&timezone=auto`;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,relative_humidity_2m,shortwave_radiation,precipitation&daily=temperature_2m_max,temperature_2m_min,sunshine_duration,precipitation_sum&forecast_days=2&timezone=auto`;
     const res = await fetch(url); statsWeather = await res.json(); statsFetchedAt = Date.now();
   }catch(e){ statsWeather = null; }
-  renderStats();
+  renderStats(); refreshEnvIfLoaded();
 }
 /* same daytime solar-gain model as the environment panel, for any hour */
 function estimateGreenhouse(outdoor, hour){
