@@ -177,6 +177,16 @@
   #room.water-mode .zb{ position:absolute; top:3px; left:4px; z-index:2; font:800 10px 'Public Sans', sans-serif; color:#fff; background:var(--zc); border-radius:6px; padding:1px 5px; pointer-events:none; }
 
   /* ---------- Statistics ---------- */
+  #statsPanel .panel-head{ display:flex; align-items:center; justify-content:space-between; }
+  .export-btn{ border:1.5px solid var(--green-accent); background:#fff; color: var(--green-accent); font:700 12px 'Public Sans', sans-serif; padding:6px 11px; border-radius:999px; cursor:pointer; }
+  .ex-list{ display:flex; flex-direction:column; gap:8px; }
+  .ex-opt{ display:flex; align-items:center; gap:12px; text-align:left; width:100%; padding:11px 12px; border:1.5px solid var(--soil-line); border-radius:12px; background:#fff; cursor:pointer; text-decoration:none; color: var(--pine-dark); font:inherit; }
+  .ex-opt > span:first-child{ font-size:20px; }
+  .ex-opt b{ display:block; font-size:13.5px; } .ex-opt small{ display:block; font-size:11.5px; color: var(--pine-soft); margin-top:1px; }
+  .ex-opt:hover{ border-color: var(--green-accent); }
+  .consent-box a.ex-opt{ color: var(--pine-dark); font-weight:400; }
+  .consent-box a.ex-opt small{ font-weight:400; }
+
   .pw-box{ max-width:420px; max-height:90vh; overflow:auto; }
   .pw-help{ font-size:12px !important; color: var(--pine-soft) !important; margin:0 0 10px !important; }
   .pw-head, .pw-row{ display:grid; grid-template-columns: 1fr 58px 70px; gap:6px; align-items:center; }
@@ -618,7 +628,7 @@
 
     <!-- Statistics -->
     <div class="panel" id="statsPanel">
-      <div class="panel-head"><span class="eyebrow" id="statsTitle">STATISTICS</span></div>
+      <div class="panel-head"><span class="eyebrow" id="statsTitle">STATISTICS</span><button class="export-btn" id="exportBtn" type="button">📤 <span id="exportBtnL">Export</span></button></div>
       <div id="statsBody"></div>
     </div>
   </div>
@@ -634,6 +644,7 @@
   <button id="consentAccept"></button>
 </div></div>
 <div class="consent-overlay grid-overlay" id="powerOverlay" role="dialog" aria-modal="true"><div class="consent-box grid-box pw-box" id="powerBox"></div></div>
+<div class="consent-overlay grid-overlay" id="exportOverlay" role="dialog" aria-modal="true"><div class="consent-box grid-box" id="exportBox"></div></div>
 <div class="sheet-backdrop" id="sheetBackdrop"></div>
 <nav class="tabbar" id="tabbar" aria-label="Sections">
   <button data-tab="env"><span class="ti">🌤️</span><span class="tl" id="tabEnvL">Environment</span></button>
@@ -847,6 +858,17 @@ const TRANSLATIONS = {
     zoneToday:'{l} L today',
     zoneNoWater:'no watering today',
     zoneSoil:'soil {s}%',
+    exportBtn:'Export',
+    exportTitle:'Export data',
+    exportHelp:'Today\'s weather, greenhouse history (7 days), irrigation and electricity.',
+    exportDownload:'Download CSV',
+    exportDownloadSub:'Opens in Excel or Google Sheets',
+    exportShare:'Share',
+    exportShareSub:'WhatsApp, email, Drive… with the file attached',
+    exportEmail:'Email',
+    exportTextSub:'Sends a text summary',
+    exportDownloaded:'File downloaded',
+    exportNoShare:'Sharing is not available on this device',
     boardTitle:'ORGANICS ONE BOARD', boardConnect:'Connect board', boardSave:'Connect', boardDisc:'Disconnect', boardForget:'Forget', boardServer:'Server (EMQX host)', boardUser:'User', boardPass:'Password', boardInv:'Greenhouse name', boardOff:'Not connected', boardOn:'Board online', boardNoBoard:'Board offline', boardUpdate:'Update firmware', boardTemp:'Temperature', boardHum:'Humidity', boardVpd:'VPD', boardSoil:'Soil', boardValveOpen:'watering', boardZone:'Zone', boardAlarm:'Alarm', boardConnecting:'Connecting…', boardLiveTemp:'Real sensor',
     useAutoLocation:'📍 Use automatic location', locationManualLabel:'Manual location',
     locationApprox:'Approximate location', locationPrecise:'Precise location',
@@ -1042,6 +1064,17 @@ const TRANSLATIONS = {
     zoneToday:'{l} L hoy',
     zoneNoWater:'sin riego hoy',
     zoneSoil:'suelo {s}%',
+    exportBtn:'Exportar',
+    exportTitle:'Exportar datos',
+    exportHelp:'Clima de hoy, historial del invernadero (7 días), riegos y electricidad.',
+    exportDownload:'Descargar CSV',
+    exportDownloadSub:'Se abre en Excel o Google Sheets',
+    exportShare:'Compartir',
+    exportShareSub:'WhatsApp, correo, Drive… con el archivo adjunto',
+    exportEmail:'Correo',
+    exportTextSub:'Envía un resumen en texto',
+    exportDownloaded:'Archivo descargado',
+    exportNoShare:'Este dispositivo no permite compartir',
     boardTitle:'TARJETA ORGANICS ONE', boardConnect:'Conectar tarjeta', boardSave:'Conectar', boardDisc:'Desconectar', boardForget:'Olvidar', boardServer:'Servidor (host de EMQX)', boardUser:'Usuario', boardPass:'Clave', boardInv:'Nombre del invernadero', boardOff:'Sin conexión', boardOn:'Tarjeta en línea', boardNoBoard:'Tarjeta desconectada', boardUpdate:'Actualizar firmware', boardTemp:'Temperatura', boardHum:'Humedad', boardVpd:'VPD', boardSoil:'Suelo', boardValveOpen:'regando', boardZone:'Zona', boardAlarm:'Alarma', boardConnecting:'Conectando…', boardLiveTemp:'Sensor real',
     useAutoLocation:'📍 Usar ubicación automática', locationManualLabel:'Ubicación manual',
     locationApprox:'Ubicación aproximada', locationPrecise:'Ubicación precisa',
@@ -1236,6 +1269,17 @@ const TRANSLATIONS = {
     zoneToday:'{l} L aujourd\'hui',
     zoneNoWater:'pas d\'arrosage aujourd\'hui',
     zoneSoil:'sol {s}%',
+    exportBtn:'Exporter',
+    exportTitle:'Exporter les données',
+    exportHelp:'Météo du jour, historique de la serre (7 jours), arrosage et électricité.',
+    exportDownload:'Télécharger CSV',
+    exportDownloadSub:'S\'ouvre dans Excel ou Google Sheets',
+    exportShare:'Partager',
+    exportShareSub:'WhatsApp, e-mail, Drive… avec le fichier joint',
+    exportEmail:'E-mail',
+    exportTextSub:'Envoie un résumé en texte',
+    exportDownloaded:'Fichier téléchargé',
+    exportNoShare:'Le partage n\'est pas disponible sur cet appareil',
     boardTitle:'CARTE ORGANICS ONE',
     boardConnect:'Connecter la carte',
     boardSave:'Connecter',
@@ -1471,6 +1515,17 @@ const TRANSLATIONS = {
     zoneToday:'{l} L hoje',
     zoneNoWater:'sem rega hoje',
     zoneSoil:'solo {s}%',
+    exportBtn:'Exportar',
+    exportTitle:'Exportar dados',
+    exportHelp:'Clima de hoje, histórico da estufa (7 dias), regas e eletricidade.',
+    exportDownload:'Baixar CSV',
+    exportDownloadSub:'Abre no Excel ou Google Sheets',
+    exportShare:'Compartilhar',
+    exportShareSub:'WhatsApp, e-mail, Drive… com o arquivo anexado',
+    exportEmail:'E-mail',
+    exportTextSub:'Envia um resumo em texto',
+    exportDownloaded:'Arquivo baixado',
+    exportNoShare:'Este dispositivo não permite compartilhar',
     boardTitle:'PLACA ORGANICS ONE',
     boardConnect:'Conectar placa',
     boardSave:'Conectar',
@@ -1706,6 +1761,17 @@ const TRANSLATIONS = {
     zoneToday:'{l} L heute',
     zoneNoWater:'heute keine Bewässerung',
     zoneSoil:'Boden {s}%',
+    exportBtn:'Exportieren',
+    exportTitle:'Daten exportieren',
+    exportHelp:'Wetter heute, Gewächshausverlauf (7 Tage), Bewässerung und Strom.',
+    exportDownload:'CSV herunterladen',
+    exportDownloadSub:'Öffnet in Excel oder Google Sheets',
+    exportShare:'Teilen',
+    exportShareSub:'WhatsApp, E-Mail, Drive… mit angehängter Datei',
+    exportEmail:'E-Mail',
+    exportTextSub:'Sendet eine Textzusammenfassung',
+    exportDownloaded:'Datei heruntergeladen',
+    exportNoShare:'Teilen ist auf diesem Gerät nicht verfügbar',
     boardTitle:'ORGANICS-ONE-PLATINE',
     boardConnect:'Platine verbinden',
     boardSave:'Verbinden',
@@ -1941,6 +2007,17 @@ const TRANSLATIONS = {
     zoneToday:'今天 {l} 升',
     zoneNoWater:'今天未灌溉',
     zoneSoil:'土壤 {s}%',
+    exportBtn:'导出',
+    exportTitle:'导出数据',
+    exportHelp:'今日天气、温室历史（7 天）、灌溉和用电。',
+    exportDownload:'下载 CSV',
+    exportDownloadSub:'可用 Excel 或 Google 表格打开',
+    exportShare:'分享',
+    exportShareSub:'WhatsApp、邮件、Drive……附带文件',
+    exportEmail:'邮件',
+    exportTextSub:'发送文字摘要',
+    exportDownloaded:'文件已下载',
+    exportNoShare:'此设备不支持分享',
     boardTitle:'ORGANICS ONE 控制板',
     boardConnect:'连接控制板',
     boardSave:'连接',
@@ -2176,6 +2253,17 @@ const TRANSLATIONS = {
     zoneToday:'आज {l} ली',
     zoneNoWater:'आज सिंचाई नहीं',
     zoneSoil:'मिट्टी {s}%',
+    exportBtn:'निर्यात',
+    exportTitle:'डेटा निर्यात करें',
+    exportHelp:'आज का मौसम, ग्रीनहाउस इतिहास (7 दिन), सिंचाई और बिजली।',
+    exportDownload:'CSV डाउनलोड करें',
+    exportDownloadSub:'Excel या Google Sheets में खुलता है',
+    exportShare:'साझा करें',
+    exportShareSub:'WhatsApp, ईमेल, Drive… फ़ाइल के साथ',
+    exportEmail:'ईमेल',
+    exportTextSub:'टेक्स्ट सारांश भेजता है',
+    exportDownloaded:'फ़ाइल डाउनलोड हुई',
+    exportNoShare:'इस डिवाइस पर साझा करना उपलब्ध नहीं है',
     boardTitle:'ORGANICS ONE बोर्ड',
     boardConnect:'बोर्ड कनेक्ट करें',
     boardSave:'कनेक्ट करें',
@@ -2411,6 +2499,17 @@ const TRANSLATIONS = {
     zoneToday:'{l} لتر اليوم',
     zoneNoWater:'لا ري اليوم',
     zoneSoil:'التربة {s}%',
+    exportBtn:'تصدير',
+    exportTitle:'تصدير البيانات',
+    exportHelp:'طقس اليوم، سجل الدفيئة (7 أيام)، الري والكهرباء.',
+    exportDownload:'تنزيل CSV',
+    exportDownloadSub:'يفتح في Excel أو Google Sheets',
+    exportShare:'مشاركة',
+    exportShareSub:'واتساب، البريد، Drive… مع إرفاق الملف',
+    exportEmail:'البريد',
+    exportTextSub:'يرسل ملخصًا نصيًا',
+    exportDownloaded:'تم تنزيل الملف',
+    exportNoShare:'المشاركة غير متاحة على هذا الجهاز',
     boardTitle:'لوحة ORGANICS ONE',
     boardConnect:'ربط اللوحة',
     boardSave:'اتصال',
@@ -2646,6 +2745,17 @@ const TRANSLATIONS = {
     zoneToday:'{l} L oggi',
     zoneNoWater:'nessuna irrigazione oggi',
     zoneSoil:'suolo {s}%',
+    exportBtn:'Esporta',
+    exportTitle:'Esporta dati',
+    exportHelp:'Meteo di oggi, storico della serra (7 giorni), irrigazioni ed elettricità.',
+    exportDownload:'Scarica CSV',
+    exportDownloadSub:'Si apre in Excel o Google Sheets',
+    exportShare:'Condividi',
+    exportShareSub:'WhatsApp, e-mail, Drive… con il file allegato',
+    exportEmail:'E-mail',
+    exportTextSub:'Invia un riepilogo in testo',
+    exportDownloaded:'File scaricato',
+    exportNoShare:'La condivisione non è disponibile su questo dispositivo',
     boardTitle:'SCHEDA ORGANICS ONE',
     boardConnect:'Collega scheda',
     boardSave:'Collega',
@@ -2881,6 +2991,17 @@ const TRANSLATIONS = {
     zoneToday:'{l} л сегодня',
     zoneNoWater:'сегодня без полива',
     zoneSoil:'почва {s}%',
+    exportBtn:'Экспорт',
+    exportTitle:'Экспорт данных',
+    exportHelp:'Погода за сегодня, история теплицы (7 дней), полив и электричество.',
+    exportDownload:'Скачать CSV',
+    exportDownloadSub:'Открывается в Excel или Google Таблицах',
+    exportShare:'Поделиться',
+    exportShareSub:'WhatsApp, почта, Drive… с файлом',
+    exportEmail:'Почта',
+    exportTextSub:'Отправляет текстовую сводку',
+    exportDownloaded:'Файл скачан',
+    exportNoShare:'На этом устройстве нельзя поделиться',
     boardTitle:'ПЛАТА ORGANICS ONE',
     boardConnect:'Подключить плату',
     boardSave:'Подключить',
@@ -4631,6 +4752,75 @@ function toggleWater(){
 }
 document.getElementById('waterToggle').addEventListener('click', toggleWater);
 
+/* ---------- Export / share statistics ---------- */
+function statsSummaryText(){
+  const city = (lastLocationMeta && lastLocationMeta.city) || '';
+  const d = statsWeather && statsWeather.daily ? statsWeather.daily : null;
+  const today = new Date().toDateString();
+  const hourly = statsWeather && statsWeather.hourly ? statsWeather.hourly.time.map((iso,i) => ({ day:new Date(iso).toDateString(), rh:statsWeather.hourly.relative_humidity_2m[i] })).filter(p => p.day === today) : [];
+  const rh = hourly.length ? hourly.reduce((a,p) => a + p.rh, 0) / hourly.length : null;
+  const irr = lsGet(IRR_KEY, []).filter(p => isToday(p.ts)), min = irr.reduce((a,p) => a + (p.min || 0), 0);
+  const pw = powerToday();
+  const lines = [
+    `My GreenHouse Planner · ${city} · ${new Date().toLocaleDateString(lang==='es'?'es-CL':lang)}`,
+    d ? `${t('statsOutTemp')}: ${nf(d.temperature_2m_max[0],0)}° / ${nf(d.temperature_2m_min[0],0)}° · ${t('statsHumidity')}: ${rh != null ? nf(rh,0)+'%' : '-'} · ${t('statsSunHours')}: ${d.sunshine_duration ? nf(d.sunshine_duration[0]/3600,1)+' h' : '-'} · ${t('statsRain')}: ${nf(d.precipitation_sum[0],1)} mm` : '',
+    currentSensorTemp != null ? `${t('envGreenhouse')}: ${nf(currentSensorTemp,1)} °C (${boardAmbient().temperatura != null ? t('envSensor') : t('envEstimated')})` : '',
+    `${t('statsWater')}: ${irr.length} ${t('statsIrrigations')}, ${nf(min,0)} min, ≈ ${nf(min*flowLpm(),0)} L`,
+    pw.rows.length ? `${t('powerToday')}: ≈ ${nf(pw.wh/1000,2)} kWh` : ''
+  ];
+  return lines.filter(Boolean).join('\n');
+}
+function statsCsv(){
+  const rows = [['date_time','type','variable','value','unit']];
+  const iso = ms => { const d = new Date(ms); const p = n => String(n).padStart(2,'0'); return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`; };
+  if(statsWeather && statsWeather.hourly){
+    const H = statsWeather.hourly, today = new Date().toDateString();
+    H.time.forEach((t0, i) => { const ms = new Date(t0).getTime(); if(new Date(ms).toDateString() !== today) return;
+      rows.push([iso(ms),'weather_outside','temperature',H.temperature_2m[i],'C'], [iso(ms),'weather_outside','humidity',H.relative_humidity_2m[i],'%'],
+                [iso(ms),'weather_outside','solar_radiation',H.shortwave_radiation[i],'W/m2'], [iso(ms),'weather_outside','precipitation',H.precipitation[i],'mm']); });
+  }
+  lsGet(LOG_KEY, []).forEach(p => { [['temperature',p.t,'C'],['humidity',p.h,'%'],['light',p.l,'lx'],['co2',p.c,'ppm'],['water_volume',p.vol,'L']].forEach(([v,val,u]) => { if(val != null) rows.push([iso(p.ts),'sensor_greenhouse',v,val,u]); }); });
+  lsGet(IRR_KEY, []).forEach(p => rows.push([iso(p.ts),'irrigation_'+p.src, p.zone ? 'zone_'+p.zone : 'manual', p.min, 'min']));
+  powerToday().rows.forEach(r => rows.push([iso(Date.now()),'electricity_estimate', r.d.id, Math.round(r.wh), 'Wh']));
+  return '\ufeff' + rows.map(r => r.map(x => { const v = String(x ?? ''); return /[;"\n]/.test(v) ? '"' + v.replace(/"/g,'""') + '"' : v; }).join(';')).join('\n');
+}
+function statsFileName(){ const d = new Date(); return `greenhouse-${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}.csv`; }
+function downloadStatsCsv(){
+  const blob = new Blob([statsCsv()], { type:'text/csv;charset=utf-8' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = statsFileName();
+  document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  showToast(t('exportDownloaded'));
+}
+async function shareStats(){
+  const text = statsSummaryText();
+  try{
+    const file = new File([statsCsv()], statsFileName(), { type:'text/csv' });
+    if(navigator.canShare && navigator.canShare({ files:[file] })){ await navigator.share({ title:'My GreenHouse Planner', text, files:[file] }); return; }
+    if(navigator.share){ await navigator.share({ title:'My GreenHouse Planner', text }); return; }
+  }catch(e){ if(e && e.name === 'AbortError') return; }
+  showToast(t('exportNoShare'));
+}
+function openExport(){
+  const box = document.getElementById('exportBox'), canShare = !!navigator.share;
+  const text = encodeURIComponent(statsSummaryText());
+  box.innerHTML = `<div class="grid-box-head"><div class="gear-wrap"><div class="gear-icon">📤</div><div><div class="eyebrow">${t('exportTitle')}</div></div></div>
+      <button class="icon-btn" id="exportClose" aria-label="Close">✕</button></div>
+    <p class="pw-help">${t('exportHelp')}</p>
+    <div class="ex-list">
+      <button class="ex-opt" id="exDownload"><span>⬇️</span><span><b>${t('exportDownload')}</b><small>${t('exportDownloadSub')}</small></span></button>
+      ${canShare ? `<button class="ex-opt" id="exShare"><span>📲</span><span><b>${t('exportShare')}</b><small>${t('exportShareSub')}</small></span></button>` : ''}
+      <a class="ex-opt" href="https://wa.me/?text=${text}" target="_blank" rel="noopener"><span>💬</span><span><b>WhatsApp</b><small>${t('exportTextSub')}</small></span></a>
+      <a class="ex-opt" href="mailto:?subject=${encodeURIComponent('My GreenHouse Planner')}&body=${text}"><span>✉️</span><span><b>${t('exportEmail')}</b><small>${t('exportTextSub')}</small></span></a>
+    </div>`;
+  const close = () => document.getElementById('exportOverlay').classList.remove('show');
+  document.getElementById('exportClose').onclick = close;
+  document.getElementById('exportOverlay').onclick = e => { if(e.target.id === 'exportOverlay') close(); };
+  document.getElementById('exDownload').onclick = downloadStatsCsv;
+  const sh = document.getElementById('exShare'); if(sh) sh.onclick = shareStats;
+  document.getElementById('exportOverlay').classList.add('show');
+}
+document.getElementById('exportBtn').addEventListener('click', openExport);
+
 /* ---------- Tabs on phones/tablets ---------- */
 const TAB_ORDER = ['env','room','stats'];
 const TABS_MQ = window.matchMedia('(max-width: 980px)');
@@ -4639,7 +4829,7 @@ if(!TAB_ORDER.includes(activeTab)) activeTab = 'env';
 function renderTabbar(){
   document.querySelectorAll('#tabbar button').forEach(b => b.classList.toggle('active', b.dataset.tab === activeTab));
   const set = (id,k) => { const el = document.getElementById(id); if(el) el.textContent = t(k); };
-  set('tabEnvL','tabEnv'); set('tabRoomL','tabRoom'); set('tabStatsL','tabStats'); set('statsTitle','statsTitle');
+  set('tabEnvL','tabEnv'); set('tabRoomL','tabRoom'); set('tabStatsL','tabStats'); set('statsTitle','statsTitle'); set('exportBtnL','exportBtn');
   renderPlantBar();
 }
 function setTab(tab){
