@@ -163,8 +163,12 @@
       radial-gradient(circle at 15% 70%, rgba(0,0,0,0.08) 1px, transparent 1.6px);
     background-size: 13px 13px;
   }
-  .cell.planted.temp-cold::after, .cell.planted.temp-hot::after{ content:''; position:absolute; inset:0; border-radius:3px; pointer-events:none; animation: tempWarnPulse 2.2s ease-in-out infinite; }
-  .cell.planted.temp-cold::after, .cell.planted.temp-hot::after{ box-shadow: inset 0 0 0 3px #FFC83D, inset 0 0 8px 1px rgba(255,200,61,0.55); }
+  .cell.planted.temp-cold::after, .cell.planted.temp-hot::after{ content:''; position:absolute; inset:0; pointer-events:none; animation: tempWarnPulse 2.2s ease-in-out infinite; }
+  .cell.planted.temp-cold::after, .cell.planted.temp-hot::after{ box-sizing:border-box; border-style:solid; border-color:#FFC83D;
+    border-width: calc(var(--wt,1)*3px) calc(var(--wr,1)*3px) calc(var(--wb,1)*3px) calc(var(--wl,1)*3px);
+    border-radius: calc(var(--wt,1)*var(--wl,1)*4px) calc(var(--wt,1)*var(--wr,1)*4px) calc(var(--wb,1)*var(--wr,1)*4px) calc(var(--wb,1)*var(--wl,1)*4px);
+    box-shadow: inset 0 7px 6px -5px rgba(255,200,61,calc(var(--wt,1)*0.6)), inset -7px 0 6px -5px rgba(255,200,61,calc(var(--wr,1)*0.6)),
+                inset 0 -7px 6px -5px rgba(255,200,61,calc(var(--wb,1)*0.6)), inset 7px 0 6px -5px rgba(255,200,61,calc(var(--wl,1)*0.6)); }
   .tt-alert{ margin:4px 0 2px; padding:4px 7px; border-radius:6px; font-weight:700; }
   .tt-alert.cold{ background: rgba(79,179,246,0.22); color:#9FD8FF; border-left:3px solid #4FB3F6; }
   .tt-alert.hot{ background: rgba(196,40,30,0.28); color:#FFB0A8; border-left:3px solid #E0483D; }
@@ -2353,13 +2357,29 @@ function tempStatus(veg){
 function tempStatusText(st){ return st.kind==='cold' ? t('tempCold',{ t:st.t, min:st.min }) : t('tempHot',{ t:st.t, max:st.max }); }
 function applyTempWarnings(){
   const room = document.getElementById('room'); if(!room) return;
+  const transposed = isTransposed();
+  const warned = {};   // key -> vegId, only blocks currently showing a warning
+  Object.entries(state.plantings).forEach(([k,p]) => {
+    if(!isTempMuted(k) && tempStatus(VEG_MAP[p.vegId])) warned[k] = p.vegId;
+  });
+  const same = (k, r, c) => r >= 0 && c >= 0 && r < state.rows && c < state.cols && warned[r+'-'+c] === warned[k];
   room.querySelectorAll('.cell.planted').forEach(cell => {
-    const p = state.plantings[cell.dataset.r + '-' + cell.dataset.c];
-    const st = isTempMuted(cell.dataset.r + '-' + cell.dataset.c) ? null : tempStatus(p && VEG_MAP[p.vegId]);
+    const r = +cell.dataset.r, c = +cell.dataset.c, k = r+'-'+c;
+    const p = state.plantings[k];
+    const st = warned[k] ? tempStatus(VEG_MAP[p.vegId]) : null;
     cell.classList.toggle('temp-cold', !!st && st.kind==='cold');
     cell.classList.toggle('temp-hot', !!st && st.kind==='hot');
+    if(!st) return;
+    // same crop warned next to it: no outline on that side, so the group gets one outline
+    const up = transposed ? same(k, r, c-1) : same(k, r-1, c);
+    const down = transposed ? same(k, r, c+1) : same(k, r+1, c);
+    const left = transposed ? same(k, r-1, c) : same(k, r, c-1);
+    const right = transposed ? same(k, r+1, c) : same(k, r, c+1);
+    cell.style.setProperty('--wt', up ? 0 : 1); cell.style.setProperty('--wb', down ? 0 : 1);
+    cell.style.setProperty('--wl', left ? 0 : 1); cell.style.setProperty('--wr', right ? 0 : 1);
   });
 }
+
 function renderRoom(){
   const room = document.getElementById('room');
   const mobile = isTransposed();
