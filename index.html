@@ -187,6 +187,15 @@
   #room.water-mode .zb{ position:absolute; top:3px; left:3px; z-index:3; font:800 10px 'Public Sans', sans-serif; color:#1C2E27; background:#fff; border-radius:6px; padding:1px 5px; pointer-events:none; box-shadow:0 1px 2px rgba(0,0,0,0.15); white-space:nowrap; }
   #room.zone-edit .cell{ cursor:crosshair; }
 
+  .win-set{ margin-top:14px; padding-top:12px; border-top:1px solid var(--bg-warm); }
+  .ws-title{ font-size:13px; font-weight:700; color: var(--pine-dark); margin-bottom:8px; }
+  .ws-opts{ display:flex; gap:6px; flex-wrap:wrap; }
+  .ws-opt{ border:1.5px solid var(--soil-line); background:#fff; border-radius:999px; padding:6px 11px; font:600 12.5px 'Public Sans', sans-serif; color: var(--pine-dark); cursor:pointer; }
+  .ws-opt.on{ background: var(--green-accent); border-color: var(--green-accent); color:#fff; }
+  .ws-open{ display:flex; align-items:center; gap:6px; font-size:12.5px; color: var(--pine-dark); margin-top:10px; }
+  .ws-open input{ width:60px; padding:5px 6px; border:1.5px solid var(--soil-line); border-radius:8px; font:inherit; text-align:center; }
+  .ws-help{ font-size:11.5px; color: var(--pine-soft); margin-top:8px; line-height:1.4; }
+  .eh-risk.fungus{ background:rgba(255,255,255,0.95); color:#7A4B00; text-shadow:none; }
   /* ---------- Statistics ---------- */
   #statsPanel .panel-head{ display:flex; align-items:center; justify-content:space-between; }
   .export-btn{ border:1.5px solid var(--green-accent); background:#fff; color: var(--green-accent); font:700 12px 'Public Sans', sans-serif; padding:6px 11px; border-radius:999px; cursor:pointer; }
@@ -576,6 +585,7 @@
           <div class="stepper"><button id="colsDown">−</button><div class="val" id="colsVal">6</div><button id="colsUp">+</button></div>
         </div>
         <div class="cell-size-hint"><span class="sq"></span><span id="cellSizeHint">Each square is 50 × 50 cm</span></div>
+        <div class="win-set" id="winSet"></div>
       </div>
       <button id="gridDone">OK</button>
     </div></div>
@@ -713,7 +723,7 @@ const TRANSLATIONS = {
     cancelBtn:'Cancel', generateBtn:'Generate & add', generatingBtn:'Generating icon…',
     roomTitle:'MY GREENHOUSE', roomLegend:'empty block · tap a planted block for details · drag to plant a row',
     gridLabel:'{r} × {c} grid', refreshedToast:'Refreshed',
-    gridSettingsTitle:'GRID SETTINGS', heightLabel:'Length', widthLabel:'Width',
+    gridSettingsTitle:'GREENHOUSE SETTINGS', heightLabel:'Length', widthLabel:'Width',
     envTitle:'ENVIRONMENT', envLoading:'Locating…',
     envNoLocation:"Couldn't determine your location automatically.",
     envFetchError:"Couldn't load weather data right now.",
@@ -886,6 +896,16 @@ const TRANSLATIONS = {
     zoneTapHint:'Tap a block to see its zone',
     zoneNoneYet:'No zones yet. Tap Edit zones to mark which blocks each zone waters.',
     zoneWaterToday:'Water today',
+    winTitle:'Windows',
+    winBoard:'Motorized (board)',
+    winMech:'Mechanical',
+    winManual:'Manual',
+    winOpenAt:'They open from',
+    winHelp:'Used by the fungus alert to know whether the greenhouse is ventilating.',
+    fungusClosed:'Fungus risk: {h} h of high humidity with closed windows. Ventilate.',
+    fungusMechCold:'Fungus risk: {h} h of high humidity. Mechanical windows don\'t open when it\'s cold: ventilate for a while or turn on the fan.',
+    fungusManual:'Fungus risk: {h} h of high humidity. Open windows or the door to ventilate.',
+    fungusOpenNoDrop:'Windows are open but humidity isn\'t dropping ({rh}%). Open the door or turn on the fan.',
     boardTitle:'ORGANICS ONE BOARD', boardConnect:'Connect board', boardSave:'Connect', boardDisc:'Disconnect', boardForget:'Forget', boardServer:'Server (EMQX host)', boardUser:'User', boardPass:'Password', boardInv:'Greenhouse name', boardOff:'Not connected', boardOn:'Board online', boardNoBoard:'Board offline', boardUpdate:'Update firmware', boardTemp:'Temperature', boardHum:'Humidity', boardVpd:'VPD', boardSoil:'Soil', boardValveOpen:'watering', boardZone:'Zone', boardAlarm:'Alarm', boardConnecting:'Connecting…', boardLiveTemp:'Real sensor',
     useAutoLocation:'📍 Use automatic location', locationManualLabel:'Manual location',
     locationApprox:'Approximate location', locationPrecise:'Precise location',
@@ -925,7 +945,7 @@ const TRANSLATIONS = {
     cancelBtn:'Cancelar', generateBtn:'Generar y añadir', generatingBtn:'Generando icono…',
     roomTitle:'MI INVERNADERO', roomLegend:'bloque vacío · toca un bloque plantado para ver detalles · arrastra para plantar una fila',
     gridLabel:'cuadrícula {r} × {c}', refreshedToast:'Actualizado',
-    gridSettingsTitle:'AJUSTES DE LA CUADRÍCULA', heightLabel:'Largo', widthLabel:'Ancho',
+    gridSettingsTitle:'AJUSTES DEL INVERNADERO', heightLabel:'Largo', widthLabel:'Ancho',
     envTitle:'ENTORNO', envLoading:'Localizando…',
     envNoLocation:'No se pudo determinar tu ubicación automáticamente.',
     envFetchError:'No se pudieron cargar los datos meteorológicos.',
@@ -1098,6 +1118,16 @@ const TRANSLATIONS = {
     zoneTapHint:'Toca un bloque para ver su zona',
     zoneNoneYet:'Aún no hay zonas. Toca Editar zonas para marcar qué bloques riega cada zona.',
     zoneWaterToday:'Agua de hoy',
+    winTitle:'Ventanas',
+    winBoard:'Motorizadas (tarjeta)',
+    winMech:'Mecánicas',
+    winManual:'Manuales',
+    winOpenAt:'Abren desde',
+    winHelp:'Lo usa el aviso de hongos para saber si el invernadero está ventilando.',
+    fungusClosed:'Riesgo de hongos: {h} h con humedad alta y ventanas cerradas. Ventila.',
+    fungusMechCold:'Riesgo de hongos: {h} h con humedad alta. Con frío las ventanas mecánicas no abren: ventila un rato o enciende el ventilador.',
+    fungusManual:'Riesgo de hongos: {h} h con humedad alta. Abre ventanas o la puerta para ventilar.',
+    fungusOpenNoDrop:'Las ventanas están abiertas pero la humedad no baja ({rh}%). Abre la puerta o enciende el ventilador.',
     boardTitle:'TARJETA ORGANICS ONE', boardConnect:'Conectar tarjeta', boardSave:'Conectar', boardDisc:'Desconectar', boardForget:'Olvidar', boardServer:'Servidor (host de EMQX)', boardUser:'Usuario', boardPass:'Clave', boardInv:'Nombre del invernadero', boardOff:'Sin conexión', boardOn:'Tarjeta en línea', boardNoBoard:'Tarjeta desconectada', boardUpdate:'Actualizar firmware', boardTemp:'Temperatura', boardHum:'Humedad', boardVpd:'VPD', boardSoil:'Suelo', boardValveOpen:'regando', boardZone:'Zona', boardAlarm:'Alarma', boardConnecting:'Conectando…', boardLiveTemp:'Sensor real',
     useAutoLocation:'📍 Usar ubicación automática', locationManualLabel:'Ubicación manual',
     locationApprox:'Ubicación aproximada', locationPrecise:'Ubicación precisa',
@@ -1137,7 +1167,7 @@ const TRANSLATIONS = {
     cancelBtn:'Annuler', generateBtn:'Générer et ajouter', generatingBtn:"Génération de l'icône…",
     roomTitle:'MA SERRE', roomLegend:'bloc vide · touchez un bloc planté pour les détails · glissez pour planter une rangée',
     gridLabel:'grille {r} × {c}', refreshedToast:'Actualisé',
-    gridSettingsTitle:'PARAMÈTRES DE LA GRILLE', heightLabel:'Longueur', widthLabel:'Largeur',
+    gridSettingsTitle:'RÉGLAGES DE LA SERRE', heightLabel:'Longueur', widthLabel:'Largeur',
     envTitle:'ENVIRONNEMENT', envLoading:'Localisation…',
     envNoLocation:"Impossible de déterminer votre position automatiquement.",
     envFetchError:"Impossible de charger les données météo pour le moment.",
@@ -1309,6 +1339,16 @@ const TRANSLATIONS = {
     zoneTapHint:'Touchez un bloc pour voir sa zone',
     zoneNoneYet:'Pas encore de zones. Touchez Modifier les zones pour indiquer les blocs arrosés par chaque zone.',
     zoneWaterToday:'Eau du jour',
+    winTitle:'Fenêtres',
+    winBoard:'Motorisées (carte)',
+    winMech:'Mécaniques',
+    winManual:'Manuelles',
+    winOpenAt:'Elles s\'ouvrent à partir de',
+    winHelp:'Utilisé par l\'alerte champignons pour savoir si la serre est ventilée.',
+    fungusClosed:'Risque de champignons : {h} h d\'humidité élevée avec fenêtres fermées. Aérez.',
+    fungusMechCold:'Risque de champignons : {h} h d\'humidité élevée. Par temps froid, les fenêtres mécaniques ne s\'ouvrent pas : aérez un moment ou allumez le ventilateur.',
+    fungusManual:'Risque de champignons : {h} h d\'humidité élevée. Ouvrez fenêtres ou porte pour aérer.',
+    fungusOpenNoDrop:'Les fenêtres sont ouvertes mais l\'humidité ne baisse pas ({rh}%). Ouvrez la porte ou allumez le ventilateur.',
     boardTitle:'CARTE ORGANICS ONE',
     boardConnect:'Connecter la carte',
     boardSave:'Connecter',
@@ -1389,7 +1429,7 @@ const TRANSLATIONS = {
     cancelBtn:'Cancelar', generateBtn:'Gerar e adicionar', generatingBtn:'Gerando ícone…',
     roomTitle:'MINHA ESTUFA', roomLegend:'bloco vazio · toque em um bloco plantado para detalhes · arraste para plantar uma fileira',
     gridLabel:'grade {r} × {c}', refreshedToast:'Atualizado',
-    gridSettingsTitle:'CONFIGURAÇÕES DA GRADE', heightLabel:'Comprimento', widthLabel:'Largura',
+    gridSettingsTitle:'AJUSTES DA ESTUFA', heightLabel:'Comprimento', widthLabel:'Largura',
     envTitle:'AMBIENTE', envLoading:'Localizando…',
     envNoLocation:'Não foi possível determinar sua localização automaticamente.',
     envFetchError:'Não foi possível carregar os dados do clima agora.',
@@ -1561,6 +1601,16 @@ const TRANSLATIONS = {
     zoneTapHint:'Toque em um bloco para ver a zona',
     zoneNoneYet:'Ainda não há zonas. Toque em Editar zonas para marcar os blocos de cada zona.',
     zoneWaterToday:'Água de hoje',
+    winTitle:'Janelas',
+    winBoard:'Motorizadas (placa)',
+    winMech:'Mecânicas',
+    winManual:'Manuais',
+    winOpenAt:'Abrem a partir de',
+    winHelp:'Usado pelo aviso de fungos para saber se a estufa está ventilando.',
+    fungusClosed:'Risco de fungos: {h} h de umidade alta com janelas fechadas. Ventile.',
+    fungusMechCold:'Risco de fungos: {h} h de umidade alta. Com frio as janelas mecânicas não abrem: ventile um pouco ou ligue o ventilador.',
+    fungusManual:'Risco de fungos: {h} h de umidade alta. Abra janelas ou a porta para ventilar.',
+    fungusOpenNoDrop:'As janelas estão abertas mas a umidade não baixa ({rh}%). Abra a porta ou ligue o ventilador.',
     boardTitle:'PLACA ORGANICS ONE',
     boardConnect:'Conectar placa',
     boardSave:'Conectar',
@@ -1641,7 +1691,7 @@ const TRANSLATIONS = {
     cancelBtn:'Abbrechen', generateBtn:'Erstellen & hinzufügen', generatingBtn:'Symbol wird erstellt…',
     roomTitle:'MEIN GEWÄCHSHAUS', roomLegend:'leeres Feld · tippe auf ein bepflanztes Feld für Details · ziehen, um eine Reihe zu bepflanzen',
     gridLabel:'{r} × {c} Raster', refreshedToast:'Aktualisiert',
-    gridSettingsTitle:'RASTEREINSTELLUNGEN', heightLabel:'Länge', widthLabel:'Breite',
+    gridSettingsTitle:'GEWÄCHSHAUS-EINSTELLUNGEN', heightLabel:'Länge', widthLabel:'Breite',
     envTitle:'UMGEBUNG', envLoading:'Standort wird ermittelt…',
     envNoLocation:'Dein Standort konnte nicht automatisch ermittelt werden.',
     envFetchError:'Wetterdaten konnten gerade nicht geladen werden.',
@@ -1813,6 +1863,16 @@ const TRANSLATIONS = {
     zoneTapHint:'Tippe auf ein Feld, um seine Zone zu sehen',
     zoneNoneYet:'Noch keine Zonen. Tippe auf Zonen bearbeiten, um die Felder jeder Zone festzulegen.',
     zoneWaterToday:'Wasser heute',
+    winTitle:'Fenster',
+    winBoard:'Motorisiert (Platine)',
+    winMech:'Mechanisch',
+    winManual:'Manuell',
+    winOpenAt:'Öffnen ab',
+    winHelp:'Wird von der Pilzwarnung genutzt, um zu wissen, ob das Gewächshaus lüftet.',
+    fungusClosed:'Pilzrisiko: {h} Std. hohe Luftfeuchte bei geschlossenen Fenstern. Lüften.',
+    fungusMechCold:'Pilzrisiko: {h} Std. hohe Luftfeuchte. Bei Kälte öffnen mechanische Fenster nicht: kurz lüften oder Ventilator einschalten.',
+    fungusManual:'Pilzrisiko: {h} Std. hohe Luftfeuchte. Fenster oder Tür zum Lüften öffnen.',
+    fungusOpenNoDrop:'Die Fenster sind offen, aber die Luftfeuchte sinkt nicht ({rh}%). Tür öffnen oder Ventilator einschalten.',
     boardTitle:'ORGANICS-ONE-PLATINE',
     boardConnect:'Platine verbinden',
     boardSave:'Verbinden',
@@ -1893,7 +1953,7 @@ const TRANSLATIONS = {
     cancelBtn:'取消', generateBtn:'生成并添加', generatingBtn:'正在生成图标…',
     roomTitle:'我的温室', roomLegend:'空格 · 点击已种植的格子查看详情 · 拖动可整行种植',
     gridLabel:'{r} × {c} 网格', refreshedToast:'已刷新',
-    gridSettingsTitle:'网格设置', heightLabel:'长度', widthLabel:'宽度',
+    gridSettingsTitle:'温室设置', heightLabel:'长度', widthLabel:'宽度',
     envTitle:'环境', envLoading:'正在定位…',
     envNoLocation:'无法自动确定您的位置。',
     envFetchError:'暂时无法加载天气数据。',
@@ -2065,6 +2125,16 @@ const TRANSLATIONS = {
     zoneTapHint:'点击地块查看其区域',
     zoneNoneYet:'还没有区域。点击“编辑区域”标记每个区域灌溉的地块。',
     zoneWaterToday:'今日用水',
+    winTitle:'窗户',
+    winBoard:'电动（控制板）',
+    winMech:'机械式',
+    winManual:'手动',
+    winOpenAt:'开启温度',
+    winHelp:'霉菌提醒会用它判断温室是否在通风。',
+    fungusClosed:'霉菌风险：高湿已持续 {h} 小时且窗户关闭。请通风。',
+    fungusMechCold:'霉菌风险：高湿已持续 {h} 小时。天冷时机械窗不会打开：请短暂通风或打开风扇。',
+    fungusManual:'霉菌风险：高湿已持续 {h} 小时。请打开窗户或门通风。',
+    fungusOpenNoDrop:'窗户已打开但湿度没有下降（{rh}%）。请打开门或风扇。',
     boardTitle:'ORGANICS ONE 控制板',
     boardConnect:'连接控制板',
     boardSave:'连接',
@@ -2145,7 +2215,7 @@ const TRANSLATIONS = {
     cancelBtn:'रद्द करें', generateBtn:'बनाएं और जोड़ें', generatingBtn:'आइकन बनाया जा रहा है…',
     roomTitle:'मेरा ग्रीनहाउस', roomLegend:'खाली ब्लॉक · विवरण के लिए लगाए गए ब्लॉक पर टैप करें · पंक्ति में लगाने के लिए खींचें',
     gridLabel:'{r} × {c} ग्रिड', refreshedToast:'ताज़ा किया गया',
-    gridSettingsTitle:'ग्रिड सेटिंग्स', heightLabel:'लंबाई', widthLabel:'चौड़ाई',
+    gridSettingsTitle:'ग्रीनहाउस सेटिंग्स', heightLabel:'लंबाई', widthLabel:'चौड़ाई',
     envTitle:'वातावरण', envLoading:'स्थान खोजा जा रहा है…',
     envNoLocation:'आपका स्थान स्वचालित रूप से निर्धारित नहीं किया जा सका।',
     envFetchError:'अभी मौसम डेटा लोड नहीं हो सका।',
@@ -2317,6 +2387,16 @@ const TRANSLATIONS = {
     zoneTapHint:'क्षेत्र देखने के लिए खाने पर टैप करें',
     zoneNoneYet:'अभी कोई क्षेत्र नहीं। हर क्षेत्र के खाने चुनने के लिए क्षेत्र संपादित करें पर टैप करें।',
     zoneWaterToday:'आज का पानी',
+    winTitle:'खिड़कियाँ',
+    winBoard:'मोटर वाली (बोर्ड)',
+    winMech:'यांत्रिक',
+    winManual:'हाथ से',
+    winOpenAt:'इतने तापमान से खुलती हैं',
+    winHelp:'फफूंद चेतावनी इससे जानती है कि ग्रीनहाउस में हवा आ रही है या नहीं।',
+    fungusClosed:'फफूंद का जोखिम: {h} घं से अधिक नमी और खिड़कियाँ बंद। हवा आने दें।',
+    fungusMechCold:'फफूंद का जोखिम: {h} घं से अधिक नमी। ठंड में यांत्रिक खिड़कियाँ नहीं खुलतीं: कुछ देर हवा दें या पंखा चलाएँ।',
+    fungusManual:'फफूंद का जोखिम: {h} घं से अधिक नमी। खिड़कियाँ या दरवाज़ा खोलें।',
+    fungusOpenNoDrop:'खिड़कियाँ खुली हैं पर नमी कम नहीं हो रही ({rh}%)। दरवाज़ा खोलें या पंखा चलाएँ।',
     boardTitle:'ORGANICS ONE बोर्ड',
     boardConnect:'बोर्ड कनेक्ट करें',
     boardSave:'कनेक्ट करें',
@@ -2397,7 +2477,7 @@ const TRANSLATIONS = {
     cancelBtn:'إلغاء', generateBtn:'إنشاء وإضافة', generatingBtn:'جارٍ إنشاء الأيقونة…',
     roomTitle:'دفيئتي', roomLegend:'مربع فارغ · اضغط على مربع مزروع لعرض التفاصيل · اسحب لزراعة صف كامل',
     gridLabel:'شبكة {r} × {c}', refreshedToast:'تم التحديث',
-    gridSettingsTitle:'إعدادات الشبكة', heightLabel:'الطول', widthLabel:'العرض',
+    gridSettingsTitle:'إعدادات الدفيئة', heightLabel:'الطول', widthLabel:'العرض',
     envTitle:'البيئة', envLoading:'جارٍ تحديد الموقع…',
     envNoLocation:'تعذّر تحديد موقعك تلقائيًا.',
     envFetchError:'تعذّر تحميل بيانات الطقس الآن.',
@@ -2569,6 +2649,16 @@ const TRANSLATIONS = {
     zoneTapHint:'المس مربعًا لرؤية منطقته',
     zoneNoneYet:'لا توجد مناطق بعد. المس تعديل المناطق لتحديد مربعات كل منطقة.',
     zoneWaterToday:'مياه اليوم',
+    winTitle:'النوافذ',
+    winBoard:'آلية (اللوحة)',
+    winMech:'ميكانيكية',
+    winManual:'يدوية',
+    winOpenAt:'تفتح ابتداءً من',
+    winHelp:'يستخدمه تنبيه الفطريات لمعرفة ما إذا كانت الدفيئة تُهوّى.',
+    fungusClosed:'خطر فطريات: {h} ساعة من الرطوبة العالية والنوافذ مغلقة. قم بالتهوية.',
+    fungusMechCold:'خطر فطريات: {h} ساعة من الرطوبة العالية. في البرد لا تفتح النوافذ الميكانيكية: هوِّ قليلًا أو شغّل المروحة.',
+    fungusManual:'خطر فطريات: {h} ساعة من الرطوبة العالية. افتح النوافذ أو الباب للتهوية.',
+    fungusOpenNoDrop:'النوافذ مفتوحة لكن الرطوبة لا تنخفض ({rh}%). افتح الباب أو شغّل المروحة.',
     boardTitle:'لوحة ORGANICS ONE',
     boardConnect:'ربط اللوحة',
     boardSave:'اتصال',
@@ -2649,7 +2739,7 @@ const TRANSLATIONS = {
     cancelBtn:'Annulla', generateBtn:'Genera e aggiungi', generatingBtn:'Generazione icona…',
     roomTitle:'LA MIA SERRA', roomLegend:'blocco vuoto · tocca un blocco piantato per i dettagli · trascina per piantare una fila',
     gridLabel:'griglia {r} × {c}', refreshedToast:'Aggiornato',
-    gridSettingsTitle:'IMPOSTAZIONI GRIGLIA', heightLabel:'Lunghezza', widthLabel:'Larghezza',
+    gridSettingsTitle:'IMPOSTAZIONI DELLA SERRA', heightLabel:'Lunghezza', widthLabel:'Larghezza',
     envTitle:'AMBIENTE', envLoading:'Localizzazione…',
     envNoLocation:'Impossibile determinare automaticamente la tua posizione.',
     envFetchError:'Impossibile caricare i dati meteo al momento.',
@@ -2821,6 +2911,16 @@ const TRANSLATIONS = {
     zoneTapHint:'Tocca un blocco per vedere la sua zona',
     zoneNoneYet:'Nessuna zona ancora. Tocca Modifica zone per indicare i blocchi di ogni zona.',
     zoneWaterToday:'Acqua di oggi',
+    winTitle:'Finestre',
+    winBoard:'Motorizzate (scheda)',
+    winMech:'Meccaniche',
+    winManual:'Manuali',
+    winOpenAt:'Si aprono da',
+    winHelp:'Usato dall\'avviso funghi per sapere se la serra sta ventilando.',
+    fungusClosed:'Rischio funghi: {h} h di umidità alta con finestre chiuse. Arieggia.',
+    fungusMechCold:'Rischio funghi: {h} h di umidità alta. Con il freddo le finestre meccaniche non si aprono: arieggia un po\' o accendi il ventilatore.',
+    fungusManual:'Rischio funghi: {h} h di umidità alta. Apri finestre o porta per arieggiare.',
+    fungusOpenNoDrop:'Le finestre sono aperte ma l\'umidità non scende ({rh}%). Apri la porta o accendi il ventilatore.',
     boardTitle:'SCHEDA ORGANICS ONE',
     boardConnect:'Collega scheda',
     boardSave:'Collega',
@@ -2901,7 +3001,7 @@ const TRANSLATIONS = {
     cancelBtn:'Отмена', generateBtn:'Создать и добавить', generatingBtn:'Создание иконки…',
     roomTitle:'МОЯ ТЕПЛИЦА', roomLegend:'пустая клетка · нажмите на посаженную клетку для подробностей · перетащите, чтобы засадить ряд',
     gridLabel:'сетка {r} × {c}', refreshedToast:'Обновлено',
-    gridSettingsTitle:'НАСТРОЙКИ СЕТКИ', heightLabel:'Длина', widthLabel:'Ширина',
+    gridSettingsTitle:'НАСТРОЙКИ ТЕПЛИЦЫ', heightLabel:'Длина', widthLabel:'Ширина',
     envTitle:'СРЕДА', envLoading:'Определение местоположения…',
     envNoLocation:'Не удалось автоматически определить ваше местоположение.',
     envFetchError:'Не удалось загрузить данные о погоде.',
@@ -3073,6 +3173,16 @@ const TRANSLATIONS = {
     zoneTapHint:'Коснитесь клетки, чтобы увидеть её зону',
     zoneNoneYet:'Зон пока нет. Нажмите «Изменить зоны», чтобы отметить клетки каждой зоны.',
     zoneWaterToday:'Вода сегодня',
+    winTitle:'Окна',
+    winBoard:'Моторизованные (плата)',
+    winMech:'Механические',
+    winManual:'Ручные',
+    winOpenAt:'Открываются от',
+    winHelp:'Используется предупреждением о грибке, чтобы понять, проветривается ли теплица.',
+    fungusClosed:'Риск грибка: {h} ч высокой влажности при закрытых окнах. Проветрите.',
+    fungusMechCold:'Риск грибка: {h} ч высокой влажности. В холод механические окна не открываются: проветрите немного или включите вентилятор.',
+    fungusManual:'Риск грибка: {h} ч высокой влажности. Откройте окна или дверь для проветривания.',
+    fungusOpenNoDrop:'Окна открыты, но влажность не снижается ({rh}%). Откройте дверь или включите вентилятор.',
     boardTitle:'ПЛАТА ORGANICS ONE',
     boardConnect:'Подключить плату',
     boardSave:'Подключить',
@@ -3349,6 +3459,7 @@ async function loadState(){
           cols: typeof parsed.cols === 'number' ? parsed.cols : (legacySize || 6),
           plantings: parsed.plantings || {},
           irrZones: parsed.irrZones || {},
+          windows: parsed.windows || {},
           customVeg: parsed.customVeg || [],
           lang: parsed.lang || 'en',
           langManual: typeof parsed.langManual === 'boolean' ? parsed.langManual : false,
@@ -3427,7 +3538,7 @@ function applyLibraryCollapse(){
 libraryToggle.addEventListener('click', () => { state.libraryCollapsed = !state.libraryCollapsed; saveState(); applyLibraryCollapse(); });
 
 function applyGridSettingsCollapse(){ /* grid settings now live in a pop-up */ }
-function openGridSettings(){ document.getElementById('gridOverlay').classList.add('show'); }
+function openGridSettings(){ renderWindowSettings(); document.getElementById('gridOverlay').classList.add('show'); }
 function closeGridSettings(){ document.getElementById('gridOverlay').classList.remove('show'); }
 document.getElementById('gridSizeLabel').addEventListener('click', openGridSettings);
 document.getElementById('gridClose').addEventListener('click', closeGridSettings);
@@ -4237,6 +4348,7 @@ function renderEnvConditions(data){
     const dp = dewPoint(amb.temperatura, amb.humedad), margin = amb.temperatura - dp;
     dewTile = { dp, margin };
     if(margin < 2) risk = `<div class="eh-risk">💧 ${t('envCondRisk', { d: n1(Math.max(0, margin)) })}</div>`;
+    const fg = fungusAlert(amb); if(fg) risk = `<div class="eh-risk fungus">🍄 ${fg}</div>`;
   } else if(typeof statsWeather !== 'undefined' && statsWeather && statsWeather.hourly){
     const H = statsWeather.hourly, nowMs = Date.now(), until = new Date(); until.setDate(until.getDate() + 1); until.setHours(9,0,0,0);
     let minT = null, minRh = null;
@@ -4523,7 +4635,8 @@ function logSensors(){
     const a = OO.ambiente(), w = OO.agua();
     const log = lsGet(LOG_KEY, []), now = Date.now();
     if(log.length && now - log[log.length-1].ts < LOG_EVERY_MS - 5000) return;
-    log.push({ ts:now, t:a.temperatura, h:a.humedad, l:a.luz, c:a.co2, vol:w.volumen });
+    let win = null; try{ const vs = OO.ventanas().map(v => v.posicion).filter(v => v != null); if(vs.length) win = Math.max(...vs); }catch(e){}
+    log.push({ ts:now, t:a.temperatura, h:a.humedad, l:a.luz, c:a.co2, vol:w.volumen, lw:a.hojaMojada, win });
     lsSet(LOG_KEY, log.filter(p => now - p.ts < LOG_KEEP_MS));
   }catch(e){}
 }
@@ -4914,6 +5027,56 @@ function openExport(){
   document.getElementById('exportOverlay').classList.add('show');
 }
 document.getElementById('exportBtn').addEventListener('click', openExport);
+
+/* ---------- Fungus risk (needs the board's inside humidity) ----------
+   Reference values for common greenhouse fungi (botrytis, mildew): long periods of high
+   humidity or wet leaves at mild temperatures. Tune them in one place after field validation. */
+const FUNGUS = { rh:85, tMin:10, tMax:25, hours:6, leafWet:50, openPct:10, openMinutes:60, rhDrop:5 };
+function windowCfg(){ const w = state.windows || {}; return { type: w.type || 'auto', openC: Number(w.openC) || 27 }; }
+function windowType(){
+  const w = windowCfg(); if(w.type !== 'auto') return w.type;
+  try{ if(OO && OO.info().conectado && OO.ventanas().some(v => v.posicion != null)) return 'board'; }catch(e){}
+  return 'manual';
+}
+function fungusAlert(amb){
+  if(typeof lsGet !== 'function' || amb.humedad == null || amb.temperatura == null) return null;
+  const log = lsGet(LOG_KEY, []).filter(p => p.h != null && p.t != null && Date.now() - p.ts < 24*3600000);
+  if(log.length < 2) return null;
+  const risky = p => (p.h >= FUNGUS.rh || (p.lw != null && p.lw >= FUNGUS.leafWet)) && p.t >= FUNGUS.tMin && p.t <= FUNGUS.tMax;
+  // continuous risky time up to now
+  let start = null;
+  for(let i = log.length - 1; i >= 0; i--){ if(risky(log[i])) start = log[i].ts; else break; }
+  if(start === null || !risky({ h:amb.humedad, t:amb.temperatura, lw:amb.hojaMojada })) return null;
+  const hours = (Date.now() - start) / 3600000;
+  const type = windowType(), cfg = windowCfg();
+  const isOpen = p => type === 'board' ? (p.win != null && p.win > FUNGUS.openPct) : type === 'mechanical' ? p.t >= cfg.openC : null;
+  const openNow = type === 'board' ? (() => { try{ return OO.ventanas().some(v => (v.posicion || 0) > FUNGUS.openPct); }catch(e){ return false; } })() : isOpen({ t:amb.temperatura });
+  if(openNow === true){
+    // windows open: alert only if humidity is not coming down after a while
+    let since = Date.now();
+    for(let i = log.length - 1; i >= 0; i--){ if(isOpen(log[i])) since = log[i].ts; else break; }
+    if(Date.now() - since < FUNGUS.openMinutes * 60000) return null;
+    const ref = log.find(p => p.ts >= since);
+    if(amb.humedad >= FUNGUS.rh && ref && ref.h - amb.humedad < FUNGUS.rhDrop) return t('fungusOpenNoDrop', { rh: Math.round(amb.humedad) });
+    return null;
+  }
+  if(hours < FUNGUS.hours) return null;
+  const h = Math.floor(hours);
+  if(type === 'board') return t('fungusClosed', { h });
+  if(type === 'mechanical') return t('fungusMechCold', { h });
+  return t('fungusManual', { h });
+}
+function renderWindowSettings(){
+  const el = document.getElementById('winSet'); if(!el) return;
+  const w = windowCfg(), type = w.type === 'auto' ? windowType() : w.type;
+  el.innerHTML = `<div class="ws-title">🪟 ${t('winTitle')}</div>
+    <div class="ws-opts">${[['board','winBoard'],['mechanical','winMech'],['manual','winManual']].map(([v,k]) => `<button class="ws-opt${type === v ? ' on' : ''}" data-v="${v}">${t(k)}</button>`).join('')}</div>
+    ${type === 'mechanical' ? `<label class="ws-open">${t('winOpenAt')} <input type="number" id="winOpenC" min="10" max="45" step="1" value="${w.openC}"> °C</label>` : ''}
+    <div class="ws-help">${t('winHelp')}</div>`;
+  el.querySelectorAll('.ws-opt').forEach(b => b.addEventListener('click', () => { state.windows = Object.assign({}, state.windows, { type:b.dataset.v }); saveState(); renderWindowSettings(); refreshEnvIfLoaded(); }));
+  const oc = document.getElementById('winOpenC');
+  if(oc) oc.addEventListener('change', () => { state.windows = Object.assign({}, state.windows, { type:'mechanical', openC: Math.max(10, Math.min(45, Number(oc.value) || 27)) }); saveState(); refreshEnvIfLoaded(); });
+}
 
 /* ---------- Tabs on phones/tablets ---------- */
 const TAB_ORDER = ['env','room','stats'];
