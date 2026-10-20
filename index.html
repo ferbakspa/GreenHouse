@@ -166,6 +166,19 @@
   .modal .temp-alert{ margin:10px 0 4px; padding:9px 11px; border-radius:10px; font-size:13px; font-weight:700; }
   .modal .temp-alert.cold{ background:#E3F3FE; color:#155F94; border-left:4px solid #4FB3F6; }
   .modal .temp-alert.hot{ background:#FBE4E2; color:#8C1C16; border-left:4px solid #A3201A; }
+  .modal .temp-alert{ display:flex; align-items:center; gap:8px; }
+  .modal .temp-alert .ta-text{ flex:1; }
+  .modal .temp-alert .mute-x{ flex:0 0 auto; width:26px; height:26px; border-radius:50%; border:1.5px solid currentColor; background:rgba(255,255,255,0.55); color:inherit; font-size:13px; font-weight:700; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; }
+  .modal .temp-alert .mute-x:hover{ background:#fff; }
+  .modal .mute-panel{ margin:-2px 0 6px; padding:9px 11px; border-radius:10px; background:var(--bg-warm); font-size:12.5px; }
+  .modal .mute-panel .mp-title{ font-weight:700; margin-bottom:7px; color:var(--pine-dark); }
+  .modal .mute-panel .mp-btns{ display:flex; gap:6px; flex-wrap:wrap; }
+  .modal .mute-panel button{ font:inherit; font-size:12px; padding:6px 10px; border-radius:8px; border:1px solid var(--soil-line); background:#fff; cursor:pointer; }
+  .modal .mute-panel button.danger{ border-color:#A3201A; color:#8C1C16; }
+  .modal .mute-panel button.danger.solid{ background:#A3201A; color:#fff; }
+  .modal .mute-panel .mp-warn{ color:#8C1C16; line-height:1.45; margin-bottom:8px; }
+  .modal .muted-note{ margin:10px 0 4px; padding:8px 11px; border-radius:10px; background:var(--bg-warm); font-size:12.5px; color:var(--pine-soft); display:flex; justify-content:space-between; gap:8px; align-items:center; }
+  .modal .muted-note button{ font:inherit; font-size:12px; border:none; background:none; color:var(--green-accent); font-weight:700; cursor:pointer; padding:0; }
   .modal .row.temp-cold .v{ color:#155F94; } .modal .row.temp-hot .v{ color:#8C1C16; }
   @keyframes tempWarnPulse{ 0%,100%{ opacity:1; } 50%{ opacity:.55; } }
   @media (prefers-reduced-motion: reduce){ .cell.planted.temp-cold::after, .cell.planted.temp-hot::after{ animation:none; } }
@@ -528,6 +541,17 @@ const TRANSLATIONS = {
     boardCancel:'Cancel',
     e_irrigating:'An irrigation is running. Stop it and try again',
     tempCold:'Too cold: {t}°C (minimum {min}°C)', tempHot:'Too hot: {t}°C (maximum {max}°C)',
+    muteTitle:'Silence this alert',
+    mute24h:'24 hours',
+    muteWeek:'1 week',
+    muteForever:'Forever',
+    muteConfirmText:'If you silence this alert forever, it will not show again until the end of this crop, even if the temperature keeps going up or down. Are you sure?',
+    muteConfirmYes:'Yes, silence until the end',
+    muteBack:'Back',
+    mutedUntil:'Alert silenced until {d}',
+    mutedForever:'Alert silenced until the end of this crop',
+    unmute:'Reactivate',
+    mutedToast:'Alert silenced',
     boardTitle:'ORGANICS ONE BOARD', boardConnect:'Connect board', boardSave:'Connect', boardDisc:'Disconnect', boardForget:'Forget', boardServer:'Server (EMQX host)', boardUser:'User', boardPass:'Password', boardInv:'Greenhouse name', boardOff:'Not connected', boardOn:'Board online', boardNoBoard:'Board offline', boardUpdate:'Update firmware', boardTemp:'Temperature', boardHum:'Humidity', boardVpd:'VPD', boardSoil:'Soil', boardValveOpen:'watering', boardZone:'Zone', boardAlarm:'Alarm', boardConnecting:'Connecting…', boardLiveTemp:'Real sensor',
     useAutoLocation:'📍 Use automatic location', locationManualLabel:'Manual location',
     locationApprox:'Approximate location', locationPrecise:'Precise location',
@@ -619,6 +643,17 @@ const TRANSLATIONS = {
     boardCancel:'Cancelar',
     e_irrigating:'Hay un riego en curso. Deténgalo y vuelva a intentar',
     tempCold:'Falta calor: {t}°C (mínimo {min}°C)', tempHot:'Exceso de calor: {t}°C (máximo {max}°C)',
+    muteTitle:'Silenciar este aviso',
+    mute24h:'24 horas',
+    muteWeek:'1 semana',
+    muteForever:'Para siempre',
+    muteConfirmText:'Si silencias este aviso para siempre, no volverá a mostrarse hasta el final de este cultivo, aunque la temperatura siga subiendo o bajando. ¿Estás seguro?',
+    muteConfirmYes:'Sí, silenciar hasta el final',
+    muteBack:'Volver',
+    mutedUntil:'Aviso silenciado hasta {d}',
+    mutedForever:'Aviso silenciado hasta el final de este cultivo',
+    unmute:'Reactivar',
+    mutedToast:'Aviso silenciado',
     boardTitle:'TARJETA ORGANICS ONE', boardConnect:'Conectar tarjeta', boardSave:'Conectar', boardDisc:'Desconectar', boardForget:'Olvidar', boardServer:'Servidor (host de EMQX)', boardUser:'Usuario', boardPass:'Clave', boardInv:'Nombre del invernadero', boardOff:'Sin conexión', boardOn:'Tarjeta en línea', boardNoBoard:'Tarjeta desconectada', boardUpdate:'Actualizar firmware', boardTemp:'Temperatura', boardHum:'Humedad', boardVpd:'VPD', boardSoil:'Suelo', boardValveOpen:'regando', boardZone:'Zona', boardAlarm:'Alarma', boardConnecting:'Conectando…', boardLiveTemp:'Sensor real',
     useAutoLocation:'📍 Usar ubicación automática', locationManualLabel:'Ubicación manual',
     locationApprox:'Ubicación aproximada', locationPrecise:'Ubicación precisa',
@@ -709,6 +744,17 @@ const TRANSLATIONS = {
     boardCancel:'Annuler',
     e_irrigating:'Une irrigation est en cours. Arrêtez-la et réessayez',
     tempCold:'Trop froid : {t}°C (minimum {min}°C)', tempHot:'Trop chaud : {t}°C (maximum {max}°C)',
+    muteTitle:'Désactiver cette alerte',
+    mute24h:'24 heures',
+    muteWeek:'1 semaine',
+    muteForever:'Pour toujours',
+    muteConfirmText:'Si vous désactivez cette alerte pour toujours, elle ne réapparaîtra pas avant la fin de cette culture, même si la température continue de monter ou de baisser. Êtes-vous sûr ?',
+    muteConfirmYes:'Oui, jusqu\'à la fin',
+    muteBack:'Retour',
+    mutedUntil:'Alerte désactivée jusqu\'au {d}',
+    mutedForever:'Alerte désactivée jusqu\'à la fin de cette culture',
+    unmute:'Réactiver',
+    mutedToast:'Alerte désactivée',
     boardTitle:'CARTE ORGANICS ONE',
     boardConnect:'Connecter la carte',
     boardSave:'Connecter',
@@ -840,6 +886,17 @@ const TRANSLATIONS = {
     boardCancel:'Cancelar',
     e_irrigating:'Há uma irrigação em andamento. Pare-a e tente de novo',
     tempCold:'Frio demais: {t}°C (mínimo {min}°C)', tempHot:'Calor demais: {t}°C (máximo {max}°C)',
+    muteTitle:'Silenciar este aviso',
+    mute24h:'24 horas',
+    muteWeek:'1 semana',
+    muteForever:'Para sempre',
+    muteConfirmText:'Se você silenciar este aviso para sempre, ele não aparecerá de novo até o fim deste cultivo, mesmo que a temperatura continue subindo ou descendo. Tem certeza?',
+    muteConfirmYes:'Sim, silenciar até o fim',
+    muteBack:'Voltar',
+    mutedUntil:'Aviso silenciado até {d}',
+    mutedForever:'Aviso silenciado até o fim deste cultivo',
+    unmute:'Reativar',
+    mutedToast:'Aviso silenciado',
     boardTitle:'PLACA ORGANICS ONE',
     boardConnect:'Conectar placa',
     boardSave:'Conectar',
@@ -971,6 +1028,17 @@ const TRANSLATIONS = {
     boardCancel:'Abbrechen',
     e_irrigating:'Eine Bewässerung läuft. Bitte stoppen und erneut versuchen',
     tempCold:'Zu kalt: {t}°C (Minimum {min}°C)', tempHot:'Zu heiß: {t}°C (Maximum {max}°C)',
+    muteTitle:'Diese Warnung stummschalten',
+    mute24h:'24 Stunden',
+    muteWeek:'1 Woche',
+    muteForever:'Für immer',
+    muteConfirmText:'Wenn du diese Warnung für immer stummschaltest, erscheint sie bis zum Ende dieser Kultur nicht mehr, auch wenn die Temperatur weiter steigt oder fällt. Bist du sicher?',
+    muteConfirmYes:'Ja, bis zum Ende stummschalten',
+    muteBack:'Zurück',
+    mutedUntil:'Warnung stumm bis {d}',
+    mutedForever:'Warnung stumm bis zum Ende dieser Kultur',
+    unmute:'Reaktivieren',
+    mutedToast:'Warnung stummgeschaltet',
     boardTitle:'ORGANICS-ONE-PLATINE',
     boardConnect:'Platine verbinden',
     boardSave:'Verbinden',
@@ -1102,6 +1170,17 @@ const TRANSLATIONS = {
     boardCancel:'取消',
     e_irrigating:'正在灌溉。请先停止后重试',
     tempCold:'温度过低：{t}°C（最低 {min}°C）', tempHot:'温度过高：{t}°C（最高 {max}°C）',
+    muteTitle:'关闭此提醒',
+    mute24h:'24 小时',
+    muteWeek:'1 周',
+    muteForever:'永久',
+    muteConfirmText:'如果永久关闭此提醒，在本次种植结束前都不会再显示，即使温度继续升高或降低。确定吗？',
+    muteConfirmYes:'确定，关闭到种植结束',
+    muteBack:'返回',
+    mutedUntil:'提醒已关闭至 {d}',
+    mutedForever:'提醒已关闭至本次种植结束',
+    unmute:'重新开启',
+    mutedToast:'提醒已关闭',
     boardTitle:'ORGANICS ONE 控制板',
     boardConnect:'连接控制板',
     boardSave:'连接',
@@ -1233,6 +1312,17 @@ const TRANSLATIONS = {
     boardCancel:'रद्द करें',
     e_irrigating:'सिंचाई चल रही है। उसे रोककर फिर कोशिश करें',
     tempCold:'बहुत ठंड: {t}°C (न्यूनतम {min}°C)', tempHot:'बहुत गर्मी: {t}°C (अधिकतम {max}°C)',
+    muteTitle:'यह चेतावनी बंद करें',
+    mute24h:'24 घंटे',
+    muteWeek:'1 सप्ताह',
+    muteForever:'हमेशा के लिए',
+    muteConfirmText:'यदि आप यह चेतावनी हमेशा के लिए बंद करते हैं, तो इस फसल के अंत तक यह दोबारा नहीं दिखेगी, भले ही तापमान बढ़ता या घटता रहे। क्या आप निश्चित हैं?',
+    muteConfirmYes:'हाँ, अंत तक बंद करें',
+    muteBack:'वापस',
+    mutedUntil:'चेतावनी {d} तक बंद',
+    mutedForever:'चेतावनी इस फसल के अंत तक बंद',
+    unmute:'फिर चालू करें',
+    mutedToast:'चेतावनी बंद',
     boardTitle:'ORGANICS ONE बोर्ड',
     boardConnect:'बोर्ड कनेक्ट करें',
     boardSave:'कनेक्ट करें',
@@ -1364,6 +1454,17 @@ const TRANSLATIONS = {
     boardCancel:'إلغاء',
     e_irrigating:'هناك ري جارٍ. أوقفه وأعد المحاولة',
     tempCold:'برودة زائدة: {t}°C (الحد الأدنى {min}°C)', tempHot:'حرارة زائدة: {t}°C (الحد الأقصى {max}°C)',
+    muteTitle:'إسكات هذا التنبيه',
+    mute24h:'24 ساعة',
+    muteWeek:'أسبوع',
+    muteForever:'للأبد',
+    muteConfirmText:'إذا أسكتَّ هذا التنبيه للأبد فلن يظهر مجددًا حتى نهاية هذا المحصول، حتى لو استمرت الحرارة في الارتفاع أو الانخفاض. هل أنت متأكد؟',
+    muteConfirmYes:'نعم، حتى النهاية',
+    muteBack:'رجوع',
+    mutedUntil:'التنبيه مُسكت حتى {d}',
+    mutedForever:'التنبيه مُسكت حتى نهاية هذا المحصول',
+    unmute:'إعادة التفعيل',
+    mutedToast:'تم إسكات التنبيه',
     boardTitle:'لوحة ORGANICS ONE',
     boardConnect:'ربط اللوحة',
     boardSave:'اتصال',
@@ -1495,6 +1596,17 @@ const TRANSLATIONS = {
     boardCancel:'Annulla',
     e_irrigating:'Irrigazione in corso. Fermala e riprova',
     tempCold:'Troppo freddo: {t}°C (minimo {min}°C)', tempHot:'Troppo caldo: {t}°C (massimo {max}°C)',
+    muteTitle:'Silenzia questo avviso',
+    mute24h:'24 ore',
+    muteWeek:'1 settimana',
+    muteForever:'Per sempre',
+    muteConfirmText:'Se silenzi questo avviso per sempre, non verrà più mostrato fino alla fine di questa coltura, anche se la temperatura continua a salire o scendere. Sei sicuro?',
+    muteConfirmYes:'Sì, silenzia fino alla fine',
+    muteBack:'Indietro',
+    mutedUntil:'Avviso silenziato fino a {d}',
+    mutedForever:'Avviso silenziato fino alla fine di questa coltura',
+    unmute:'Riattiva',
+    mutedToast:'Avviso silenziato',
     boardTitle:'SCHEDA ORGANICS ONE',
     boardConnect:'Collega scheda',
     boardSave:'Collega',
@@ -1626,6 +1738,17 @@ const TRANSLATIONS = {
     boardCancel:'Отмена',
     e_irrigating:'Идёт полив. Остановите его и повторите',
     tempCold:'Слишком холодно: {t}°C (минимум {min}°C)', tempHot:'Слишком жарко: {t}°C (максимум {max}°C)',
+    muteTitle:'Отключить это предупреждение',
+    mute24h:'24 часа',
+    muteWeek:'1 неделя',
+    muteForever:'Навсегда',
+    muteConfirmText:'Если отключить предупреждение навсегда, оно не появится до конца этой культуры, даже если температура продолжит расти или падать. Вы уверены?',
+    muteConfirmYes:'Да, до конца',
+    muteBack:'Назад',
+    mutedUntil:'Предупреждение отключено до {d}',
+    mutedForever:'Предупреждение отключено до конца этой культуры',
+    unmute:'Включить снова',
+    mutedToast:'Предупреждение отключено',
     boardTitle:'ПЛАТА ORGANICS ONE',
     boardConnect:'Подключить плату',
     boardSave:'Подключить',
@@ -2049,7 +2172,7 @@ function renderSelectedHint(){
    the icon itself and the cursor never ends up resting on top of the tooltip text. */
 function showVegTooltip(anchorEl, veg, withStatus){
   const tip = document.getElementById('vegTooltip');
-  const st = withStatus ? tempStatus(veg) : null;
+  const st = (withStatus && !isTempMuted(withStatus)) ? tempStatus(veg) : null;
   tip.innerHTML = `<div class="tt-name">${getVegName(veg)}</div>
     ${st ? `<div class="tt-alert ${st.kind}">${st.kind==='cold'?'❄️':'🔥'} ${tempStatusText(st)}</div>` : ''}
     <div>🕒 ${veg.days} ${t('daysToHarvestLabel')}</div>
@@ -2108,6 +2231,20 @@ function applyWoodEdges(cell, r, c, transposed){
 }
 
 let currentSensorTemp = null;
+function isTempMuted(key){
+  const p = state.plantings[key]; const m = p && p.tempMute;
+  if(!m) return false;
+  if(m.forever) return true;
+  return m.until > Date.now();
+}
+function muteTemp(key, ms){
+  const p = state.plantings[key]; if(!p) return;
+  p.tempMute = ms === 'forever' ? { forever:true } : { until: Date.now() + ms };
+  saveState(); applyTempWarnings(); refreshEnvIfLoaded();
+}
+function unmuteTemp(key){ const p = state.plantings[key]; if(p){ delete p.tempMute; saveState(); applyTempWarnings(); refreshEnvIfLoaded(); } }
+function fmtDateTime(ms){ return new Date(ms).toLocaleString(lang==='es'?'es-CL':lang, { weekday:'short', day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' }); }
+setInterval(() => applyTempWarnings(), 60000);
 function tempStatus(veg){
   if(currentSensorTemp === null || !veg || veg.tMin == null || veg.tMax == null) return null;
   if(currentSensorTemp < veg.tMin) return { kind:'cold', t:currentSensorTemp, min:veg.tMin, max:veg.tMax };
@@ -2119,7 +2256,7 @@ function applyTempWarnings(){
   const room = document.getElementById('room'); if(!room) return;
   room.querySelectorAll('.cell.planted').forEach(cell => {
     const p = state.plantings[cell.dataset.r + '-' + cell.dataset.c];
-    const st = tempStatus(p && VEG_MAP[p.vegId]);
+    const st = isTempMuted(cell.dataset.r + '-' + cell.dataset.c) ? null : tempStatus(p && VEG_MAP[p.vegId]);
     cell.classList.toggle('temp-cold', !!st && st.kind==='cold');
     cell.classList.toggle('temp-hot', !!st && st.kind==='hot');
   });
@@ -2150,7 +2287,7 @@ function renderRoom(){
         cell.style.setProperty('--ring-color', veg.color);
         cell.innerHTML = `<div class="inner">${veg.icon}<div class="prog-track"><div class="prog-fill" style="width:${pct}%"></div></div></div>`;
         applyWoodEdges(cell, r, c, mobile);
-        cell.addEventListener('mouseenter', () => showVegTooltip(cell, veg, true));
+        cell.addEventListener('mouseenter', () => showVegTooltip(cell, veg, key));
         cell.addEventListener('mouseleave', () => hideVegTooltip());
         cell.addEventListener('click', () => { hideVegTooltip(); openModal(r, c); });
       } else {
@@ -2270,14 +2407,15 @@ function openModal(r, c){
   const daysLeft = veg.days - elapsed;
   const dayWord = daysLeft === 1 ? t('day') : t('days');
 
-  const tst = tempStatus(veg);
+  const tstRaw = tempStatus(veg), tmuted = isTempMuted(key), tst = tmuted ? null : tstRaw;
   const modal = document.getElementById('modalContent');
   modal.innerHTML = `
     <div class="head">
       <div class="icon-badge" style="background:${veg.light}">${veg.icon}</div>
       <div><h3>${getVegName(veg)}</h3><div class="block-pos">${r+1} · ${c+1}</div></div>
     </div>
-    ${tst ? `<div class="temp-alert ${tst.kind}">${tst.kind==='cold'?'❄️':'🔥'} ${tempStatusText(tst)}</div>` : ''}
+    ${tst ? `<div class="temp-alert ${tst.kind}"><span class="ta-text">${tst.kind==='cold'?'❄️':'🔥'} ${tempStatusText(tst)}</span><button class="mute-x" id="muteBtn" title="${t('muteTitle')}" aria-label="${t('muteTitle')}">✕</button></div><div id="mutePanel"></div>` : ''}
+    ${tstRaw && tmuted ? `<div class="muted-note"><span>🔕 ${state.plantings[key].tempMute.forever ? t('mutedForever') : t('mutedUntil',{ d: fmtDateTime(state.plantings[key].tempMute.until) })}</span><button id="unmuteBtn">${t('unmute')}</button></div>` : ''}
     <div class="row"><span class="k">${t('modalPlantedOn')}</span><span class="v">${fmtDate(planting.plantedDate)}</span></div>
     <div class="row"><span class="k">${t('modalDaysGrowing')}</span><span class="v">${elapsed} ${elapsed===1?t('day'):t('days')}</span></div>
     <div class="row"><span class="k">${t('modalExpectedHarvest')}</span><span class="v">${fmtDate(harvestDate.toISOString().slice(0,10))}</span></div>
@@ -2294,6 +2432,26 @@ function openModal(r, c){
     saveState(); closeModal(); renderRoom(); renderHeaderPills(); renderRipenessAlerts(); refreshEnvIfLoaded();
     showToast(t('toastCleared'));
   });
+  const muteBtn = document.getElementById('muteBtn');
+  if(muteBtn) muteBtn.addEventListener('click', () => {
+    const panel = document.getElementById('mutePanel');
+    const done = ms => { muteTemp(key, ms); openModal(r, c); showToast(t('mutedToast')); };
+    const showOptions = () => {
+      panel.innerHTML = `<div class="mute-panel"><div class="mp-title">${t('muteTitle')}</div><div class="mp-btns">
+        <button data-m="day">${t('mute24h')}</button><button data-m="week">${t('muteWeek')}</button><button class="danger" data-m="forever">${t('muteForever')}</button></div></div>`;
+      panel.querySelector('[data-m=day]').onclick = () => done(24*3600*1000);
+      panel.querySelector('[data-m=week]').onclick = () => done(7*24*3600*1000);
+      panel.querySelector('[data-m=forever]').onclick = () => {
+        panel.innerHTML = `<div class="mute-panel"><div class="mp-warn">⚠️ ${t('muteConfirmText')}</div><div class="mp-btns">
+          <button class="danger solid" id="muteYes">${t('muteConfirmYes')}</button><button id="muteBack">${t('muteBack')}</button></div></div>`;
+        document.getElementById('muteYes').onclick = () => done('forever');
+        document.getElementById('muteBack').onclick = showOptions;
+      };
+    };
+    if(panel.innerHTML) panel.innerHTML = ''; else showOptions();
+  });
+  const unmuteBtn = document.getElementById('unmuteBtn');
+  if(unmuteBtn) unmuteBtn.addEventListener('click', () => { unmuteTemp(key); openModal(r, c); });
   document.getElementById('closeModalBtn').addEventListener('click', closeModal);
   document.getElementById('overlay').classList.add('show');
 }
@@ -2713,13 +2871,14 @@ function renderEnvConditions(data){
 function checkTempRangeStatus(sensorTemp){
   const plantedVegIds = new Set(Object.values(state.plantings).map(p => p.vegId));
   if(plantedVegIds.size === 0) return null;
+  const activeVegIds = new Set(Object.entries(state.plantings).filter(([k]) => !isTempMuted(k)).map(([,p]) => p.vegId));
   const outOfRangeNames = [];
   let anyData = false;
   plantedVegIds.forEach(id => {
     const veg = VEG_MAP[id];
     if(!veg || veg.tMin == null || veg.tMax == null) return;
     anyData = true;
-    if(sensorTemp < veg.tMin || sensorTemp > veg.tMax) outOfRangeNames.push(getVegName(veg));
+    if(activeVegIds.has(id) && (sensorTemp < veg.tMin || sensorTemp > veg.tMax)) outOfRangeNames.push(getVegName(veg));
   });
   if(!anyData) return null;
   return outOfRangeNames;
