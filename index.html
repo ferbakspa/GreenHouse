@@ -169,7 +169,7 @@
   .modal .temp-alert{ margin:10px 0 4px; padding:9px 11px; border-radius:10px; font-size:13px; font-weight:700; }
   .modal .temp-alert.cold{ background:#E3F3FE; color:#155F94; border-left:4px solid #4FB3F6; }
   .modal .temp-alert.hot{ background:#FBE4E2; color:#8C1C16; border-left:4px solid #A3201A; }
-  .modal .temp-alert{ display:flex; align-items:center; gap:8px; }
+  .modal .temp-alert{ display:flex; align-items:center; gap:6px; padding:9px 10px; }
   .modal .temp-alert .ta-text{ flex:1; }
   .modal .temp-alert .mute-x{ flex:0 0 auto; width:32px; height:32px; border-radius:8px; border:none; font-size:17px; font-weight:800; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; color:inherit; }
   .modal .temp-alert.hot .mute-x{ background:#F2C6C1; } .modal .temp-alert.hot .mute-x:hover{ background:#E9AFA8; }
@@ -272,7 +272,8 @@
 
   .overlay{ position:fixed; inset:0; background: rgba(38,67,58,0.45); display:none; align-items:center; justify-content:center; z-index: 100; padding: 16px; }
   .overlay.show{ display:flex; }
-  .modal{ background: var(--white); border-radius: 18px; max-width: 360px; width:100%; padding: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.25); animation: pop .18s ease; }
+  .modal{ background: var(--white); border-radius: 18px; max-width: 400px; width:100%; padding: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.25); animation: pop .18s ease; }
+  @media (max-width: 480px){ .overlay{ padding:8px; } .modal{ padding:20px 14px; } .modal .temp-alert{ padding:9px 8px; } }
   @keyframes pop{ from{ transform: scale(0.94); opacity:0; } to{ transform:scale(1); opacity:1; } }
   .modal .head{ display:flex; align-items:center; gap:12px; margin-bottom: 14px; }
   .modal .head .icon-badge{ width:52px; height:52px; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:28px; }
@@ -1810,7 +1811,7 @@ const TRANSLATIONS = {
     boardConfirm:'Подтвердить',
     boardCancel:'Отмена',
     e_irrigating:'Идёт полив. Остановите его и повторите',
-    tempCold:'Слишком холодно: {t}°C (мин. {min}°C)', tempHot:'Слишком жарко: {t}°C (макс. {max}°C)', blockPos:'Ряд {r} · Колонка {c}',
+    tempCold:'Мало тепла: {t}°C (мин. {min}°C)', tempHot:'Слишком жарко: {t}°C (макс. {max}°C)', blockPos:'Ряд {r} · Колонка {c}',
     muteTitle:'Отключить это предупреждение',
     mute24h:'24 часа',
     muteWeek:'1 неделя',
