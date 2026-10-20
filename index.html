@@ -214,6 +214,7 @@
   .board-err{ color:#C0392B; font-size:11.5px; min-height:14px; margin-top:4px; }
   .board-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-top:8px; }
   .board-item{ background:#fff; border-radius:9px; padding:7px 8px; }
+  .board-item.bad .v{ color:#C0392B; }
   .board-item .n{ font-size:10px; color:#5F6F64; } .board-item .v{ font-size:15px; font-weight:700; margin-top:1px; }
   .board-zone{ display:flex; justify-content:space-between; font-size:12px; padding:5px 2px; border-top:1px solid #E4ECE6; }
   .board-alarm{ background:#FBE3E0; color:#C0392B; border-radius:8px; padding:6px 8px; font-size:11.5px; margin-top:6px; }
@@ -495,6 +496,16 @@ const TRANSLATIONS = {
     e_invalid:'Invalid value for this order',
     e_generic:'Error',
     iconPickLabel:'Icon (optional)', iconAuto:'Auto',
+    boardCo2:'CO2',
+    boardLight:'Light',
+    boardWaterSec:'WATER',
+    boardTank:'Tank',
+    boardFloat:'Float',
+    boardPump:'Pump',
+    boardFloatOk:'OK',
+    boardFloatLow:'Low',
+    boardPumpOn:'On',
+    boardPumpOff:'Off',
     boardTitle:'ORGANICS ONE BOARD', boardConnect:'Connect board', boardSave:'Connect', boardDisc:'Disconnect', boardForget:'Forget', boardServer:'Server (EMQX host)', boardUser:'User', boardPass:'Password', boardInv:'Greenhouse name', boardOff:'Not connected', boardOn:'Board online', boardNoBoard:'Board offline', boardUpdate:'Update firmware', boardTemp:'Temperature', boardHum:'Humidity', boardVpd:'VPD', boardSoil:'Soil', boardValveOpen:'watering', boardZone:'Zone', boardAlarm:'Alarm', boardConnecting:'Connecting…', boardLiveTemp:'Real sensor',
     useAutoLocation:'📍 Use automatic location', locationManualLabel:'Manual location',
     locationApprox:'Approximate location', locationPrecise:'Precise location',
@@ -566,6 +577,16 @@ const TRANSLATIONS = {
     e_invalid:'Valor no válido para esta orden',
     e_generic:'Error',
     iconPickLabel:'Ícono (opcional)', iconAuto:'Automático',
+    boardCo2:'CO2',
+    boardLight:'Luz',
+    boardWaterSec:'AGUA',
+    boardTank:'Tanque',
+    boardFloat:'Flotador',
+    boardPump:'Bomba',
+    boardFloatOk:'OK',
+    boardFloatLow:'Bajo',
+    boardPumpOn:'Encendida',
+    boardPumpOff:'Apagada',
     boardTitle:'TARJETA ORGANICS ONE', boardConnect:'Conectar tarjeta', boardSave:'Conectar', boardDisc:'Desconectar', boardForget:'Olvidar', boardServer:'Servidor (host de EMQX)', boardUser:'Usuario', boardPass:'Clave', boardInv:'Nombre del invernadero', boardOff:'Sin conexión', boardOn:'Tarjeta en línea', boardNoBoard:'Tarjeta desconectada', boardUpdate:'Actualizar firmware', boardTemp:'Temperatura', boardHum:'Humedad', boardVpd:'VPD', boardSoil:'Suelo', boardValveOpen:'regando', boardZone:'Zona', boardAlarm:'Alarma', boardConnecting:'Conectando…', boardLiveTemp:'Sensor real',
     useAutoLocation:'📍 Usar ubicación automática', locationManualLabel:'Ubicación manual',
     locationApprox:'Ubicación aproximada', locationPrecise:'Ubicación precisa',
@@ -636,6 +657,16 @@ const TRANSLATIONS = {
     e_invalid:'Valeur non valide pour cet ordre',
     e_generic:'Erreur',
     iconPickLabel:'Icône (facultatif)', iconAuto:'Auto',
+    boardCo2:'CO2',
+    boardLight:'Lumière',
+    boardWaterSec:'EAU',
+    boardTank:'Réservoir',
+    boardFloat:'Flotteur',
+    boardPump:'Pompe',
+    boardFloatOk:'OK',
+    boardFloatLow:'Bas',
+    boardPumpOn:'Marche',
+    boardPumpOff:'Arrêt',
     boardTitle:'CARTE ORGANICS ONE',
     boardConnect:'Connecter la carte',
     boardSave:'Connecter',
@@ -747,6 +778,16 @@ const TRANSLATIONS = {
     e_invalid:'Valor inválido para esta ordem',
     e_generic:'Erro',
     iconPickLabel:'Ícone (opcional)', iconAuto:'Automático',
+    boardCo2:'CO2',
+    boardLight:'Luz',
+    boardWaterSec:'ÁGUA',
+    boardTank:'Tanque',
+    boardFloat:'Boia',
+    boardPump:'Bomba',
+    boardFloatOk:'OK',
+    boardFloatLow:'Baixo',
+    boardPumpOn:'Ligada',
+    boardPumpOff:'Desligada',
     boardTitle:'PLACA ORGANICS ONE',
     boardConnect:'Conectar placa',
     boardSave:'Conectar',
@@ -858,6 +899,16 @@ const TRANSLATIONS = {
     e_invalid:'Ungültiger Wert für diesen Befehl',
     e_generic:'Fehler',
     iconPickLabel:'Symbol (optional)', iconAuto:'Automatisch',
+    boardCo2:'CO2',
+    boardLight:'Licht',
+    boardWaterSec:'WASSER',
+    boardTank:'Tank',
+    boardFloat:'Schwimmer',
+    boardPump:'Pumpe',
+    boardFloatOk:'OK',
+    boardFloatLow:'Niedrig',
+    boardPumpOn:'An',
+    boardPumpOff:'Aus',
     boardTitle:'ORGANICS-ONE-PLATINE',
     boardConnect:'Platine verbinden',
     boardSave:'Verbinden',
@@ -969,6 +1020,16 @@ const TRANSLATIONS = {
     e_invalid:'此指令的值无效',
     e_generic:'错误',
     iconPickLabel:'图标（可选）', iconAuto:'自动',
+    boardCo2:'CO2',
+    boardLight:'光照',
+    boardWaterSec:'水',
+    boardTank:'水箱',
+    boardFloat:'浮球',
+    boardPump:'水泵',
+    boardFloatOk:'正常',
+    boardFloatLow:'低',
+    boardPumpOn:'运行',
+    boardPumpOff:'停止',
     boardTitle:'ORGANICS ONE 控制板',
     boardConnect:'连接控制板',
     boardSave:'连接',
@@ -1080,6 +1141,16 @@ const TRANSLATIONS = {
     e_invalid:'इस आदेश के लिए अमान्य मान',
     e_generic:'त्रुटि',
     iconPickLabel:'आइकन (वैकल्पिक)', iconAuto:'स्वचालित',
+    boardCo2:'CO2',
+    boardLight:'प्रकाश',
+    boardWaterSec:'पानी',
+    boardTank:'टैंक',
+    boardFloat:'फ्लोट',
+    boardPump:'पंप',
+    boardFloatOk:'ठीक',
+    boardFloatLow:'कम',
+    boardPumpOn:'चालू',
+    boardPumpOff:'बंद',
     boardTitle:'ORGANICS ONE बोर्ड',
     boardConnect:'बोर्ड कनेक्ट करें',
     boardSave:'कनेक्ट करें',
@@ -1191,6 +1262,16 @@ const TRANSLATIONS = {
     e_invalid:'قيمة غير صالحة لهذا الأمر',
     e_generic:'خطأ',
     iconPickLabel:'الأيقونة (اختياري)', iconAuto:'تلقائي',
+    boardCo2:'CO2',
+    boardLight:'الضوء',
+    boardWaterSec:'المياه',
+    boardTank:'الخزان',
+    boardFloat:'العوامة',
+    boardPump:'المضخة',
+    boardFloatOk:'سليم',
+    boardFloatLow:'منخفض',
+    boardPumpOn:'تعمل',
+    boardPumpOff:'متوقفة',
     boardTitle:'لوحة ORGANICS ONE',
     boardConnect:'ربط اللوحة',
     boardSave:'اتصال',
@@ -1302,6 +1383,16 @@ const TRANSLATIONS = {
     e_invalid:'Valore non valido per questo comando',
     e_generic:'Errore',
     iconPickLabel:'Icona (facoltativa)', iconAuto:'Automatica',
+    boardCo2:'CO2',
+    boardLight:'Luce',
+    boardWaterSec:'ACQUA',
+    boardTank:'Serbatoio',
+    boardFloat:'Galleggiante',
+    boardPump:'Pompa',
+    boardFloatOk:'OK',
+    boardFloatLow:'Basso',
+    boardPumpOn:'Accesa',
+    boardPumpOff:'Spenta',
     boardTitle:'SCHEDA ORGANICS ONE',
     boardConnect:'Collega scheda',
     boardSave:'Collega',
@@ -1413,6 +1504,16 @@ const TRANSLATIONS = {
     e_invalid:'Недопустимое значение для этой команды',
     e_generic:'Ошибка',
     iconPickLabel:'Значок (необязательно)', iconAuto:'Авто',
+    boardCo2:'CO2',
+    boardLight:'Свет',
+    boardWaterSec:'ВОДА',
+    boardTank:'Бак',
+    boardFloat:'Поплавок',
+    boardPump:'Насос',
+    boardFloatOk:'Норма',
+    boardFloatLow:'Низкий',
+    boardPumpOn:'Вкл',
+    boardPumpOff:'Выкл',
     boardTitle:'ПЛАТА ORGANICS ONE',
     boardConnect:'Подключить плату',
     boardSave:'Подключить',
@@ -2536,7 +2637,7 @@ function alarmLabel(a){
   const key = 'a_' + a;
   return (TRANSLATIONS.en[key] !== undefined) ? t(key) : a.replace(/_/g,' ');
 }
-function fmtN(v,d,u){ return v===null||v===undefined ? '—' : v.toFixed(d)+u; }
+function fmtN(v,d,u){ return v===null||v===undefined ? '-' : v.toFixed(d)+u; }
 function renderBoard(){
   if(!OO || !B('boardCard')) return;
   const st = OO.info(), form = B('boardForm');
@@ -2556,8 +2657,15 @@ function renderBoard(){
   if(!st.conectado || !st.tarjetaEnLinea){ live.innerHTML=''; return; }
   const a = OO.ambiente();
   let h = '<div class="board-grid">'
-    + [[t('boardTemp'),fmtN(a.temperatura,1,'°C')],[t('boardHum'),fmtN(a.humedad,0,'%')],[t('boardVpd'),fmtN(a.vpd,2,' kPa')]]
+    + [[t('boardTemp'),fmtN(a.temperatura,1,'°C')],[t('boardHum'),fmtN(a.humedad,0,'%')],[t('boardVpd'),fmtN(a.vpd,2,' kPa')],[t('boardCo2'),fmtN(a.co2,0,' ppm')],[t('boardLight'),fmtN(a.luz,0,' lx')]]
       .map(d=>`<div class="board-item"><div class="n">${d[0]}</div><div class="v">${d[1]}</div></div>`).join('') + '</div>';
+  const w = OO.agua();
+  const floatTxt = w.flotador==='ok' ? t('boardFloatOk') : w.flotador==='low' ? t('boardFloatLow') : '-';
+  const pumpTxt = w.bomba==='on' ? t('boardPumpOn') : w.bomba==='off' ? t('boardPumpOff') : '-';
+  h += `<div class="board-sec">${t('boardWaterSec')}</div><div class="board-grid">`
+    + `<div class="board-item"><div class="n">${t('boardTank')}</div><div class="v">${fmtN(w.tanque,0,'%')}</div></div>`
+    + `<div class="board-item${w.flotador==='low'?' bad':''}"><div class="n">${t('boardFloat')}</div><div class="v">${floatTxt}</div></div>`
+    + `<div class="board-item"><div class="n">${t('boardPump')}</div><div class="v">${pumpTxt}</div></div></div>`;
   const zs = OO.zonas();
   if(zs.length){
     h += `<div class="board-sec">${t('boardZones')}</div>`;
