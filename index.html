@@ -212,6 +212,12 @@
   .board-item .n{ font-size:10px; color:#5F6F64; } .board-item .v{ font-size:15px; font-weight:700; margin-top:1px; }
   .board-zone{ display:flex; justify-content:space-between; font-size:12px; padding:5px 2px; border-top:1px solid #E4ECE6; }
   .board-alarm{ background:#FBE3E0; color:#C0392B; border-radius:8px; padding:6px 8px; font-size:11.5px; margin-top:6px; }
+  .board-ctl{ display:flex; gap:5px; flex-wrap:wrap; align-items:center; }
+  .board-ctl button{ font:inherit; font-size:11.5px; padding:5px 9px; border-radius:8px; border:1px solid #2E9E5B; background:#fff; color:#1F6E3F; cursor:pointer; }
+  .board-ctl button.on{ background:#2E9E5B; color:#fff; } .board-ctl button.stop{ border-color:#C0392B; color:#C0392B; }
+  .board-sec{ font-size:10.5px; font-weight:700; letter-spacing:.06em; color:#5F6F64; margin:10px 0 4px; }
+  .board-row{ display:flex; justify-content:space-between; align-items:center; gap:6px; padding:5px 0; border-top:1px solid #E4ECE6; font-size:12px; }
+  .board-msg{ font-size:11.5px; min-height:14px; margin-top:6px; color:#1F6E3F; } .board-msg.bad{ color:#C0392B; }
   .range-status{ font-size:10.5px; margin: -2px 0 10px; padding:7px 9px; border-radius:9px; line-height:1.5; }
   .range-status.ok{ background: var(--green-bg); color: var(--green-accent); }
   .range-status.warn{ background: var(--orange-bg); color: var(--amber-dark); }
@@ -380,6 +386,7 @@
           <input id="bInv" value="invernadero1" autocapitalize="off">
           <div class="board-err" id="boardErr"></div>
         </div>
+        <div class="board-msg" id="boardMsg"></div>
         <div class="board-actions">
           <button class="prim" id="boardConnect"></button>
           <button id="boardDisconnect" style="display:none"></button>
@@ -455,6 +462,7 @@ const TRANSLATIONS = {
     envFetchError:"Couldn't load weather data right now.",
     retryBtn:'Retry',
     manualLocationPlaceholder:'City name…', manualLocationNotFound:'City not found — try another search',
+    boardWater:'Water {m} min', boardStop:'Stop', boardWindow:'Window', boardOpen:'Open', boardClose:'Close', boardOutputs:'OUTPUTS', boardWindows:'WINDOWS', boardZones:'IRRIGATION', boardRearm:'Re-arm pump', boardSent:'Order sent, waiting for the board…', boardRefused:'The board did not accept it (irrigation stop, low tank or max valves open).', boardQueued:'Queued: another valve must close first.', boardOk:'Done.', o_extractor:'Extractor', o_fan:'Fan', o_grow_light:'Grow light', o_work_light:'Work light', o_spare:'Spare', boardMoving:'moving', boardQueuedTag:'queued',
     boardTitle:'ORGANICS ONE BOARD', boardConnect:'Connect board', boardSave:'Connect', boardDisc:'Disconnect', boardForget:'Forget', boardServer:'Server (EMQX host)', boardUser:'User', boardPass:'Password', boardInv:'Greenhouse name', boardOff:'Not connected', boardOn:'Board online', boardNoBoard:'Board offline', boardUpdate:'Update firmware', boardTemp:'Temperature', boardHum:'Humidity', boardVpd:'VPD', boardSoil:'Soil', boardValveOpen:'watering', boardZone:'Zone', boardAlarm:'Alarm', boardConnecting:'Connecting…', boardLiveTemp:'Real sensor',
     useAutoLocation:'📍 Use automatic location', locationManualLabel:'Manual location',
     locationApprox:'Approximate location', locationPrecise:'Precise location',
@@ -500,6 +508,7 @@ const TRANSLATIONS = {
     envFetchError:'No se pudieron cargar los datos meteorológicos.',
     retryBtn:'Reintentar',
     manualLocationPlaceholder:'Nombre de la ciudad…', manualLocationNotFound:'Ciudad no encontrada — prueba otra búsqueda',
+    boardWater:'Regar {m} min', boardStop:'Parar', boardWindow:'Ventana', boardOpen:'Abrir', boardClose:'Cerrar', boardOutputs:'SALIDAS', boardWindows:'VENTANAS', boardZones:'RIEGO', boardRearm:'Rearmar bomba', boardSent:'Orden enviada, esperando a la tarjeta…', boardRefused:'La tarjeta no la aceptó (paro de riego, tanque bajo o máximo de válvulas).', boardQueued:'En cola: otra válvula debe cerrarse primero.', boardOk:'Listo.', o_extractor:'Extractor', o_fan:'Ventilador', o_grow_light:'Luz de cultivo', o_work_light:'Luz de trabajo', o_spare:'Reserva', boardMoving:'en movimiento', boardQueuedTag:'en cola',
     boardTitle:'TARJETA ORGANICS ONE', boardConnect:'Conectar tarjeta', boardSave:'Conectar', boardDisc:'Desconectar', boardForget:'Olvidar', boardServer:'Servidor (host de EMQX)', boardUser:'Usuario', boardPass:'Clave', boardInv:'Nombre del invernadero', boardOff:'Sin conexión', boardOn:'Tarjeta en línea', boardNoBoard:'Tarjeta desconectada', boardUpdate:'Actualizar firmware', boardTemp:'Temperatura', boardHum:'Humedad', boardVpd:'VPD', boardSoil:'Suelo', boardValveOpen:'regando', boardZone:'Zona', boardAlarm:'Alarma', boardConnecting:'Conectando…', boardLiveTemp:'Sensor real',
     useAutoLocation:'📍 Usar ubicación automática', locationManualLabel:'Ubicación manual',
     locationApprox:'Ubicación aproximada', locationPrecise:'Ubicación precisa',
@@ -1839,10 +1848,36 @@ function renderBoard(){
   let h = '<div class="board-grid">'
     + [[t('boardTemp'),fmtN(a.temperatura,1,'°C')],[t('boardHum'),fmtN(a.humedad,0,'%')],[t('boardVpd'),fmtN(a.vpd,2,' kPa')]]
       .map(d=>`<div class="board-item"><div class="n">${d[0]}</div><div class="v">${d[1]}</div></div>`).join('') + '</div>';
-  OO.zonas().forEach(z=>{
-    h += `<div class="board-zone"><span>${t('boardZone')} ${z.zona}${z.enLinea?'':' ⚠️'}</span><span>${t('boardSoil')} ${fmtN(z.suelo,0,'%')}${z.valvulaAbierta?' · 💧 '+t('boardValveOpen'):''}</span></div>`;
-  });
-  OO.alarmasActivas().forEach(al=>{ h += `<div class="board-alarm">⚠️ ${t('boardAlarm')}: ${alarmLabel(al)}</div>`; });
+  const zs = OO.zonas();
+  if(zs.length){
+    h += `<div class="board-sec">${t('boardZones')}</div>`;
+    zs.forEach(z=>{
+      const st2 = z.riego && z.riego.state, busy = z.valvulaAbierta || st2==='queued';
+      const left = z.riego && z.riego.remaining_s ? ' ' + Math.ceil(z.riego.remaining_s/60) + ' min' : '';
+      h += `<div class="board-row"><span>${t('boardZone')} ${z.zona}${z.enLinea?'':' ⚠️'} · ${t('boardSoil')} ${fmtN(z.suelo,0,'%')}${z.valvulaAbierta?' · 💧'+left:(st2==='queued'?' · '+t('boardQueuedTag'):'')}</span>
+        <span class="board-ctl">${busy
+          ? `<button class="stop" data-act="stop" data-n="${z.zona}">${t('boardStop')}</button>`
+          : `<button data-act="water" data-n="${z.zona}" data-m="5">${t('boardWater',{m:5})}</button><button data-act="water" data-n="${z.zona}" data-m="10">${t('boardWater',{m:10})}</button>`}</span></div>`;
+    });
+  }
+  const vs = OO.ventanas().filter(v=>v.posicion!==null||v.estado);
+  if(vs.length){
+    h += `<div class="board-sec">${t('boardWindows')}</div>`;
+    vs.forEach(v=>{
+      const mov = v.estado && v.estado!=='stopped';
+      h += `<div class="board-row"><span>${t('boardWindow')} ${v.ventana} · ${fmtN(v.posicion,0,'%')}${mov?' · '+t('boardMoving'):''}${v.alarma&&v.alarma!=='none'?' ⚠️':''}</span>
+        <span class="board-ctl"><button data-act="win" data-n="${v.ventana}" data-v="open">${t('boardOpen')}</button><button class="stop" data-act="win" data-n="${v.ventana}" data-v="stop">${t('boardStop')}</button><button data-act="win" data-n="${v.ventana}" data-v="close">${t('boardClose')}</button></span></div>`;
+    });
+  }
+  const outs = OO.salidas(), onames = Object.keys(outs);
+  if(onames.length){
+    h += `<div class="board-sec">${t('boardOutputs')}</div><div class="board-ctl" style="margin-bottom:4px">`
+      + onames.map(o=>`<button class="${outs[o]?'on':''}" data-act="out" data-o="${o}" data-on="${outs[o]?0:1}">${t('o_'+o)}</button>`).join('') + '</div>';
+  }
+  const al = OO.alarmasActivas();
+  al.forEach(a=>{ h += `<div class="board-alarm">⚠️ ${t('boardAlarm')}: ${alarmLabel(a)}</div>`; });
+  if(al.some(a=>a==='pump_dry_run'||a==='pump_overcurrent'))
+    h += `<div class="board-ctl" style="margin-top:6px"><button data-act="rearm">${t('boardRearm')}</button></div>`;
   live.innerHTML = h;
 }
 let boardTimer = null;
@@ -1850,7 +1885,28 @@ function boardChanged(){
   if(boardTimer) return;
   boardTimer = setTimeout(()=>{ boardTimer=null; renderBoard(); refreshEnvIfLoaded(); }, 300);
 }
+function boardMsg(txt,bad){ const m=B('boardMsg'); if(!m) return; m.textContent=txt||''; m.className='board-msg'+(bad?' bad':''); }
+function boardOrder(p, verify){
+  boardMsg(t('boardSent'));
+  p.then(()=>{ if(!verify){ boardMsg(t('boardOk')); setTimeout(()=>boardMsg(''),3000); return; }
+    setTimeout(()=>{ const r = verify(); boardMsg(r===true?t('boardOk'):r==='queued'?t('boardQueued'):t('boardRefused'), r!==true&&r!=='queued'); setTimeout(()=>boardMsg(''),6000); }, 4500);
+  }, e=>boardMsg(e.message,true));
+}
+function initBoardControls(){
+  const live = B('boardLive'); if(!live) return;
+  live.addEventListener('click', ev=>{
+    const b = ev.target.closest('button[data-act]'); if(!b) return;
+    const d = b.dataset, n = Number(d.n);
+    if(d.act==='water') boardOrder(OO.regar(n, Number(d.m)*60), ()=>{ const z=OO.zonas().find(x=>x.zona===n); return z && z.valvulaAbierta ? true : (z && z.riego && z.riego.state==='queued' ? 'queued' : false); });
+    else if(d.act==='stop') boardOrder(OO.detenerRiego(n), ()=>{ const z=OO.zonas().find(x=>x.zona===n); return !(z && z.valvulaAbierta); });
+    else if(d.act==='win') boardOrder(OO.ventana(n, d.v));
+    else if(d.act==='out') boardOrder(OO.salida(d.o, d.on==='1'), ()=>OO.salidas()[d.o]===(d.on==='1'));
+    else if(d.act==='rearm') boardOrder(OO.rearmarBomba());
+  });
+}
+
 function initBoard(){
+  initBoardControls();
   if(!OO || !B('boardCard')) return;
   const g = OO.configuracionGuardada();
   if(g){ B('bServidor').value = g.servidor||''; B('bUsuario').value = g.usuario||'app'; B('bInv').value = g.invernadero||'invernadero1'; }
