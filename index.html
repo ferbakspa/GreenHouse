@@ -75,6 +75,11 @@
   .add-veg-form.show{ display:flex; }
   .add-veg-form input{ padding:8px 10px; border-radius:8px; border:1.5px solid var(--soil-line); font-size:13px; font-family:'Public Sans', sans-serif; outline:none; background: var(--white); }
   .add-veg-form input:focus{ border-color: var(--amber); }
+  .icon-pick-row{ display:flex; align-items:center; justify-content:space-between; font-size:11px; color: var(--pine-soft); }
+  .icon-pick-auto, .icon-pick-grid button{ font:inherit; border:1.5px solid var(--soil-line); background: var(--white); border-radius:8px; cursor:pointer; }
+  .icon-pick-auto{ font-size:11px; padding:3px 9px; } .icon-pick-auto.on{ border-color: var(--amber); background:#FFF6E0; }
+  .icon-pick-grid{ display:grid; grid-template-columns:repeat(8,1fr); gap:4px; max-height:96px; overflow:auto; }
+  .icon-pick-grid button{ font-size:18px; padding:3px 0; line-height:1.2; } .icon-pick-grid button.on{ border-color: var(--amber); background:#FFF6E0; }
   .add-veg-form .hint-text{ font-size:10.5px; color: var(--pine-soft); }
   .add-veg-form .actions{ display:flex; gap:8px; }
   .add-veg-form .actions button{ flex:1; padding:9px; border-radius:8px; border:none; font-weight:600; font-size:12.5px; cursor:pointer; font-family:'Public Sans', sans-serif; }
@@ -307,6 +312,8 @@
         <div class="add-veg-form" id="addVegForm">
           <input id="newVegName" type="text" placeholder="Plant name (e.g. Chives)" maxlength="30">
           <input id="newVegDays" type="number" min="1" max="400" placeholder="Days to harvest (optional)">
+          <div class="icon-pick-row"><span id="iconPickLabel">Icon (optional)</span><button type="button" class="icon-pick-auto on" id="iconPickAuto">Auto</button></div>
+          <div class="icon-pick-grid" id="iconPickGrid"></div>
           <div class="hint-text" id="addHintText">We'll generate a matching icon, color, and temperature range automatically.</div>
           <div class="actions">
             <button class="btn-cancel-add" id="cancelAddVeg">Cancel</button>
@@ -487,6 +494,7 @@ const TRANSLATIONS = {
     e_server:'Could not connect to the server (check the address)',
     e_invalid:'Invalid value for this order',
     e_generic:'Error',
+    iconPickLabel:'Icon (optional)', iconAuto:'Auto',
     boardTitle:'ORGANICS ONE BOARD', boardConnect:'Connect board', boardSave:'Connect', boardDisc:'Disconnect', boardForget:'Forget', boardServer:'Server (EMQX host)', boardUser:'User', boardPass:'Password', boardInv:'Greenhouse name', boardOff:'Not connected', boardOn:'Board online', boardNoBoard:'Board offline', boardUpdate:'Update firmware', boardTemp:'Temperature', boardHum:'Humidity', boardVpd:'VPD', boardSoil:'Soil', boardValveOpen:'watering', boardZone:'Zone', boardAlarm:'Alarm', boardConnecting:'Connecting…', boardLiveTemp:'Real sensor',
     useAutoLocation:'📍 Use automatic location', locationManualLabel:'Manual location',
     locationApprox:'Approximate location', locationPrecise:'Precise location',
@@ -557,6 +565,7 @@ const TRANSLATIONS = {
     e_server:'No se pudo conectar al servidor (revisa la dirección)',
     e_invalid:'Valor no válido para esta orden',
     e_generic:'Error',
+    iconPickLabel:'Ícono (opcional)', iconAuto:'Automático',
     boardTitle:'TARJETA ORGANICS ONE', boardConnect:'Conectar tarjeta', boardSave:'Conectar', boardDisc:'Desconectar', boardForget:'Olvidar', boardServer:'Servidor (host de EMQX)', boardUser:'Usuario', boardPass:'Clave', boardInv:'Nombre del invernadero', boardOff:'Sin conexión', boardOn:'Tarjeta en línea', boardNoBoard:'Tarjeta desconectada', boardUpdate:'Actualizar firmware', boardTemp:'Temperatura', boardHum:'Humedad', boardVpd:'VPD', boardSoil:'Suelo', boardValveOpen:'regando', boardZone:'Zona', boardAlarm:'Alarma', boardConnecting:'Conectando…', boardLiveTemp:'Sensor real',
     useAutoLocation:'📍 Usar ubicación automática', locationManualLabel:'Ubicación manual',
     locationApprox:'Ubicación aproximada', locationPrecise:'Ubicación precisa',
@@ -626,6 +635,7 @@ const TRANSLATIONS = {
     e_server:'Impossible de se connecter au serveur (vérifiez l\'adresse)',
     e_invalid:'Valeur non valide pour cet ordre',
     e_generic:'Erreur',
+    iconPickLabel:'Icône (facultatif)', iconAuto:'Auto',
     boardTitle:'CARTE ORGANICS ONE',
     boardConnect:'Connecter la carte',
     boardSave:'Connecter',
@@ -736,6 +746,7 @@ const TRANSLATIONS = {
     e_server:'Não foi possível conectar ao servidor (verifique o endereço)',
     e_invalid:'Valor inválido para esta ordem',
     e_generic:'Erro',
+    iconPickLabel:'Ícone (opcional)', iconAuto:'Automático',
     boardTitle:'PLACA ORGANICS ONE',
     boardConnect:'Conectar placa',
     boardSave:'Conectar',
@@ -846,6 +857,7 @@ const TRANSLATIONS = {
     e_server:'Verbindung zum Server fehlgeschlagen (Adresse prüfen)',
     e_invalid:'Ungültiger Wert für diesen Befehl',
     e_generic:'Fehler',
+    iconPickLabel:'Symbol (optional)', iconAuto:'Automatisch',
     boardTitle:'ORGANICS-ONE-PLATINE',
     boardConnect:'Platine verbinden',
     boardSave:'Verbinden',
@@ -956,6 +968,7 @@ const TRANSLATIONS = {
     e_server:'无法连接服务器（请检查地址）',
     e_invalid:'此指令的值无效',
     e_generic:'错误',
+    iconPickLabel:'图标（可选）', iconAuto:'自动',
     boardTitle:'ORGANICS ONE 控制板',
     boardConnect:'连接控制板',
     boardSave:'连接',
@@ -1066,6 +1079,7 @@ const TRANSLATIONS = {
     e_server:'सर्वर से कनेक्ट नहीं हो सका (पता जाँचें)',
     e_invalid:'इस आदेश के लिए अमान्य मान',
     e_generic:'त्रुटि',
+    iconPickLabel:'आइकन (वैकल्पिक)', iconAuto:'स्वचालित',
     boardTitle:'ORGANICS ONE बोर्ड',
     boardConnect:'बोर्ड कनेक्ट करें',
     boardSave:'कनेक्ट करें',
@@ -1176,6 +1190,7 @@ const TRANSLATIONS = {
     e_server:'تعذر الاتصال بالخادم (تحقق من العنوان)',
     e_invalid:'قيمة غير صالحة لهذا الأمر',
     e_generic:'خطأ',
+    iconPickLabel:'الأيقونة (اختياري)', iconAuto:'تلقائي',
     boardTitle:'لوحة ORGANICS ONE',
     boardConnect:'ربط اللوحة',
     boardSave:'اتصال',
@@ -1286,6 +1301,7 @@ const TRANSLATIONS = {
     e_server:'Impossibile connettersi al server (controlla l\'indirizzo)',
     e_invalid:'Valore non valido per questo comando',
     e_generic:'Errore',
+    iconPickLabel:'Icona (facoltativa)', iconAuto:'Automatica',
     boardTitle:'SCHEDA ORGANICS ONE',
     boardConnect:'Collega scheda',
     boardSave:'Collega',
@@ -1396,6 +1412,7 @@ const TRANSLATIONS = {
     e_server:'Не удалось подключиться к серверу (проверьте адрес)',
     e_invalid:'Недопустимое значение для этой команды',
     e_generic:'Ошибка',
+    iconPickLabel:'Значок (необязательно)', iconAuto:'Авто',
     boardTitle:'ПЛАТА ORGANICS ONE',
     boardConnect:'Подключить плату',
     boardSave:'Подключить',
@@ -1554,6 +1571,89 @@ const SYNONYMS = [
   { k:['apricot'], icon:'🍑', color:'#E3A24A', light:'#FBECD5', tMin:15, tMax:24, category:'fruit' },
 ];
 
+
+/* Extended local plant knowledge: [keywords (any language, accents ignored), icon, color, tMin, tMax, days, category] */
+const MORE_PLANTS = [
+ [['avocado','palta','aguacate','abacate','avocat','牛油果','鳄梨','авокадо','أفوكادو'],'🥑','#5E8A3A',17,28,365,'fruit'],
+ [['papaya','mamao','mamão','木瓜','папайя','بابايا'],'🍈','#E8963A',21,32,300,'fruit'],
+ [['guava','guayaba','goiaba','goyave','guave','guajava','番石榴','гуава','جوافة'],'🍈','#9BB84A',20,30,300,'fruit'],
+ [['passion fruit','passionfruit','maracuya','maracuja','grenadille','passionsfrucht','百香果','маракуйя'],'🍇','#8A4A8A',18,28,240,'fruit'],
+ [['pomegranate','granada','romã','grenade','granatapfel','melograno','石榴','гранат','رمان'],'🍎','#B0303F',18,32,365,'fruit'],
+ [['plum','ciruela','ameixa','prune','pflaume','prugna','susina','李子','слива','برقوق'],'🍇','#7A3E6A',14,25,150,'fruit'],
+ [['grapefruit','pomelo','toronja','pamplemousse','pampelmuse','pompelmo','西柚','грейпфрут'],'🍊','#E3743F',16,29,300,'fruit'],
+ [['orange','naranja','laranja','arancia','apfelsine','橙','апельсин','برتقال','mandarina','tangerina','mandarino','mandarine','柑','мандарин'],'🍊','#E08A2A',16,29,300,'fruit'],
+ [['apple','manzana','mela','pomme','maca','maçã','apfel','苹果','яблоко','تفاح'],'🍎','#C5423F',15,24,180,'fruit'],
+ [['pear','pera','poire','birne','梨','груша'],'🍐','#8FAA4A',15,24,180,'fruit'],
+ [['banana','platano','plátano','banano','banane','banan','香蕉','банан','موز'],'🍌','#D9B23A',20,30,300,'fruit'],
+ [['mango','芒果','манго','مانجو'],'🥭','#E0A62A',21,30,300,'fruit'],
+ [['coconut','coco','kokos','noix de coco','椰子','кокос'],'🥥','#8A6E4E',22,32,365,'fruit'],
+ [['olive','oliva','aceituna','azeitona','olivo','橄榄','олив','زيتون'],'🫒','#6E7A3F',15,27,300,'fruit'],
+ [['fig','higo','fico','figue','figo','feige','无花果','инжир','تين'],'🍇','#7A4A6A',16,27,150,'fruit'],
+ [['persimmon','caqui','cachi','kaki','柿子','хурма'],'🍑','#E8883A',15,27,200,'fruit'],
+ [['lychee','lichi','litchi','荔枝','личи'],'🍓','#D6455A',20,32,300,'fruit'],
+ [['dragon fruit','pitaya','pitahaya','fruta do dragao','drachenfrucht','火龙果','питахайя'],'🍓','#C23A7A',20,32,300,'fruit'],
+ [['currant','grosella','groselha','groseille','johannisbeere','ribes','醋栗','红醋栗','смородина'],'🍒','#B0303F',12,22,120,'berry'],
+ [['cranberry','arandano rojo','cranberry','蔓越莓','клюква'],'🍒','#B0303F',10,22,150,'berry'],
+ [['mulberry','morera','murier','mûrier','maulbeere','桑葚','шелковица'],'🍇','#6A3A6A',15,27,150,'berry'],
+ [['calafate','maqui','murta','murtilla','chilean berry'],'🫐','#3D4A8A',8,20,150,'berry'],
+ [['quince','membrillo','marmelo','coing','quitte','cotogna','榅桲','айва'],'🍐','#C9B23A',15,25,180,'fruit'],
+ [['ginger','jengibre','gengibre','gingembre','ingwer','zenzero','姜','имбирь','زنجبيل'],'🫚','#C9A15A',22,30,240,'root'],
+ [['turmeric','curcuma','cúrcuma','kurkuma','姜黄','куркума','كركم'],'🫚','#E0A02A',22,32,270,'root'],
+ [['lavender','lavanda','lavande','lavendel','薰衣草','лаванда'],'🪻','#8A6AC0',15,26,120,'herb'],
+ [['sunflower','girasol','girassol','tournesol','sonnenblume','girasole','向日葵','подсолнух','عباد الشمس'],'🌻','#E0B02A',18,30,100,'leafy'],
+ [['chamomile','manzanilla','camomila','camomille','kamille','camomilla','洋甘菊','ромашка','بابونج'],'🌼','#E8C23A',12,24,60,'herb'],
+ [['marigold','calendula','caléndula','金盏花','календула'],'🌼','#E8902A',15,26,60,'herb'],
+ [['nasturtium','capuchina','capuchinha','capucine','kapuzinerkresse','nasturzio','旱金莲','настурция'],'🌺','#E0702A',13,24,50,'herb'],
+ [['mushroom','champinon','champiñón','hongo','seta','cogumelo','champignon','pilz','fungo','蘑菇','гриб','فطر'],'🍄','#B89A7A',12,20,30,'leafy'],
+ [['peanut','mani','maní','cacahuate','amendoim','arachide','erdnuss','花生','арахис','فول سوداني'],'🥜','#C9A15A',20,30,120,'root'],
+ [['chestnut','castana','castaña','castanha','chataigne','kastanie','castagna','栗子','каштан'],'🌰','#8A5A3A',10,24,365,'fruit'],
+ [['walnut','nuez','noz','noix','walnuss','noce','核桃','грецкий','جوز'],'🌰','#9A7A4A',10,24,365,'fruit'],
+ [['almond','almendra','amendoa','amêndoa','amande','mandel','mandorla','杏仁','миндаль','لوز'],'🌰','#B89A6A',12,26,365,'fruit'],
+ [['hazelnut','avellana','avela','avelã','noisette','haselnuss','nocciola','榛子','фундук'],'🌰','#9A6A3A',10,24,365,'fruit'],
+ [['lentil','lenteja','lentilha','lentille','linse','lenticchia','扁豆','чечевица','عدس'],'🫘','#B0703A',12,24,90,'root'],
+ [['chickpea','garbanzo','grao-de-bico','grão-de-bico','pois chiche','kichererbse','cece','鹰嘴豆','нут','حمص'],'🫘','#D9B27A',12,26,100,'root'],
+ [['soybean','soja','大豆','соя','edamame'],'🫘','#8FAA4A',20,30,90,'fruit'],
+ [['bean','poroto','judia','judía','frijol','feijao','feijão','haricot','bohne','fagiolo','豆角','菜豆','фасоль','فاصوليا'],'🫘','#8A4A3A',18,27,70,'fruit'],
+ [['broad bean','haba','fava','feve','fève','saubohne','蚕豆','бобы'],'🫘','#7A9A4A',8,20,100,'fruit'],
+ [['pak choi','bok choy','小白菜','пак-чой','pak-choi'],'🥬','#4F9A50',13,22,45,'leafy'],
+ [['kohlrabi','colinabo','couve-rabano','couve-rábano','cavolo rapa','苤蓝','кольраби'],'🥬','#8FAA6A',10,20,60,'leafy'],
+ [['endive','chicory','endibia','achicoria','endivia','endívia','chicoree','chicorée','endivie','cicoria','菊苣','цикорий'],'🥬','#B0C46A',10,20,70,'leafy'],
+ [['watercress','berro','agriao','agrião','cresson','brunnenkresse','crescione','豆瓣菜','кресс-салат'],'🌿','#3F8A4A',10,20,40,'leafy'],
+ [['parsnip','chirivia','chirivía','pastinaca','panais','pastinake','防风','пастернак'],'🥕','#D9C28A',10,20,120,'root'],
+ [['horseradish','raiz-forte','rábano picante','rabano picante','raifort','meerrettich','rafano','辣根','хрен'],'🌱','#B0A06A',8,22,180,'root'],
+ [['daikon','白萝卜','дайкон'],'🥕','#D8D8C0',10,22,60,'root'],
+ [['cassava','yuca','mandioca','manioc','maniok','木薯','маниока'],'🍠','#B08A5A',22,32,270,'root'],
+ [['taro','malanga','芋头','таро'],'🍠','#8A6A8A',22,32,240,'root'],
+ [['tomatillo','miltomate'],'🍅','#8FAA4A',18,28,80,'fruit'],
+ [['chayote','佛手瓜'],'🥒','#8FB84A',18,28,120,'fruit'],
+ [['lemongrass','citronela','capim-limao','capim-limão','citronnelle','zitronengras','香茅','лемонграсс'],'🌿','#8FB84A',20,32,90,'herb'],
+ [['lemon balm','melisa','melissa','mélisse','zitronenmelisse','香蜂草','мелисса'],'🌿','#6E9A4A',13,24,60,'herb'],
+ [['stevia','甜叶菊','стевия'],'🌿','#6E9A4A',18,30,100,'herb'],
+ [['borage','borraja','borago','bourrache','borretsch','琉璃苣','бурачник'],'🌸','#6A8AC0',12,24,60,'herb'],
+ [['chervil','perifollo','cerfeuil','kerbel','雪维菜','кервель'],'🌿','#75A05A',10,20,50,'herb'],
+ [['peppermint','hierbabuena','hortela','hortelã','spearmint','yerbabuena'],'🌿','#4F9A5A',13,24,60,'herb'],
+ [['tea','cha','chá','thé','tee','茶树','чайный куст'],'🍃','#3F8A4A',13,28,365,'herb'],
+ [['coffee','cafeto','咖啡','кофе'],'🫘','#6A4A3A',18,26,300,'fruit'],
+ [['cocoa','cacao','可可','какао'],'🫘','#7A4A3A',21,32,365,'fruit'],
+ [['aloe','sabila','sábila','芦荟','алоэ'],'🌵','#5E9A5A',15,32,365,'leafy'],
+ [['cactus','nopal','tuna','仙人掌','кактус'],'🌵','#5E9A5A',15,35,365,'leafy'],
+ [['bamboo','bambu','bambú','bambou','bambus','竹','бамбук'],'🎋','#5E9A4A',15,30,365,'leafy'],
+]; 
+/* Local names for plants already in the library (Chilean and regional words included) */
+const BASE_ALIASES = {
+ corn:['choclo','elote','milho','mais','玉米'], pumpkin:['zapallo','ahuyama','auyama','abobora','abóbora'],
+ zucchini:['zapallo italiano','zapallito','zucchini','courgette','abobrinha'], potato:['papa','batata inglesa'],
+ sweetpotato:['camote','batata-doce','batata doce'], strawberry:['frutilla','morango','fraise','erdbeere','fragola'],
+ beet:['betarraga','remolacha','beterraba','betterave','rote bete','barbabietola','甜菜'], chili:['aji','ají','pimenta','piment','peperoncino','辣椒'],
+ peas:['arveja','chicharo','chícharo','ervilha','petits pois','erbse','pisello','豌豆'], chives:['cebollin','cebollín','cebolinha','ciboulette','schnittlauch','erba cipollina'],
+ peach:['durazno','damasco melocoton','pêssego','pessego','pêche','pfirsich','pesca','桃'], apricot:['damasco','albaricoque','abricot','aprikose','albicocca','杏'],
+ watermelon:['sandia','melancia','pastèque','wassermelone','anguria','西瓜'], blueberry:['arandano','arándano','mirtilo','myrtille','heidelbeere','mirtillo','蓝莓'],
+ cabbage:['repollo','col ','couve','chou ','kohl','cavolo','卷心菜'], leek:['puerro','alho-poro','poireau','lauch','porro','韭葱'],
+ cilantro:['culantro','coentro','coriandre','koriander','coriandolo','香菜'], arugula:['rucula','rúcula','roquette','rucola','芝麻菜'],
+};
+function _norm(x){ return String(x).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim(); }
+function _mixLight(hex){ const n=parseInt(hex.slice(1),16); const m=c=>Math.round(c+(255-c)*0.84).toString(16).padStart(2,'0'); return '#'+m(n>>16)+m((n>>8)&255)+m(n&255); }
+
 const CUSTOM_ICON_POOL = ['🌱','🌿','🍃','🪴','🌾'];
 const STORAGE_KEY = 'greenhouse-state';
 const DAY_MS = 86400000;
@@ -1671,7 +1771,7 @@ function applyGridSettingsCollapse(){
 document.getElementById('gridSettingsHead').addEventListener('click', () => { state.gridSettingsCollapsed = !state.gridSettingsCollapsed; saveState(); applyGridSettingsCollapse(); });
 
 /* ---------- Render ---------- */
-function render(){ if(typeof renderBoard==='function' && window.OrganicsOne && document.getElementById('boardCard')) renderBoard(); renderDims(); renderCatPills(); renderVegList(); renderRoom(); renderHeaderPills(); renderRipenessAlerts(); refreshEnvIfLoaded(); }
+function render(){ if(typeof renderIconPicker==='function') renderIconPicker(); if(typeof renderBoard==='function' && window.OrganicsOne && document.getElementById('boardCard')) renderBoard(); renderDims(); renderCatPills(); renderVegList(); renderRoom(); renderHeaderPills(); renderRipenessAlerts(); refreshEnvIfLoaded(); }
 function refreshEnvIfLoaded(){ if(lastWeatherData) renderEnvConditions(lastWeatherData); }
 function renderDims(){
   document.getElementById('rowsVal').textContent = state.rows;
@@ -2015,12 +2115,40 @@ document.getElementById('cancelAddVeg').addEventListener('click', () => {
   document.getElementById('newVegName').value = ''; document.getElementById('newVegDays').value = '';
 });
 
+
+/* ---------- manual icon picker for custom plants ---------- */
+const PICK_ICONS = ['🍅','🥕','🥬','🫑','🥒','🍆','🥔','🍠','🧅','🧄','🌽','🥦','🍄','🫛','🫘','🥜','🌰','🌶️','🥑','🍎','🍐','🍊','🍋','🍌','🍉','🍇','🍓','🫐','🍒','🍑','🥭','🍍','🥝','🍈','🫒','🥥','🌿','🍃','🌱','🪴','🌾','🌻','🌼','🌸','🪻','🌵','🎋','🫚'];
+let pickedIcon = null;
+function renderIconPicker(){
+  const grid = document.getElementById('iconPickGrid'); if(!grid) return;
+  grid.innerHTML = PICK_ICONS.map(i => `<button type="button" data-i="${i}" class="${pickedIcon===i?'on':''}">${i}</button>`).join('');
+  document.getElementById('iconPickAuto').classList.toggle('on', pickedIcon===null);
+  document.getElementById('iconPickAuto').textContent = t('iconAuto');
+  document.getElementById('iconPickLabel').textContent = t('iconPickLabel');
+}
+document.getElementById('iconPickGrid').addEventListener('click', e => { const b=e.target.closest('button[data-i]'); if(!b) return; pickedIcon = (pickedIcon===b.dataset.i) ? null : b.dataset.i; renderIconPicker(); });
+document.getElementById('iconPickAuto').addEventListener('click', () => { pickedIcon = null; renderIconPicker(); });
+
 function localSynonymMatch(name){
-  const n = name.toLowerCase();
-  for(const entry of SYNONYMS){ if(entry.k.some(kw => n.includes(kw))) return entry; }
-  const existing = ALL_VEGETABLES.find(v => n.includes(v.id.replace(/-/g,' ')) || v.name.toLowerCase().includes(n) || n.includes(v.name.toLowerCase()));
-  if(existing) return { icon: existing.icon, color: existing.color, light: existing.light, days: existing.days, tMin: existing.tMin, tMax: existing.tMax, category: existing.category };
-  return null;
+  const n = _norm(name);
+  let best = null, bestLen = 0;
+  const consider = (kw, entry) => { const k=_norm(kw); if(k.length>=(/[^\x00-\x7f]/.test(k)?1:3) && n.includes(k) && k.length>bestLen){ best=entry; bestLen=k.length; } };
+  for(const entry of SYNONYMS){ entry.k.forEach(kw => consider(kw, entry)); }
+  for(const p of MORE_PLANTS){
+    const entry = { icon:p[1], color:p[2], light:_mixLight(p[2]), tMin:p[3], tMax:p[4], days:p[5], category:p[6] };
+    p[0].forEach(kw => consider(kw, entry));
+  }
+  for(const id in BASE_ALIASES){
+    const v = VEG_MAP[id]; if(!v) continue;
+    const entry = { icon:v.icon, color:v.color, light:v.light, days:v.days, tMin:v.tMin, tMax:v.tMax, category:v.category };
+    BASE_ALIASES[id].forEach(kw => consider(kw, entry));
+  }
+  // names of library plants in every language
+  for(const v of ALL_VEGETABLES){
+    const entry = { icon:v.icon, color:v.color, light:v.light, days:v.days, tMin:v.tMin, tMax:v.tMax, category:v.category };
+    Object.keys(v).filter(k => k==='name' || k.indexOf('name_')===0).forEach(k => consider(v[k], entry));
+  }
+  return best;
 }
 function fallbackIconFor(name){
   const h = hashStr(name);
@@ -2068,7 +2196,7 @@ document.getElementById('submitAddVeg').addEventListener('click', async () => {
   btn.disabled = true; btn.textContent = t('generatingBtn');
 
   let details = localSynonymMatch(name);
-  if(!details) details = await generateVegDetails(name);
+  if(!details && !pickedIcon) details = await generateVegDetails(name);
   if(!details) details = fallbackIconFor(name);
 
   const manualDays = parseInt(daysInput.value, 10);
@@ -2077,6 +2205,7 @@ document.getElementById('submitAddVeg').addEventListener('click', async () => {
   const tMax = details.tMax != null ? details.tMax : 27;
   const category = ['fruit','berry','leafy','herb','root'].includes(details.category) ? details.category : 'fruit';
 
+  if(pickedIcon) details.icon = pickedIcon;
   const id = uniqueId(slugify(name));
   const newVeg = { id, name, icon: details.icon, days, color: details.color, light: details.light, tMin, tMax, category, custom: true };
   state.customVeg.push(newVeg);
@@ -2088,6 +2217,7 @@ document.getElementById('submitAddVeg').addEventListener('click', async () => {
   renderVegList(); renderSelectedHint();
 
   btn.disabled = false; btn.textContent = t('generateBtn');
+  pickedIcon = null; renderIconPicker();
   nameInput.value=''; daysInput.value='';
   addForm.classList.remove('show'); addToggle.textContent = t('addPlantBtn');
   showToast(t('toastAdded', { name, icon: details.icon }));
