@@ -57,9 +57,8 @@
   .icon-btn.light:hover{ background: rgba(255,255,255,0.2); }
 
   /* Layout: desktop 3-col grid, mobile stacked with forced order */
-  .layout{ display:grid; grid-template-columns: 290px 1fr 300px; grid-template-areas: "library room env" "settings room env"; gap:18px; align-items:start; }
+  .layout{ display:grid; grid-template-columns: 290px 1fr 300px; grid-template-areas: "library room env"; gap:18px; align-items:start; }
   #libraryPanel{ grid-area: library; }
-  #gridSettingsPanel{ grid-area: settings; }
   #roomPanel{ grid-area: room; }
   #envPanel{ grid-area: env; }
   @media (max-width: 980px){
@@ -67,7 +66,6 @@
     #envPanel{ order:1; }
     #roomPanel{ order:2; }
     #libraryPanel{ order:3; }
-    #gridSettingsPanel{ order:4; }
   }
 
   /* Add Plant */
@@ -125,7 +123,6 @@
   .clear-select{ background:none; border:none; color:#cfe3da; text-decoration:underline; cursor:pointer; font-size:11.5px; padding:0; margin-top:6px; }
 
   /* Grid settings */
-  #gridSettingsPanel .panel-head{ margin-bottom:0; cursor:pointer; }
   .gear-wrap{ display:flex; align-items:center; gap:9px; }
   .gear-icon{ width:32px; height:32px; border-radius:10px; background: var(--bg-warm); display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
   .dim-summary{ font-size:12px; color: var(--pine-soft); font-weight:600; margin-top:1px; }
@@ -142,7 +139,12 @@
   /* Room */
   .room-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; gap:8px; flex-wrap:wrap; }
   .room-header-right{ display:flex; align-items:center; gap:8px; }
-  .grid-size-label{ font-size:11.5px; color: var(--pine-soft); font-weight:600; }
+  .grid-size-label{ font-size:11.5px; color: var(--pine-soft); font-weight:600; font-family:inherit; border:none; background: var(--bg-warm); padding:5px 10px; border-radius:999px; cursor:pointer; display:inline-flex; align-items:center; gap:5px; }
+  .grid-size-label::after{ content:'✏️'; font-size:10.5px; }
+  .grid-size-label:hover{ background: var(--soil-line); }
+  .grid-box{ max-width:360px; }
+  .grid-box-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+  .grid-box #gridSettingsBody{ margin-top:0; }
   .legend{ font-size:11px; color: var(--pine-soft); margin-top:10px; }
 
   .room{ display:grid; gap:0; width:100%; padding: 8px; border-radius: 12px; overflow:hidden; touch-action:none; background: var(--bg-warm); }
@@ -290,7 +292,7 @@
   .consent-box p{ margin:0 0 10px; font-size:13.5px; line-height:1.55; color:#33463B; }
   .consent-box .consent-key{ background:var(--bg-warm); border-left:4px solid var(--green-accent); border-radius:8px; padding:9px 11px; }
   .consent-box a{ color:var(--green-accent); font-weight:700; }
-  .consent-box button{ margin-top:6px; width:100%; padding:12px; border:none; border-radius:10px; background:var(--pine-dark); color:#fff; font-weight:700; font-size:14px; cursor:pointer; }
+  .consent-box > button{ margin-top:6px; width:100%; padding:12px; border:none; border-radius:10px; background:var(--pine-dark); color:#fff; font-weight:700; font-size:14px; cursor:pointer; }
   .legal-links{ text-align:center; font-size:11px; color:var(--pine-soft); margin:18px 0 10px; }
   .legal-links a{ color:var(--pine-soft); }
   .modal-actions{ display:flex; gap:10px; }
@@ -369,18 +371,14 @@
     </div>
 
     <!-- Grid settings -->
-    <div class="panel" id="gridSettingsPanel">
-      <div class="panel-head" id="gridSettingsHead">
-        <div class="gear-wrap">
-          <div class="gear-icon">⚙️</div>
-          <div>
-            <div class="eyebrow" id="gridSettingsTitle">GRID SETTINGS</div>
-            <div class="dim-summary" id="dimSummary">6 × 6</div>
-          </div>
-        </div>
-        <button class="collapse-btn" id="gridSettingsToggle"><span class="arrow">▾</span></button>
+    <div class="consent-overlay grid-overlay" id="gridOverlay" role="dialog" aria-modal="true"><div class="consent-box grid-box" id="gridSettingsPanel">
+      <div class="grid-box-head">
+        <div class="gear-wrap"><div class="gear-icon">⚙️</div><div>
+          <div class="eyebrow" id="gridSettingsTitle">GRID SETTINGS</div>
+          <div class="dim-summary" id="dimSummary">6 × 6</div></div></div>
+        <button class="icon-btn" id="gridClose" aria-label="Close">✕</button>
       </div>
-      <div id="gridSettingsBody" style="display:none;">
+      <div id="gridSettingsBody">
         <div class="dim-row">
           <span id="heightLabel">Height</span>
           <div class="stepper"><button id="rowsDown">−</button><div class="val" id="rowsVal">6</div><button id="rowsUp">+</button></div>
@@ -390,7 +388,8 @@
           <div class="stepper"><button id="colsDown">−</button><div class="val" id="colsVal">6</div><button id="colsUp">+</button></div>
         </div>
       </div>
-    </div>
+      <button id="gridDone">OK</button>
+    </div></div>
 
     <!-- Greenhouse layout -->
     <div class="panel" id="roomPanel">
@@ -399,7 +398,7 @@
         <div class="room-header-right">
           <button class="icon-btn" id="rotateRoomBtn" title="Rotate 90°">⟳</button>
           <button class="icon-btn spin" id="refreshRoomBtn" title="Refresh">↻</button>
-          <span class="grid-size-label" id="gridSizeLabel">6 × 6 grid</span>
+          <button class="grid-size-label" id="gridSizeLabel" type="button">6 × 6 grid</button>
         </div>
       </div>
       <div class="room" id="room"></div>
@@ -2149,6 +2148,8 @@ function applyStaticText(){
   document.getElementById('roomTitle').textContent = t('roomTitle');
   document.getElementById('roomLegend').textContent = t('roomLegend');
   document.getElementById('gridSettingsTitle').textContent = t('gridSettingsTitle');
+  document.getElementById('gridDone').textContent = t('modalDone');
+  document.getElementById('gridSizeLabel').title = t('gridSettingsTitle');
   document.getElementById('heightLabel').textContent = t('heightLabel');
   document.getElementById('widthLabel').textContent = t('widthLabel');
   document.getElementById('envTitle').textContent = t('envTitle');
@@ -2178,13 +2179,14 @@ function applyLibraryCollapse(){
 }
 libraryToggle.addEventListener('click', () => { state.libraryCollapsed = !state.libraryCollapsed; saveState(); applyLibraryCollapse(); });
 
-const gridSettingsToggle = document.getElementById('gridSettingsToggle');
-const gridSettingsBody = document.getElementById('gridSettingsBody');
-function applyGridSettingsCollapse(){
-  gridSettingsBody.style.display = state.gridSettingsCollapsed ? 'none' : '';
-  gridSettingsToggle.classList.toggle('open', !state.gridSettingsCollapsed);
-}
-document.getElementById('gridSettingsHead').addEventListener('click', () => { state.gridSettingsCollapsed = !state.gridSettingsCollapsed; saveState(); applyGridSettingsCollapse(); });
+function applyGridSettingsCollapse(){ /* grid settings now live in a pop-up */ }
+function openGridSettings(){ document.getElementById('gridOverlay').classList.add('show'); }
+function closeGridSettings(){ document.getElementById('gridOverlay').classList.remove('show'); }
+document.getElementById('gridSizeLabel').addEventListener('click', openGridSettings);
+document.getElementById('gridClose').addEventListener('click', closeGridSettings);
+document.getElementById('gridDone').addEventListener('click', closeGridSettings);
+document.getElementById('gridOverlay').addEventListener('click', e => { if(e.target.id === 'gridOverlay') closeGridSettings(); });
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeGridSettings(); });
 
 /* ---------- Render ---------- */
 function render(){ if(typeof renderConsentTexts==='function') renderConsentTexts(); if(typeof renderIconPicker==='function') renderIconPicker(); if(typeof renderBoard==='function' && window.OrganicsOne && document.getElementById('boardCard')) renderBoard(); renderDims(); renderCatPills(); renderVegList(); renderRoom(); renderHeaderPills(); renderRipenessAlerts(); refreshEnvIfLoaded(); }
