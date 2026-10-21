@@ -199,7 +199,7 @@
   .ws-help{ font-size:11.5px; color: var(--pine-soft); margin-top:8px; line-height:1.4; }
   .eh-risk.fungus{ background:rgba(255,255,255,0.95); color:#7A4B00; text-shadow:none; }
   .settings-btn{ width:40px; height:40px; font-size:18px; background:#fff; box-shadow: var(--card-shadow); }
-  .set-box{ max-width:400px; }
+  .set-box{ max-width:400px; max-height:calc(100vh - 32px); max-height:calc(100dvh - 32px); overflow-y:auto; }
   .set-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 0; border-top:1px solid var(--bg-warm); }
   .set-row.col{ flex-direction:column; align-items:stretch; }
   .set-l{ font-size:13.5px; font-weight:700; color: var(--pine-dark); }
@@ -210,7 +210,15 @@
   .set-box .lang-switch{ margin:0; }
   .danger-btn{ width:100%; padding:11px 14px; border-radius:12px; border:1.5px solid #E8C4BE; background:#FFF6F4; color:#A0413A; font-weight:700; font-size:13.5px; cursor:pointer; font-family:'Public Sans', sans-serif; }
   .danger-btn:hover{ background:#F9E5E1; }
-  .set-hint{ display:block; font-size:11.5px; color:var(--pine-soft); margin-top:6px; text-align:center; }
+  .set-hint{ display:block; font-size:11.5px; color:var(--pine-soft); margin:5px 0 10px; text-align:center; }
+  .set-reset .set-l{ margin-bottom:8px; }
+  .danger-btn.soft{ border-color:var(--soil-line); background:#fff; color:var(--pine-dark); }
+  .danger-btn.soft:hover{ background:var(--bg-warm); }
+  .reset-opts{ text-align:left; margin:4px 0 2px; display:flex; flex-direction:column; gap:6px; }
+  .reset-opts:empty{ display:none; }
+  .reset-opts label{ display:flex; gap:10px; align-items:flex-start; font-size:13.5px; color:var(--pine-dark); padding:9px 10px; border:1px solid var(--soil-line); border-radius:10px; cursor:pointer; }
+  .reset-opts input{ width:18px; height:18px; margin:1px 0 0; accent-color:#C0392B; flex-shrink:0; }
+  .btn-danger:disabled{ opacity:.45; cursor:not-allowed; }
   .reset-box{ max-width:380px; text-align:center; }
   .reset-box .reset-ic{ font-size:34px; margin-bottom:6px; }
   .reset-box .modal-actions{ margin-top:14px; }
@@ -736,12 +744,15 @@
         </select></div></div>
   <div class="set-row col"><div class="set-l">📏 <span id="setUnitsL">Units</span></div>
     <div class="set-units"><button class="ws-opt" data-u="metric"><b id="uMetricL">Metric</b><small>m · °C · L · mm</small></button><button class="ws-opt" data-u="imperial"><b id="uImperialL">Imperial</b><small>ft · °F · gal · in</small></button></div></div>
-  <div class="set-row col"><button type="button" class="danger-btn" id="resetAllBtn">🗑️ <span id="resetAllL">Delete my whole planting</span></button><small class="set-hint" id="resetAllHint"></small></div>
+  <div class="set-row col set-reset"><div class="set-l">🗑️ <span id="resetSecL">Delete data</span></div>
+    <button type="button" class="danger-btn soft" id="resetCropsBtn">🌱 <span id="resetCropsL"></span></button><small class="set-hint" id="resetCropsHint"></small>
+    <button type="button" class="danger-btn soft" id="resetPartsBtn">🧹 <span id="resetPartsL"></span></button><small class="set-hint" id="resetPartsHint"></small>
+    <button type="button" class="danger-btn" id="resetFactoryBtn">⚠️ <span id="resetFactoryL"></span></button><small class="set-hint" id="resetFactoryHint"></small></div>
   <div class="set-links"><a href="terms.html" target="_blank" rel="noopener" id="setTerms">Terms</a> · <a href="privacy.html" target="_blank" rel="noopener" id="setPrivacy">Privacy</a></div>
   <button id="settingsDone">OK</button>
 </div></div>
 <div class="consent-overlay" id="resetOverlay" role="alertdialog" aria-modal="true"><div class="consent-box reset-box">
-  <div class="reset-ic">⚠️</div><h3 id="resetTitle"></h3><p id="resetBody"></p>
+  <div class="reset-ic">⚠️</div><h3 id="resetTitle"></h3><p id="resetBody"></p><div class="reset-opts" id="resetOpts"></div>
   <div class="modal-actions"><button type="button" class="btn-close" id="resetCancel"></button><button type="button" class="btn-danger" id="resetConfirm"></button></div>
 </div></div>
 <div class="sheet-backdrop" id="sheetBackdrop"></div>
@@ -1049,7 +1060,7 @@ const TRANSLATIONS = {
     sdRainToday:"today",
     sdRainTomorrow:"tomorrow",
     sdRainNote:"Inside the greenhouse rain does not reach the crops. The suggested watering does not subtract it.",
-    resetAllBtn:"Delete my whole planting", resetAllHint:"Takes your greenhouse back to zero. Your settings are kept.", resetTitle:"Delete your whole planting?", resetBody:"All your crops, irrigation zones and watering log will be deleted. Your greenhouse will go back to zero and this cannot be undone. Your language, units, location and custom plants are kept.", resetConfirm:"Yes, delete everything", resetCancel:"Cancel", toastResetDone:"Done, your greenhouse is back to zero 🌱",
+    resetSec:"Delete data", resetCrops:"Delete crops", resetCropsHint:"Quick, to plant again. Keeps irrigation and settings.", resetParts:"Delete by parts…", resetPartsHint:"Choose what to delete: crops, irrigation, equipment, windows or history.", resetFactory:"Factory reset", resetFactoryHint:"Deletes everything and the app is like newly installed. The board stays connected.", rcTitle:"Delete all your crops?", rcBody:"All plants in your greenhouse will be removed. Irrigation zones, equipment and your settings are kept. This cannot be undone.", rcConfirm:"Yes, delete crops", rpTitle:"What do you want to delete?", rpBody:"Check what you want to remove. This cannot be undone.", rpConfirm:"Delete selected", rpCrops:"Planted crops", rpIrr:"Irrigation: zones, flow rate and watering log", rpPower:"Equipment: lighting, fans and pump (power use)", rpWin:"Windows", rpLog:"Sensor history (temperature, humidity, light, CO2)", rfTitle:"Factory reset?", rfBody:"Everything will be deleted: crops, irrigation, equipment, windows, history, custom plants, greenhouse size, location and language. The app will be like newly installed. Your Organics One board connection is kept. This cannot be undone.", rfConfirm:"Yes, reset everything", resetCancel:"Cancel", toastCropsDone:"Done, your crops were deleted 🌱", toastPartsDone:"Done, the selected data was deleted",
     boardTitle:'ORGANICS ONE BOARD', boardConnect:'Connect board', boardSave:'Connect', boardDisc:'Disconnect', boardForget:'Forget', boardServer:'Server (EMQX host)', boardUser:'User', boardPass:'Password', boardInv:'Greenhouse name', boardOff:'Not connected', boardOn:'Board online', boardNoBoard:'Board offline', boardUpdate:'Update firmware', boardTemp:'Temperature', boardHum:'Humidity', boardVpd:'VPD', boardSoil:'Soil', boardValveOpen:'watering', boardZone:'Zone', boardAlarm:'Alarm', boardConnecting:'Connecting…', boardLiveTemp:'Real sensor',
     useAutoLocation:'📍 Use automatic location', locationManualLabel:'Manual location',
     locationApprox:'Approximate location', locationPrecise:'Precise location',
@@ -1337,7 +1348,7 @@ const TRANSLATIONS = {
     sdRainToday:"hoy",
     sdRainTomorrow:"mañana",
     sdRainNote:"Dentro del invernadero la lluvia no llega a los cultivos. El riego sugerido no la descuenta.",
-    resetAllBtn:"Borrar toda la plantación", resetAllHint:"Deja tu invernadero en cero. Tu configuración se mantiene.", resetTitle:"¿Borrar toda tu plantación?", resetBody:"Se eliminarán todos tus cultivos, las zonas de riego y el registro de riegos. Tu invernadero volverá a cero y esto no se puede deshacer. Tu idioma, unidades, ubicación y plantas personalizadas se mantienen.", resetConfirm:"Sí, borrar todo", resetCancel:"Cancelar", toastResetDone:"Listo, tu invernadero quedó en cero 🌱",
+    resetSec:"Borrar datos", resetCrops:"Borrar cultivos", resetCropsHint:"Rápido, para volver a sembrar. Mantiene el riego y la configuración.", resetParts:"Borrar por partes…", resetPartsHint:"Eliges qué borrar: cultivos, riego, equipos, ventanas o historial.", resetFactory:"Restablecer de fábrica", resetFactoryHint:"Borra todo y la app queda como recién instalada. La tarjeta sigue conectada.", rcTitle:"¿Borrar todos tus cultivos?", rcBody:"Se eliminarán todas las plantas sembradas en tu invernadero. Las zonas de riego, los equipos y tu configuración se mantienen. Esto no se puede deshacer.", rcConfirm:"Sí, borrar cultivos", rpTitle:"¿Qué quieres borrar?", rpBody:"Marca lo que quieres eliminar. Esto no se puede deshacer.", rpConfirm:"Borrar lo seleccionado", rpCrops:"Cultivos sembrados", rpIrr:"Riego: zonas, caudal y registro de riegos", rpPower:"Equipos: iluminación, ventiladores y bomba (consumo eléctrico)", rpWin:"Ventanas", rpLog:"Historial de sensores (temperatura, humedad, luz, CO2)", rfTitle:"¿Restablecer de fábrica?", rfBody:"Se borrará todo: cultivos, riego, equipos, ventanas, historial, plantas personalizadas, tamaño del invernadero, ubicación e idioma. La app quedará como recién instalada. La conexión con tu tarjeta Organics One se mantiene. Esto no se puede deshacer.", rfConfirm:"Sí, restablecer todo", resetCancel:"Cancelar", toastCropsDone:"Listo, tus cultivos se borraron 🌱", toastPartsDone:"Listo, se borró lo seleccionado",
     boardTitle:'TARJETA ORGANICS ONE', boardConnect:'Conectar tarjeta', boardSave:'Conectar', boardDisc:'Desconectar', boardForget:'Olvidar', boardServer:'Servidor (host de EMQX)', boardUser:'Usuario', boardPass:'Clave', boardInv:'Nombre del invernadero', boardOff:'Sin conexión', boardOn:'Tarjeta en línea', boardNoBoard:'Tarjeta desconectada', boardUpdate:'Actualizar firmware', boardTemp:'Temperatura', boardHum:'Humedad', boardVpd:'VPD', boardSoil:'Suelo', boardValveOpen:'regando', boardZone:'Zona', boardAlarm:'Alarma', boardConnecting:'Conectando…', boardLiveTemp:'Sensor real',
     useAutoLocation:'📍 Usar ubicación automática', locationManualLabel:'Ubicación manual',
     locationApprox:'Ubicación aproximada', locationPrecise:'Ubicación precisa',
@@ -1624,7 +1635,7 @@ const TRANSLATIONS = {
     sdRainToday:"aujourd'hui",
     sdRainTomorrow:"demain",
     sdRainNote:"Dans la serre la pluie n'atteint pas les cultures. L'arrosage conseillé ne la déduit pas.",
-    resetAllBtn:"Effacer toute ma plantation", resetAllHint:"Remet votre serre à zéro. Vos réglages sont conservés.", resetTitle:"Effacer toute votre plantation ?", resetBody:"Toutes vos cultures, zones d’arrosage et l’historique d’arrosage seront supprimés. Votre serre reviendra à zéro et cette action est irréversible. Votre langue, vos unités, votre position et vos plantes personnalisées sont conservées.", resetConfirm:"Oui, tout effacer", resetCancel:"Annuler", toastResetDone:"C’est fait, votre serre est remise à zéro 🌱",
+    resetSec:"Effacer des données", resetCrops:"Effacer les cultures", resetCropsHint:"Rapide, pour replanter. Conserve l’arrosage et les réglages.", resetParts:"Effacer par parties…", resetPartsHint:"Choisissez quoi effacer : cultures, arrosage, équipements, fenêtres ou historique.", resetFactory:"Réinitialisation d’usine", resetFactoryHint:"Efface tout et l’app redevient comme neuve. La carte reste connectée.", rcTitle:"Effacer toutes vos cultures ?", rcBody:"Toutes les plantes de votre serre seront supprimées. Les zones d’arrosage, les équipements et vos réglages sont conservés. Action irréversible.", rcConfirm:"Oui, effacer les cultures", rpTitle:"Que voulez-vous effacer ?", rpBody:"Cochez ce que vous voulez supprimer. Action irréversible.", rpConfirm:"Effacer la sélection", rpCrops:"Cultures plantées", rpIrr:"Arrosage : zones, débit et historique d’arrosage", rpPower:"Équipements : éclairage, ventilateurs et pompe (consommation)", rpWin:"Fenêtres", rpLog:"Historique des capteurs (température, humidité, lumière, CO2)", rfTitle:"Réinitialisation d’usine ?", rfBody:"Tout sera effacé : cultures, arrosage, équipements, fenêtres, historique, plantes personnalisées, taille de la serre, position et langue. L’app sera comme neuve. La connexion à votre carte Organics One est conservée. Action irréversible.", rfConfirm:"Oui, tout réinitialiser", resetCancel:"Annuler", toastCropsDone:"C’est fait, vos cultures ont été effacées 🌱", toastPartsDone:"C’est fait, la sélection a été effacée",
     boardTitle:'CARTE ORGANICS ONE',
     boardConnect:'Connecter la carte',
     boardSave:'Connecter',
@@ -1952,7 +1963,7 @@ const TRANSLATIONS = {
     sdRainToday:"hoje",
     sdRainTomorrow:"amanhã",
     sdRainNote:"Dentro da estufa a chuva não chega aos cultivos. A rega sugerida não a desconta.",
-    resetAllBtn:"Apagar toda a plantação", resetAllHint:"Deixa sua estufa do zero. Suas configurações são mantidas.", resetTitle:"Apagar toda a sua plantação?", resetBody:"Todos os seus cultivos, zonas de rega e o registro de regas serão apagados. Sua estufa voltará do zero e isso não pode ser desfeito. Seu idioma, unidades, localização e plantas personalizadas são mantidos.", resetConfirm:"Sim, apagar tudo", resetCancel:"Cancelar", toastResetDone:"Pronto, sua estufa voltou do zero 🌱",
+    resetSec:"Apagar dados", resetCrops:"Apagar cultivos", resetCropsHint:"Rápido, para plantar de novo. Mantém a rega e as configurações.", resetParts:"Apagar por partes…", resetPartsHint:"Escolha o que apagar: cultivos, rega, equipamentos, janelas ou histórico.", resetFactory:"Restaurar padrões de fábrica", resetFactoryHint:"Apaga tudo e o app fica como recém-instalado. A placa continua conectada.", rcTitle:"Apagar todos os seus cultivos?", rcBody:"Todas as plantas da sua estufa serão removidas. As zonas de rega, os equipamentos e suas configurações são mantidos. Isso não pode ser desfeito.", rcConfirm:"Sim, apagar cultivos", rpTitle:"O que você quer apagar?", rpBody:"Marque o que quer remover. Isso não pode ser desfeito.", rpConfirm:"Apagar selecionados", rpCrops:"Cultivos plantados", rpIrr:"Rega: zonas, vazão e registro de regas", rpPower:"Equipamentos: iluminação, ventiladores e bomba (consumo elétrico)", rpWin:"Janelas", rpLog:"Histórico dos sensores (temperatura, umidade, luz, CO2)", rfTitle:"Restaurar padrões de fábrica?", rfBody:"Tudo será apagado: cultivos, rega, equipamentos, janelas, histórico, plantas personalizadas, tamanho da estufa, localização e idioma. O app ficará como recém-instalado. A conexão com sua placa Organics One é mantida. Isso não pode ser desfeito.", rfConfirm:"Sim, restaurar tudo", resetCancel:"Cancelar", toastCropsDone:"Pronto, seus cultivos foram apagados 🌱", toastPartsDone:"Pronto, o que foi selecionado foi apagado",
     boardTitle:'PLACA ORGANICS ONE',
     boardConnect:'Conectar placa',
     boardSave:'Conectar',
@@ -2280,7 +2291,7 @@ const TRANSLATIONS = {
     sdRainToday:"heute",
     sdRainTomorrow:"morgen",
     sdRainNote:"Im Gewächshaus erreicht der Regen die Pflanzen nicht. Die empfohlene Bewässerung zieht ihn nicht ab.",
-    resetAllBtn:"Gesamte Bepflanzung löschen", resetAllHint:"Setzt dein Gewächshaus auf null zurück. Deine Einstellungen bleiben erhalten.", resetTitle:"Gesamte Bepflanzung löschen?", resetBody:"Alle Kulturen, Bewässerungszonen und das Bewässerungsprotokoll werden gelöscht. Dein Gewächshaus wird auf null gesetzt, das kann nicht rückgängig gemacht werden. Sprache, Einheiten, Standort und eigene Pflanzen bleiben erhalten.", resetConfirm:"Ja, alles löschen", resetCancel:"Abbrechen", toastResetDone:"Fertig, dein Gewächshaus ist wieder bei null 🌱",
+    resetSec:"Daten löschen", resetCrops:"Kulturen löschen", resetCropsHint:"Schnell, um neu zu pflanzen. Bewässerung und Einstellungen bleiben.", resetParts:"Teilweise löschen…", resetPartsHint:"Wähle, was gelöscht wird: Kulturen, Bewässerung, Geräte, Fenster oder Verlauf.", resetFactory:"Auf Werkseinstellungen zurücksetzen", resetFactoryHint:"Löscht alles, die App ist wie neu installiert. Die Platine bleibt verbunden.", rcTitle:"Alle Kulturen löschen?", rcBody:"Alle Pflanzen in deinem Gewächshaus werden entfernt. Bewässerungszonen, Geräte und Einstellungen bleiben erhalten. Das kann nicht rückgängig gemacht werden.", rcConfirm:"Ja, Kulturen löschen", rpTitle:"Was möchtest du löschen?", rpBody:"Markiere, was entfernt werden soll. Das kann nicht rückgängig gemacht werden.", rpConfirm:"Auswahl löschen", rpCrops:"Gepflanzte Kulturen", rpIrr:"Bewässerung: Zonen, Durchfluss und Bewässerungsprotokoll", rpPower:"Geräte: Beleuchtung, Lüfter und Pumpe (Stromverbrauch)", rpWin:"Fenster", rpLog:"Sensorverlauf (Temperatur, Feuchte, Licht, CO2)", rfTitle:"Auf Werkseinstellungen zurücksetzen?", rfBody:"Alles wird gelöscht: Kulturen, Bewässerung, Geräte, Fenster, Verlauf, eigene Pflanzen, Gewächshausgröße, Standort und Sprache. Die App ist dann wie neu installiert. Die Verbindung zu deiner Organics-One-Platine bleibt erhalten. Das kann nicht rückgängig gemacht werden.", rfConfirm:"Ja, alles zurücksetzen", resetCancel:"Abbrechen", toastCropsDone:"Fertig, deine Kulturen wurden gelöscht 🌱", toastPartsDone:"Fertig, die Auswahl wurde gelöscht",
     boardTitle:'ORGANICS-ONE-PLATINE',
     boardConnect:'Platine verbinden',
     boardSave:'Verbinden',
@@ -2608,7 +2619,7 @@ const TRANSLATIONS = {
     sdRainToday:"今天",
     sdRainTomorrow:"明天",
     sdRainNote:"温室内雨水不会落到作物上。建议浇水量不扣除降雨。",
-    resetAllBtn:"清空全部种植", resetAllHint:"让温室回到初始状态，设置会保留。", resetTitle:"要清空全部种植吗？", resetBody:"所有作物、灌溉区和浇水记录都将被删除。温室将回到初始状态，此操作无法撤销。语言、单位、位置和自定义植物会保留。", resetConfirm:"是的，全部清空", resetCancel:"取消", toastResetDone:"完成，温室已回到初始状态 🌱",
+    resetSec:"删除数据", resetCrops:"删除作物", resetCropsHint:"快速清空以便重新种植，保留灌溉和设置。", resetParts:"按项目删除…", resetPartsHint:"选择要删除的内容：作物、灌溉、设备、窗户或历史记录。", resetFactory:"恢复出厂设置", resetFactoryHint:"删除所有内容，应用恢复到刚安装的状态。控制板保持连接。", rcTitle:"要删除所有作物吗？", rcBody:"温室中的所有植物都将被移除。灌溉区、设备和设置会保留。此操作无法撤销。", rcConfirm:"是的，删除作物", rpTitle:"要删除哪些内容？", rpBody:"勾选要删除的内容。此操作无法撤销。", rpConfirm:"删除所选", rpCrops:"已种植的作物", rpIrr:"灌溉：区域、流量和浇水记录", rpPower:"设备：照明、风扇和水泵（耗电）", rpWin:"窗户", rpLog:"传感器历史（温度、湿度、光照、CO2）", rfTitle:"要恢复出厂设置吗？", rfBody:"所有内容都将被删除：作物、灌溉、设备、窗户、历史记录、自定义植物、温室尺寸、位置和语言。应用将恢复到刚安装的状态。与 Organics One 控制板的连接会保留。此操作无法撤销。", rfConfirm:"是的，全部恢复", resetCancel:"取消", toastCropsDone:"完成，作物已删除 🌱", toastPartsDone:"完成，所选内容已删除",
     boardTitle:'ORGANICS ONE 控制板',
     boardConnect:'连接控制板',
     boardSave:'连接',
@@ -2936,7 +2947,7 @@ const TRANSLATIONS = {
     sdRainToday:"आज",
     sdRainTomorrow:"कल",
     sdRainNote:"ग्रीनहाउस के अंदर बारिश फसलों तक नहीं पहुँचती। सुझाई गई सिंचाई इसे नहीं घटाती।",
-    resetAllBtn:"पूरी बुवाई मिटाएँ", resetAllHint:"आपका ग्रीनहाउस शून्य पर लौट आएगा। आपकी सेटिंग्स बनी रहेंगी।", resetTitle:"क्या पूरी बुवाई मिटानी है?", resetBody:"आपकी सभी फसलें, सिंचाई क्षेत्र और सिंचाई रिकॉर्ड मिटा दिए जाएँगे। ग्रीनहाउस शून्य पर लौट आएगा और इसे वापस नहीं किया जा सकता। भाषा, इकाइयाँ, स्थान और आपके अपने पौधे बने रहेंगे।", resetConfirm:"हाँ, सब मिटाएँ", resetCancel:"रद्द करें", toastResetDone:"हो गया, आपका ग्रीनहाउस शून्य पर है 🌱",
+    resetSec:"डेटा मिटाएँ", resetCrops:"फसलें मिटाएँ", resetCropsHint:"दोबारा बोने के लिए तेज़ तरीका। सिंचाई और सेटिंग्स बनी रहती हैं।", resetParts:"हिस्सों में मिटाएँ…", resetPartsHint:"चुनें क्या मिटाना है: फसलें, सिंचाई, उपकरण, खिड़कियाँ या इतिहास।", resetFactory:"फ़ैक्टरी रीसेट", resetFactoryHint:"सब कुछ मिटाता है और ऐप नया जैसा हो जाता है। बोर्ड जुड़ा रहता है।", rcTitle:"क्या सभी फसलें मिटानी हैं?", rcBody:"आपके ग्रीनहाउस के सभी पौधे हटा दिए जाएँगे। सिंचाई क्षेत्र, उपकरण और सेटिंग्स बनी रहेंगी। इसे वापस नहीं किया जा सकता।", rcConfirm:"हाँ, फसलें मिटाएँ", rpTitle:"आप क्या मिटाना चाहते हैं?", rpBody:"जो हटाना है उसे चुनें। इसे वापस नहीं किया जा सकता।", rpConfirm:"चुना हुआ मिटाएँ", rpCrops:"बोई गई फसलें", rpIrr:"सिंचाई: क्षेत्र, प्रवाह दर और सिंचाई रिकॉर्ड", rpPower:"उपकरण: रोशनी, पंखे और पंप (बिजली खपत)", rpWin:"खिड़कियाँ", rpLog:"सेंसर इतिहास (तापमान, आर्द्रता, रोशनी, CO2)", rfTitle:"क्या फ़ैक्टरी रीसेट करना है?", rfBody:"सब कुछ मिट जाएगा: फसलें, सिंचाई, उपकरण, खिड़कियाँ, इतिहास, आपके अपने पौधे, ग्रीनहाउस का आकार, स्थान और भाषा। ऐप नया जैसा हो जाएगा। आपके Organics One बोर्ड का कनेक्शन बना रहेगा। इसे वापस नहीं किया जा सकता।", rfConfirm:"हाँ, सब रीसेट करें", resetCancel:"रद्द करें", toastCropsDone:"हो गया, आपकी फसलें मिटा दी गईं 🌱", toastPartsDone:"हो गया, चुना हुआ डेटा मिटा दिया गया",
     boardTitle:'ORGANICS ONE बोर्ड',
     boardConnect:'बोर्ड कनेक्ट करें',
     boardSave:'कनेक्ट करें',
@@ -3264,7 +3275,7 @@ const TRANSLATIONS = {
     sdRainToday:"اليوم",
     sdRainTomorrow:"غدًا",
     sdRainNote:"داخل الدفيئة لا يصل المطر إلى المحاصيل. الري المقترح لا يخصمه.",
-    resetAllBtn:"حذف الزراعة بالكامل", resetAllHint:"يعيد دفيئتك إلى الصفر. تبقى إعداداتك كما هي.", resetTitle:"هل تريد حذف زراعتك بالكامل؟", resetBody:"سيتم حذف جميع محاصيلك ومناطق الري وسجل الري. ستعود دفيئتك إلى الصفر ولا يمكن التراجع عن ذلك. تبقى اللغة والوحدات والموقع والنباتات المخصصة كما هي.", resetConfirm:"نعم، احذف الكل", resetCancel:"إلغاء", toastResetDone:"تم، عادت دفيئتك إلى الصفر 🌱",
+    resetSec:"حذف البيانات", resetCrops:"حذف المحاصيل", resetCropsHint:"سريع لإعادة الزراعة. يحتفظ بالري والإعدادات.", resetParts:"الحذف حسب الأجزاء…", resetPartsHint:"اختر ما تريد حذفه: المحاصيل أو الري أو المعدات أو النوافذ أو السجل.", resetFactory:"إعادة ضبط المصنع", resetFactoryHint:"يحذف كل شيء ويعود التطبيق كأنه مثبت حديثًا. تبقى اللوحة متصلة.", rcTitle:"هل تريد حذف جميع محاصيلك؟", rcBody:"ستتم إزالة جميع النباتات في دفيئتك. تبقى مناطق الري والمعدات والإعدادات كما هي. لا يمكن التراجع عن ذلك.", rcConfirm:"نعم، احذف المحاصيل", rpTitle:"ماذا تريد أن تحذف؟", rpBody:"حدد ما تريد إزالته. لا يمكن التراجع عن ذلك.", rpConfirm:"حذف المحدد", rpCrops:"المحاصيل المزروعة", rpIrr:"الري: المناطق ومعدل التدفق وسجل الري", rpPower:"المعدات: الإضاءة والمراوح والمضخة (استهلاك الكهرباء)", rpWin:"النوافذ", rpLog:"سجل المستشعرات (الحرارة والرطوبة والضوء وCO2)", rfTitle:"هل تريد إعادة ضبط المصنع؟", rfBody:"سيتم حذف كل شيء: المحاصيل والري والمعدات والنوافذ والسجل والنباتات المخصصة وحجم الدفيئة والموقع واللغة. سيعود التطبيق كأنه مثبت حديثًا. يبقى الاتصال بلوحة Organics One. لا يمكن التراجع عن ذلك.", rfConfirm:"نعم، أعد ضبط كل شيء", resetCancel:"إلغاء", toastCropsDone:"تم، حُذفت محاصيلك 🌱", toastPartsDone:"تم، حُذف ما حددته",
     boardTitle:'لوحة ORGANICS ONE',
     boardConnect:'ربط اللوحة',
     boardSave:'اتصال',
@@ -3592,7 +3603,7 @@ const TRANSLATIONS = {
     sdRainToday:"oggi",
     sdRainTomorrow:"domani",
     sdRainNote:"Dentro la serra la pioggia non arriva alle colture. L'irrigazione consigliata non la sottrae.",
-    resetAllBtn:"Cancella tutta la coltivazione", resetAllHint:"Riporta la tua serra a zero. Le impostazioni restano.", resetTitle:"Cancellare tutta la coltivazione?", resetBody:"Tutte le colture, le zone di irrigazione e il registro delle irrigazioni verranno eliminati. La serra tornerà a zero e l’operazione non si può annullare. Lingua, unità, posizione e piante personalizzate restano.", resetConfirm:"Sì, cancella tutto", resetCancel:"Annulla", toastResetDone:"Fatto, la tua serra è tornata a zero 🌱",
+    resetSec:"Cancella dati", resetCrops:"Cancella colture", resetCropsHint:"Veloce, per riseminare. Mantiene irrigazione e impostazioni.", resetParts:"Cancella per parti…", resetPartsHint:"Scegli cosa cancellare: colture, irrigazione, attrezzature, finestre o cronologia.", resetFactory:"Ripristino di fabbrica", resetFactoryHint:"Cancella tutto e l’app torna come appena installata. La scheda resta collegata.", rcTitle:"Cancellare tutte le colture?", rcBody:"Tutte le piante della serra verranno rimosse. Zone di irrigazione, attrezzature e impostazioni restano. L’operazione non si può annullare.", rcConfirm:"Sì, cancella colture", rpTitle:"Cosa vuoi cancellare?", rpBody:"Seleziona cosa eliminare. L’operazione non si può annullare.", rpConfirm:"Cancella selezionati", rpCrops:"Colture piantate", rpIrr:"Irrigazione: zone, portata e registro irrigazioni", rpPower:"Attrezzature: illuminazione, ventole e pompa (consumo elettrico)", rpWin:"Finestre", rpLog:"Cronologia sensori (temperatura, umidità, luce, CO2)", rfTitle:"Ripristino di fabbrica?", rfBody:"Verrà cancellato tutto: colture, irrigazione, attrezzature, finestre, cronologia, piante personalizzate, dimensioni della serra, posizione e lingua. L’app tornerà come appena installata. Il collegamento con la tua scheda Organics One resta. L’operazione non si può annullare.", rfConfirm:"Sì, ripristina tutto", resetCancel:"Annulla", toastCropsDone:"Fatto, le colture sono state cancellate 🌱", toastPartsDone:"Fatto, la selezione è stata cancellata",
     boardTitle:'SCHEDA ORGANICS ONE',
     boardConnect:'Collega scheda',
     boardSave:'Collega',
@@ -3920,7 +3931,7 @@ const TRANSLATIONS = {
     sdRainToday:"сегодня",
     sdRainTomorrow:"завтра",
     sdRainNote:"Внутри теплицы дождь не попадает на растения. Рекомендуемый полив его не учитывает.",
-    resetAllBtn:"Удалить все посадки", resetAllHint:"Возвращает теплицу к нулю. Настройки сохраняются.", resetTitle:"Удалить все посадки?", resetBody:"Все культуры, зоны полива и журнал полива будут удалены. Теплица вернётся к нулю, отменить это нельзя. Язык, единицы, местоположение и ваши растения сохранятся.", resetConfirm:"Да, удалить всё", resetCancel:"Отмена", toastResetDone:"Готово, теплица вернулась к нулю 🌱",
+    resetSec:"Удаление данных", resetCrops:"Удалить культуры", resetCropsHint:"Быстро, чтобы посадить заново. Полив и настройки сохраняются.", resetParts:"Удалить выборочно…", resetPartsHint:"Выберите, что удалить: культуры, полив, оборудование, окна или историю.", resetFactory:"Сброс до заводских настроек", resetFactoryHint:"Удаляет всё, приложение как после установки. Плата остаётся подключённой.", rcTitle:"Удалить все культуры?", rcBody:"Все растения в теплице будут удалены. Зоны полива, оборудование и настройки сохранятся. Отменить это нельзя.", rcConfirm:"Да, удалить культуры", rpTitle:"Что удалить?", rpBody:"Отметьте, что нужно удалить. Отменить это нельзя.", rpConfirm:"Удалить выбранное", rpCrops:"Посаженные культуры", rpIrr:"Полив: зоны, расход и журнал полива", rpPower:"Оборудование: освещение, вентиляторы и насос (энергопотребление)", rpWin:"Окна", rpLog:"История датчиков (температура, влажность, свет, CO2)", rfTitle:"Сбросить до заводских настроек?", rfBody:"Будет удалено всё: культуры, полив, оборудование, окна, история, ваши растения, размер теплицы, местоположение и язык. Приложение станет как после установки. Подключение к плате Organics One сохранится. Отменить это нельзя.", rfConfirm:"Да, сбросить всё", resetCancel:"Отмена", toastCropsDone:"Готово, культуры удалены 🌱", toastPartsDone:"Готово, выбранное удалено",
     boardTitle:'ПЛАТА ORGANICS ONE',
     boardConnect:'Подключить плату',
     boardSave:'Подключить',
@@ -5978,7 +5989,7 @@ function renderSettings(){
   const set = (id,k) => { const el = document.getElementById(id); if(el) el.textContent = t(k); };
   set('setTitle','settingsTitle'); set('setLangL','setLang'); set('setUnitsL','setUnits'); set('uMetricL','unitsMetric'); set('uImperialL','unitsImperial');
   set('setTerms','termsLabel'); set('setPrivacy','privacyLabel'); set('settingsDone','modalDone');
-  set('resetAllL','resetAllBtn'); set('resetAllHint','resetAllHint');
+  set('resetSecL','resetSec'); set('resetCropsL','resetCrops'); set('resetCropsHint','resetCropsHint'); set('resetPartsL','resetParts'); set('resetPartsHint','resetPartsHint'); set('resetFactoryL','resetFactory'); set('resetFactoryHint','resetFactoryHint');
   document.querySelectorAll('#settingsOverlay [data-u]').forEach(b => b.classList.toggle('on', (state.units || 'metric') === b.dataset.u));
   const sb = document.getElementById('settingsBtn'); if(sb) sb.setAttribute('aria-label', t('settingsTitle'));
 }
@@ -5992,25 +6003,51 @@ document.querySelectorAll('#settingsOverlay [data-u]').forEach(b => b.addEventLi
   state.units = b.dataset.u; state.unitsManual = true; saveState(); renderSettings(); render(); refreshEnvIfLoaded();
 }));
 
-/* ---------- Delete the whole planting (with confirmation) ---------- */
-function openResetAll(){
-  const set = (id,k) => { const el = document.getElementById(id); if(el) el.textContent = t(k); };
-  set('resetTitle','resetTitle'); set('resetBody','resetBody'); set('resetCancel','resetCancel'); set('resetConfirm','resetConfirm');
+/* ---------- Delete data: crops, by parts, factory reset (always with confirmation) ---------- */
+const RESET_PARTS = [['crops','rpCrops'],['irr','rpIrr'],['power','rpPower'],['win','rpWin'],['log','rpLog']];
+let resetMode = null;
+function wipeParts(parts){
+  if(parts.includes('crops')) state.plantings = {};
+  if(parts.includes('irr')){ state.irrZones = {}; try{ localStorage.removeItem(IRR_KEY); localStorage.removeItem(FLOW_KEY); }catch(e){} try{ zoneFocus = null; }catch(e){} }
+  if(parts.includes('power')) try{ localStorage.removeItem(POWER_KEY); }catch(e){}
+  if(parts.includes('win')) delete state.windows;
+  if(parts.includes('log')) try{ localStorage.removeItem(LOG_KEY); }catch(e){}
+  saveState(); render();
+  ['renderWaterBar','renderWindowSettings','renderStats'].forEach(fn => { if(typeof window[fn] === 'function') try{ window[fn](); }catch(e){} });
+}
+function openReset(mode){
+  resetMode = mode;
+  const P = { crops:['rcTitle','rcBody','rcConfirm'], parts:['rpTitle','rpBody','rpConfirm'], factory:['rfTitle','rfBody','rfConfirm'] }[mode];
+  document.getElementById('resetTitle').textContent = t(P[0]);
+  document.getElementById('resetBody').textContent = t(P[1]);
+  document.getElementById('resetCancel').textContent = t('resetCancel');
+  const conf = document.getElementById('resetConfirm'); conf.textContent = t(P[2]);
+  const opts = document.getElementById('resetOpts');
+  opts.innerHTML = mode === 'parts' ? RESET_PARTS.map(([v,k]) => `<label><input type="checkbox" value="${v}"><span>${t(k)}</span></label>`).join('') : '';
+  const sync = () => { conf.disabled = mode === 'parts' && !opts.querySelector('input:checked'); };
+  opts.querySelectorAll('input').forEach(i => i.addEventListener('change', sync)); sync();
   closeSettings(); document.getElementById('resetOverlay').classList.add('show');
   setTimeout(() => { const c = document.getElementById('resetCancel'); if(c) c.focus(); }, 30);
 }
-function closeResetAll(){ document.getElementById('resetOverlay').classList.remove('show'); }
-function doResetAll(){
-  state.plantings = {}; state.irrZones = {};
-  try{ localStorage.removeItem(IRR_KEY); }catch(e){}
-  if(typeof zoneFocus !== 'undefined') try{ zoneFocus = null; }catch(e){}
-  saveState(); closeResetAll(); render();
-  if(typeof renderWaterBar === 'function') try{ renderWaterBar(); }catch(e){}
-  showToast(t('toastResetDone'));
+function closeResetAll(){ document.getElementById('resetOverlay').classList.remove('show'); resetMode = null; }
+function doReset(){
+  const mode = resetMode; if(!mode) return;
+  if(mode === 'factory'){
+    // Everything the app stores, except the Organics One board connection
+    const keep = 'organics.conexion.v1';
+    try{ Object.keys(localStorage).filter(k => k !== keep && (k === STORAGE_KEY || k.indexOf('gp.') === 0)).forEach(k => localStorage.removeItem(k)); }catch(e){}
+    location.reload(); return;
+  }
+  const parts = mode === 'crops' ? ['crops'] : [...document.querySelectorAll('#resetOpts input:checked')].map(i => i.value);
+  if(!parts.length) return;
+  closeResetAll(); wipeParts(parts);
+  showToast(t(mode === 'crops' ? 'toastCropsDone' : 'toastPartsDone'));
 }
-document.getElementById('resetAllBtn').addEventListener('click', openResetAll);
+document.getElementById('resetCropsBtn').addEventListener('click', () => openReset('crops'));
+document.getElementById('resetPartsBtn').addEventListener('click', () => openReset('parts'));
+document.getElementById('resetFactoryBtn').addEventListener('click', () => openReset('factory'));
 document.getElementById('resetCancel').addEventListener('click', closeResetAll);
-document.getElementById('resetConfirm').addEventListener('click', doResetAll);
+document.getElementById('resetConfirm').addEventListener('click', doReset);
 document.getElementById('resetOverlay').addEventListener('click', e => { if(e.target.id === 'resetOverlay') closeResetAll(); });
 
 /* ---------- Tabs on phones/tablets ---------- */
