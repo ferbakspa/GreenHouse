@@ -15,6 +15,7 @@ Los nombres de topics y formatos son sugerencias de la app. El proyecto de hardw
 | 4 | Acceso local sin internet | Ver y controlar la tarjeta en el invernadero sin señal | Media |
 | 5 | Sensores opcionales de pH y conductividad (EC) | Hidroponía | Media |
 | 6 | Volumen regado por zona en el día | Litros reales por zona en la vista de riego | Media |
+| 7 | Servidor operado por Aidex y configuración de fábrica (QR o código por tarjeta) | Conectar y listo para el cliente, y alertas al teléfono del plan de pago | Alta |
 
 ## 1. Tiempo encendido por salida en el día
 
@@ -86,6 +87,25 @@ Alarmas sugeridas: `ph_out_of_range`, `ec_out_of_range`, con rangos configurable
 | `zone/{n}/volume_today` | L desde las 00:00 |
 
 Con esto la vista de riego muestra litros reales en lugar de estimados.
+
+## 7. Servidor operado por Aidex y configuración de fábrica
+
+**Decisión de negocio (2026-10-20):** por defecto el servidor MQTT lo opera Aidex. Queda la opción de "servidor propio" para empresas. Las alertas al teléfono del plan de pago necesitan que los datos pasen por un servidor de Aidex.
+
+Pedido a evaluar por el proyecto de hardware:
+- **Un servidor central** (EMQX administrado) con **credenciales separadas por tarjeta** y permisos por invernadero, de modo que cada tarjeta y cada app solo vean sus propios topics.
+- **Configuración de fábrica:** cada tarjeta sale con su identificador y credenciales, y una **etiqueta con QR o código corto**. La app lee el QR (o se escribe el código) y queda conectada sin escribir servidor, usuario ni clave.
+- **Revocar y cambiar** las credenciales de una tarjeta (venta, robo, cambio de dueño) sin reprogramarla en terreno.
+- **Servidor propio:** mantener la forma actual de `conectar({ servidor, usuario, clave })` para clientes empresa.
+- **Base para alertas:** un servicio del lado del servidor que lea las alarmas y lecturas, y que pueda enviar avisos (push, WhatsApp o SMS). Lo define el proyecto, la app solo necesita saber si la tarjeta tiene alertas activas.
+
+Sugerencia de formato del QR, a definir por el proyecto:
+
+```
+organics://conectar?t=<id_tarjeta>&c=<codigo_de_activacion>
+```
+
+El código de activación se canjea una vez por credenciales propias de esa app, así la clave real no queda impresa en la etiqueta.
 
 ## Ya disponible en el contrato y que la app usará
 

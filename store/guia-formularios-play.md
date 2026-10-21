@@ -53,7 +53,7 @@ Google cuenta como "recopilado" todo dato que sale del teléfono, aunque nosotro
 - "Compartido" va en **No** porque Open-Meteo e ipwho.is solo prestan el servicio de clima y ubicación (Google los considera proveedores de servicio, no se cuenta como compartir).
 - No hay cuentas, ni analítica, ni publicidad, ni datos de contacto, ni archivos, ni salud, ni pagos.
 
-- Modelo decidido: el servidor de la tarjeta lo opera Aidex por defecto (con opción de servidor propio). Por eso se declaran las lecturas de sensores. Falta agregar un párrafo sobre esto en la política de privacidad antes de publicar.
+- Modelo decidido: el servidor de la tarjeta lo opera Aidex por defecto (con opción de servidor propio). Por eso se declaran las lecturas de sensores. La política de privacidad ya incluye la sección "Tarjeta Organics One (opcional)".
 
 ## 8. Otras declaraciones
 | Formulario | Respuesta |
