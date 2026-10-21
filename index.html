@@ -206,6 +206,7 @@
   .set-units{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px; }
   .set-units .ws-opt{ border-radius:12px; padding:9px 10px; text-align:left; }
   .set-units .ws-opt b{ display:block; font-size:13px; } .set-units .ws-opt small{ display:block; font-size:11px; opacity:.85; margin-top:2px; }
+  .app-ver{ opacity:.7; }
   .set-links{ font-size:12px; color: var(--pine-soft); padding:12px 0 2px; border-top:1px solid var(--bg-warm); }
   .set-box .lang-switch{ margin:0; }
   .danger-btn{ width:100%; padding:11px 14px; border-radius:12px; border:1.5px solid #E8C4BE; background:#FFF6F4; color:#A0413A; font-weight:700; font-size:13.5px; cursor:pointer; font-family:'Public Sans', sans-serif; }
@@ -402,6 +403,19 @@
   /* Room */
   .room-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; gap:8px; flex-wrap:wrap; }
   .room-header-right{ display:flex; align-items:center; gap:8px; }
+  .view3d-btn{ height:30px; min-width:42px; padding:0 11px; border:none; border-radius:999px; background:var(--bg-warm); color:var(--pine-dark); font:800 12px 'Public Sans',sans-serif; letter-spacing:.5px; cursor:pointer; }
+  .view3d-btn.on{ background:var(--pine-dark); color:#fff; }
+  .room3d{ position:relative; width:100%; aspect-ratio:3/4; max-height:calc(100vh - 230px); max-height:calc(100dvh - 230px); border-radius:12px; overflow:hidden; background:linear-gradient(180deg,#BFDDF0 0%,#E6F0E8 70%); touch-action:none; }
+  .room3d[hidden]{ display:none; }
+  .room3d canvas{ position:absolute; inset:0; width:100%; height:100%; display:block; cursor:grab; touch-action:none; }
+  .room3d canvas:active{ cursor:grabbing; }
+  .r3-msg{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center; padding:20px; font-size:13px; font-weight:600; color:var(--pine-dark); pointer-events:none; }
+  .r3-msg:empty{ display:none; }
+  .r3-hint{ position:absolute; left:10px; right:10px; bottom:10px; font-size:11px; line-height:1.35; color:#fff; background:rgba(28,46,39,.55); border-radius:10px; padding:6px 9px; pointer-events:none; text-align:center; transition:opacity .6s; }
+  .r3-hint.gone{ opacity:0; }
+  #roomPanel.v3d #room, #roomPanel.v3d #waterBar, #roomPanel.v3d #tabPlantBar, #roomPanel.v3d #roomLegend, #roomPanel.v3d #waterToggle, #roomPanel.v3d #layerBar{ display:none !important; }
+  @media (min-width: 701px){ .room3d{ aspect-ratio:4/3; } }
+  @media (min-width: 981px){ .room3d{ aspect-ratio:16/11; max-height:none; } }
   .grid-size-label{ font-size:11.5px; color: var(--pine-soft); font-weight:600; font-family:inherit; border:none; background: var(--bg-warm); padding:5px 10px; border-radius:999px; cursor:pointer; display:inline-flex; align-items:center; gap:5px; }
   .grid-size-label::after{ content:'✏️'; font-size:10.5px; }
   .grid-size-label:hover{ background: var(--soil-line); }
@@ -411,6 +425,28 @@
   .legend{ font-size:11px; color: var(--pine-soft); margin-top:10px; }
   .legend-empty{ display:inline-block; width:12px; height:12px; border-radius:3px; background: var(--bg); box-shadow: inset 0 0 0 1px rgba(38,67,58,0.22); vertical-align:-2px; margin-right:5px; }
 
+  .layer-bar{ margin:-4px 0 12px; }
+  .layer-bar:empty{ display:none; }
+  .lay-setup{ background:linear-gradient(135deg,#F3F8EF,#FBF5EA); border:1.5px solid #E3D6BF; border-radius:14px; padding:12px 12px 10px; }
+  .ls-q{ font-weight:800; font-size:14px; color:var(--pine-dark); margin-bottom:9px; }
+  .ls-sub{ font-size:11.5px; color:var(--pine-soft); margin-top:8px; line-height:1.4; }
+  .lay-opt span{ font-size:13px; }
+  .lb-seg{ display:flex; gap:4px; background:var(--bg-warm); border-radius:999px; padding:3px; width:max-content; max-width:100%; }
+  .lb-opt{ border:none; background:none; border-radius:999px; padding:6px 13px; font:700 12.5px 'Public Sans',sans-serif; color:var(--pine-soft); cursor:pointer; }
+  .lb-opt.on{ background:#fff; color:var(--pine-dark); box-shadow:0 1px 3px rgba(0,0,0,.12); }
+  .lb-opt small{ display:inline-block; min-width:18px; padding:0 5px; margin-left:3px; border-radius:999px; background:#C9A16D; color:#fff; font-size:10.5px; line-height:17px; }
+  .lb-tools{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:9px; }
+  .lb-draw{ border:1.5px solid #C9A16D; background:#FFF8EE; color:#7A5A2E; border-radius:999px; padding:6px 12px; font:700 12.5px 'Public Sans',sans-serif; cursor:pointer; }
+  .lb-draw.on{ background:#C9A16D; color:#fff; }
+  .lb-h{ font-size:12px; color:var(--pine-soft); font-weight:600; display:flex; align-items:center; gap:5px; }
+  .lb-h input{ width:58px; padding:4px 6px; border:1.5px solid var(--soil-line); border-radius:8px; font:inherit; color:var(--pine-dark); }
+  .lb-hint{ font-size:11.5px; color:var(--pine-soft); margin-top:7px; line-height:1.45; }
+  .room .cell.no-bed{ background:repeating-linear-gradient(45deg,#EEF0EA 0 6px,#E4E7DF 6px 12px); cursor:not-allowed; }
+  .room .cell.bed-empty{ background:#E9DCC7; box-shadow:inset 0 0 0 2px #C9A16D; }
+  .room .cell.under-bed{ box-shadow:inset 0 0 0 2px rgba(201,161,109,.75); }
+  .room .cell.bed-edit{ cursor:crosshair; }
+  .room .cell.bed-edit.bed-on{ background:#E2C99F; box-shadow:inset 0 0 0 2px #A67C45; }
+  .room .cell .bed-mark{ font-size:16px; opacity:.9; }
   .room{ display:grid; gap:0; width:100%; padding: 8px; border-radius: 12px; overflow:hidden; touch-action:none; background: var(--bg-warm); }
   .cell{ position:relative; cursor:pointer; display:flex; align-items:center; justify-content:center; overflow:hidden; background: var(--bg); transition: transform .08s ease; box-sizing:border-box; }
   .cell:not(.planted){ box-shadow: inset 0 0 0 1px rgba(38,67,58,0.09); }
@@ -645,6 +681,8 @@
           <div class="stepper"><button id="colsDown">−</button><div class="val" id="colsVal">6</div><button id="colsUp">+</button></div>
         </div>
         <div class="cell-size-hint"><span class="sq"></span><span id="cellSizeHint">Each square is 50 × 50 cm</span></div>
+        <div class="win-set" id="layoutSet"></div>
+        <div class="win-set" id="ghShapeSet"></div>
         <div class="win-set" id="winSet"></div>
       </div>
       <button id="gridDone">OK</button>
@@ -655,13 +693,16 @@
       <div class="room-header">
         <span class="eyebrow" id="roomTitle">MY GREENHOUSE</span>
         <div class="room-header-right">
+          <button class="view3d-btn" id="view3dBtn" type="button" aria-pressed="false">3D</button>
           <button class="icon-btn water-toggle" id="waterToggle" type="button" aria-pressed="false">💧</button>
           <button class="grid-size-label" id="gridSizeLabel" type="button">6 × 6 grid</button>
         </div>
       </div>
+      <div class="layer-bar" id="layerBar"></div>
       <div class="tab-plant-bar" id="tabPlantBar"><button class="pick-plant-btn" id="openLibraryBtn"></button><button class="pick-plant-cancel" id="pickCancelBtn" aria-label="Cancel">✕</button></div>
       <div class="water-bar" id="waterBar"></div>
       <div class="room" id="room"></div>
+      <div class="room3d" id="room3d" hidden><canvas id="room3dCanvas"></canvas><div class="r3-msg" id="room3dMsg"></div><div class="r3-hint" id="room3dHint"></div></div>
       <div class="legend" id="roomLegend">empty block · tap a planted block for details · drag to plant a row</div>
     </div>
 
@@ -748,7 +789,7 @@
     <button type="button" class="danger-btn soft" id="resetCropsBtn">🌱 <span id="resetCropsL"></span></button><small class="set-hint" id="resetCropsHint"></small>
     <button type="button" class="danger-btn soft" id="resetPartsBtn">🧹 <span id="resetPartsL"></span></button><small class="set-hint" id="resetPartsHint"></small>
     <button type="button" class="danger-btn" id="resetFactoryBtn">⚠️ <span id="resetFactoryL"></span></button><small class="set-hint" id="resetFactoryHint"></small></div>
-  <div class="set-links"><a href="terms.html" target="_blank" rel="noopener" id="setTerms">Terms</a> · <a href="privacy.html" target="_blank" rel="noopener" id="setPrivacy">Privacy</a></div>
+  <div class="set-links"><a href="terms.html" target="_blank" rel="noopener" id="setTerms">Terms</a> · <a href="privacy.html" target="_blank" rel="noopener" id="setPrivacy">Privacy</a> · <span class="app-ver">v1.1</span></div>
   <button id="settingsDone">OK</button>
 </div></div>
 <div class="consent-overlay" id="resetOverlay" role="alertdialog" aria-modal="true"><div class="consent-box reset-box">
@@ -1061,6 +1102,8 @@ const TRANSLATIONS = {
     sdRainTomorrow:"tomorrow",
     sdRainNote:"Inside the greenhouse rain does not reach the crops. The suggested watering does not subtract it.",
     resetSec:"Delete data", resetCrops:"Delete crops", resetCropsHint:"Quick, to plant again. Keeps irrigation and settings.", resetParts:"Delete by parts…", resetPartsHint:"Choose what to delete: crops, irrigation, equipment, windows or history.", resetFactory:"Factory reset", resetFactoryHint:"Deletes everything and the app is like newly installed. The board stays connected.", rcTitle:"Delete all your crops?", rcBody:"All plants in your greenhouse will be removed. Irrigation zones, equipment and your settings are kept. This cannot be undone.", rcConfirm:"Yes, delete crops", rpTitle:"What do you want to delete?", rpBody:"Check what you want to remove. This cannot be undone.", rpConfirm:"Delete selected", rpCrops:"Planted crops", rpIrr:"Irrigation: zones, flow rate and watering log", rpPower:"Equipment: lighting, fans and pump (power use)", rpWin:"Windows", rpLog:"Sensor history (temperature, humidity, light, CO2)", rfTitle:"Factory reset?", rfBody:"Everything will be deleted: crops, irrigation, equipment, windows, history, custom plants, greenhouse size, location and language. The app will be like newly installed. Your Organics One board connection is kept. This cannot be undone.", rfConfirm:"Yes, reset everything", resetCancel:"Cancel", toastCropsDone:"Done, your crops were deleted 🌱", toastPartsDone:"Done, the selected data was deleted",
+    layerGround:"Ground", layerUp:"Raised bed", bedDraw:"✏️ Draw raised bed", bedDone:"✓ Done", bedHeightL:"Bed height", bedDrawHint:"Tap or drag over the blocks where your raised bed is. Tap again to remove it.", bedNoneHint:"You have no raised beds yet. Tap ✏️ Draw raised bed and mark where it is.", toastNoBed:"There is no raised bed here. Tap ✏️ Draw raised bed to add it.", posUp:"raised bed", ghShape:"Greenhouse shape", ghGable:"Gable roof", ghTunnel:"Tunnel", v3dTitle:"3D view", v3dBack:"Back to 2D to plant", v3dHint:"3D view to get your bearings. Drag to rotate, pinch or scroll to zoom. To plant, go back to 2D.", v3dLoading:"Loading 3D view…", v3dError:"Could not load the 3D view. Check your connection.",
+    setupQ:"How do you grow in your greenhouse?", setupSub:"This sets up your plan. You can change it later by tapping the greenhouse size.", layoutGround:"In the ground", layoutUp:"On raised beds", layoutBoth:"Ground and raised beds", layoutTitle:"Where you grow",
     boardTitle:'ORGANICS ONE BOARD', boardConnect:'Connect board', boardSave:'Connect', boardDisc:'Disconnect', boardForget:'Forget', boardServer:'Server (EMQX host)', boardUser:'User', boardPass:'Password', boardInv:'Greenhouse name', boardOff:'Not connected', boardOn:'Board online', boardNoBoard:'Board offline', boardUpdate:'Update firmware', boardTemp:'Temperature', boardHum:'Humidity', boardVpd:'VPD', boardSoil:'Soil', boardValveOpen:'watering', boardZone:'Zone', boardAlarm:'Alarm', boardConnecting:'Connecting…', boardLiveTemp:'Real sensor',
     useAutoLocation:'📍 Use automatic location', locationManualLabel:'Manual location',
     locationApprox:'Approximate location', locationPrecise:'Precise location',
@@ -1349,6 +1392,8 @@ const TRANSLATIONS = {
     sdRainTomorrow:"mañana",
     sdRainNote:"Dentro del invernadero la lluvia no llega a los cultivos. El riego sugerido no la descuenta.",
     resetSec:"Borrar datos", resetCrops:"Borrar cultivos", resetCropsHint:"Rápido, para volver a sembrar. Mantiene el riego y la configuración.", resetParts:"Borrar por partes…", resetPartsHint:"Eliges qué borrar: cultivos, riego, equipos, ventanas o historial.", resetFactory:"Restablecer de fábrica", resetFactoryHint:"Borra todo y la app queda como recién instalada. La tarjeta sigue conectada.", rcTitle:"¿Borrar todos tus cultivos?", rcBody:"Se eliminarán todas las plantas sembradas en tu invernadero. Las zonas de riego, los equipos y tu configuración se mantienen. Esto no se puede deshacer.", rcConfirm:"Sí, borrar cultivos", rpTitle:"¿Qué quieres borrar?", rpBody:"Marca lo que quieres eliminar. Esto no se puede deshacer.", rpConfirm:"Borrar lo seleccionado", rpCrops:"Cultivos sembrados", rpIrr:"Riego: zonas, caudal y registro de riegos", rpPower:"Equipos: iluminación, ventiladores y bomba (consumo eléctrico)", rpWin:"Ventanas", rpLog:"Historial de sensores (temperatura, humedad, luz, CO2)", rfTitle:"¿Restablecer de fábrica?", rfBody:"Se borrará todo: cultivos, riego, equipos, ventanas, historial, plantas personalizadas, tamaño del invernadero, ubicación e idioma. La app quedará como recién instalada. La conexión con tu tarjeta Organics One se mantiene. Esto no se puede deshacer.", rfConfirm:"Sí, restablecer todo", resetCancel:"Cancelar", toastCropsDone:"Listo, tus cultivos se borraron 🌱", toastPartsDone:"Listo, se borró lo seleccionado",
+    layerGround:"Suelo", layerUp:"Mesón", bedDraw:"✏️ Dibujar mesón", bedDone:"✓ Listo", bedHeightL:"Altura del mesón", bedDrawHint:"Toca o arrastra sobre los bloques donde está tu mesón. Toca de nuevo para quitarlo.", bedNoneHint:"Aún no tienes mesones. Toca ✏️ Dibujar mesón y marca dónde está.", toastNoBed:"Aquí no hay mesón. Toca ✏️ Dibujar mesón para agregarlo.", posUp:"mesón", ghShape:"Forma del invernadero", ghGable:"Dos aguas", ghTunnel:"Túnel", v3dTitle:"Vista 3D", v3dBack:"Volver a 2D para sembrar", v3dHint:"Vista 3D para orientarte. Arrastra para girar, pellizca o usa la rueda para acercar. Para sembrar, vuelve a 2D.", v3dLoading:"Cargando vista 3D…", v3dError:"No se pudo cargar la vista 3D. Revisa tu conexión.",
+    setupQ:"¿Cómo cultivas en tu invernadero?", setupSub:"Así preparo tu plano. Lo puedes cambiar después tocando el tamaño del invernadero.", layoutGround:"En el suelo", layoutUp:"En mesones", layoutBoth:"Suelo y mesones", layoutTitle:"Dónde cultivas",
     boardTitle:'TARJETA ORGANICS ONE', boardConnect:'Conectar tarjeta', boardSave:'Conectar', boardDisc:'Desconectar', boardForget:'Olvidar', boardServer:'Servidor (host de EMQX)', boardUser:'Usuario', boardPass:'Clave', boardInv:'Nombre del invernadero', boardOff:'Sin conexión', boardOn:'Tarjeta en línea', boardNoBoard:'Tarjeta desconectada', boardUpdate:'Actualizar firmware', boardTemp:'Temperatura', boardHum:'Humedad', boardVpd:'VPD', boardSoil:'Suelo', boardValveOpen:'regando', boardZone:'Zona', boardAlarm:'Alarma', boardConnecting:'Conectando…', boardLiveTemp:'Sensor real',
     useAutoLocation:'📍 Usar ubicación automática', locationManualLabel:'Ubicación manual',
     locationApprox:'Ubicación aproximada', locationPrecise:'Ubicación precisa',
@@ -1636,6 +1681,8 @@ const TRANSLATIONS = {
     sdRainTomorrow:"demain",
     sdRainNote:"Dans la serre la pluie n'atteint pas les cultures. L'arrosage conseillé ne la déduit pas.",
     resetSec:"Effacer des données", resetCrops:"Effacer les cultures", resetCropsHint:"Rapide, pour replanter. Conserve l’arrosage et les réglages.", resetParts:"Effacer par parties…", resetPartsHint:"Choisissez quoi effacer : cultures, arrosage, équipements, fenêtres ou historique.", resetFactory:"Réinitialisation d’usine", resetFactoryHint:"Efface tout et l’app redevient comme neuve. La carte reste connectée.", rcTitle:"Effacer toutes vos cultures ?", rcBody:"Toutes les plantes de votre serre seront supprimées. Les zones d’arrosage, les équipements et vos réglages sont conservés. Action irréversible.", rcConfirm:"Oui, effacer les cultures", rpTitle:"Que voulez-vous effacer ?", rpBody:"Cochez ce que vous voulez supprimer. Action irréversible.", rpConfirm:"Effacer la sélection", rpCrops:"Cultures plantées", rpIrr:"Arrosage : zones, débit et historique d’arrosage", rpPower:"Équipements : éclairage, ventilateurs et pompe (consommation)", rpWin:"Fenêtres", rpLog:"Historique des capteurs (température, humidité, lumière, CO2)", rfTitle:"Réinitialisation d’usine ?", rfBody:"Tout sera effacé : cultures, arrosage, équipements, fenêtres, historique, plantes personnalisées, taille de la serre, position et langue. L’app sera comme neuve. La connexion à votre carte Organics One est conservée. Action irréversible.", rfConfirm:"Oui, tout réinitialiser", resetCancel:"Annuler", toastCropsDone:"C’est fait, vos cultures ont été effacées 🌱", toastPartsDone:"C’est fait, la sélection a été effacée",
+    layerGround:"Sol", layerUp:"Table de culture", bedDraw:"✏️ Dessiner la table", bedDone:"✓ Terminé", bedHeightL:"Hauteur de la table", bedDrawHint:"Touchez ou glissez sur les blocs où se trouve votre table de culture. Touchez à nouveau pour la retirer.", bedNoneHint:"Vous n’avez pas encore de table de culture. Touchez ✏️ Dessiner la table et indiquez où elle se trouve.", toastNoBed:"Il n’y a pas de table ici. Touchez ✏️ Dessiner la table pour l’ajouter.", posUp:"table", ghShape:"Forme de la serre", ghGable:"Deux pentes", ghTunnel:"Tunnel", v3dTitle:"Vue 3D", v3dBack:"Revenir en 2D pour planter", v3dHint:"Vue 3D pour vous repérer. Faites glisser pour tourner, pincez ou utilisez la molette pour zoomer. Pour planter, revenez en 2D.", v3dLoading:"Chargement de la vue 3D…", v3dError:"Impossible de charger la vue 3D. Vérifiez votre connexion.",
+    setupQ:"Comment cultivez-vous dans votre serre ?", setupSub:"Cela prépare votre plan. Vous pourrez le changer en touchant la taille de la serre.", layoutGround:"En pleine terre", layoutUp:"Sur tables de culture", layoutBoth:"Sol et tables", layoutTitle:"Où vous cultivez",
     boardTitle:'CARTE ORGANICS ONE',
     boardConnect:'Connecter la carte',
     boardSave:'Connecter',
@@ -1964,6 +2011,8 @@ const TRANSLATIONS = {
     sdRainTomorrow:"amanhã",
     sdRainNote:"Dentro da estufa a chuva não chega aos cultivos. A rega sugerida não a desconta.",
     resetSec:"Apagar dados", resetCrops:"Apagar cultivos", resetCropsHint:"Rápido, para plantar de novo. Mantém a rega e as configurações.", resetParts:"Apagar por partes…", resetPartsHint:"Escolha o que apagar: cultivos, rega, equipamentos, janelas ou histórico.", resetFactory:"Restaurar padrões de fábrica", resetFactoryHint:"Apaga tudo e o app fica como recém-instalado. A placa continua conectada.", rcTitle:"Apagar todos os seus cultivos?", rcBody:"Todas as plantas da sua estufa serão removidas. As zonas de rega, os equipamentos e suas configurações são mantidos. Isso não pode ser desfeito.", rcConfirm:"Sim, apagar cultivos", rpTitle:"O que você quer apagar?", rpBody:"Marque o que quer remover. Isso não pode ser desfeito.", rpConfirm:"Apagar selecionados", rpCrops:"Cultivos plantados", rpIrr:"Rega: zonas, vazão e registro de regas", rpPower:"Equipamentos: iluminação, ventiladores e bomba (consumo elétrico)", rpWin:"Janelas", rpLog:"Histórico dos sensores (temperatura, umidade, luz, CO2)", rfTitle:"Restaurar padrões de fábrica?", rfBody:"Tudo será apagado: cultivos, rega, equipamentos, janelas, histórico, plantas personalizadas, tamanho da estufa, localização e idioma. O app ficará como recém-instalado. A conexão com sua placa Organics One é mantida. Isso não pode ser desfeito.", rfConfirm:"Sim, restaurar tudo", resetCancel:"Cancelar", toastCropsDone:"Pronto, seus cultivos foram apagados 🌱", toastPartsDone:"Pronto, o que foi selecionado foi apagado",
+    layerGround:"Solo", layerUp:"Bancada", bedDraw:"✏️ Desenhar bancada", bedDone:"✓ Pronto", bedHeightL:"Altura da bancada", bedDrawHint:"Toque ou arraste sobre os blocos onde fica sua bancada. Toque de novo para removê-la.", bedNoneHint:"Você ainda não tem bancadas. Toque em ✏️ Desenhar bancada e marque onde ela fica.", toastNoBed:"Aqui não há bancada. Toque em ✏️ Desenhar bancada para adicioná-la.", posUp:"bancada", ghShape:"Formato da estufa", ghGable:"Duas águas", ghTunnel:"Túnel", v3dTitle:"Vista 3D", v3dBack:"Voltar ao 2D para plantar", v3dHint:"Vista 3D para se orientar. Arraste para girar, pince ou use a roda para aproximar. Para plantar, volte ao 2D.", v3dLoading:"Carregando vista 3D…", v3dError:"Não foi possível carregar a vista 3D. Verifique sua conexão.",
+    setupQ:"Como você cultiva na sua estufa?", setupSub:"Assim preparo sua planta. Você pode mudar depois tocando no tamanho da estufa.", layoutGround:"No solo", layoutUp:"Em bancadas", layoutBoth:"Solo e bancadas", layoutTitle:"Onde você cultiva",
     boardTitle:'PLACA ORGANICS ONE',
     boardConnect:'Conectar placa',
     boardSave:'Conectar',
@@ -2292,6 +2341,8 @@ const TRANSLATIONS = {
     sdRainTomorrow:"morgen",
     sdRainNote:"Im Gewächshaus erreicht der Regen die Pflanzen nicht. Die empfohlene Bewässerung zieht ihn nicht ab.",
     resetSec:"Daten löschen", resetCrops:"Kulturen löschen", resetCropsHint:"Schnell, um neu zu pflanzen. Bewässerung und Einstellungen bleiben.", resetParts:"Teilweise löschen…", resetPartsHint:"Wähle, was gelöscht wird: Kulturen, Bewässerung, Geräte, Fenster oder Verlauf.", resetFactory:"Auf Werkseinstellungen zurücksetzen", resetFactoryHint:"Löscht alles, die App ist wie neu installiert. Die Platine bleibt verbunden.", rcTitle:"Alle Kulturen löschen?", rcBody:"Alle Pflanzen in deinem Gewächshaus werden entfernt. Bewässerungszonen, Geräte und Einstellungen bleiben erhalten. Das kann nicht rückgängig gemacht werden.", rcConfirm:"Ja, Kulturen löschen", rpTitle:"Was möchtest du löschen?", rpBody:"Markiere, was entfernt werden soll. Das kann nicht rückgängig gemacht werden.", rpConfirm:"Auswahl löschen", rpCrops:"Gepflanzte Kulturen", rpIrr:"Bewässerung: Zonen, Durchfluss und Bewässerungsprotokoll", rpPower:"Geräte: Beleuchtung, Lüfter und Pumpe (Stromverbrauch)", rpWin:"Fenster", rpLog:"Sensorverlauf (Temperatur, Feuchte, Licht, CO2)", rfTitle:"Auf Werkseinstellungen zurücksetzen?", rfBody:"Alles wird gelöscht: Kulturen, Bewässerung, Geräte, Fenster, Verlauf, eigene Pflanzen, Gewächshausgröße, Standort und Sprache. Die App ist dann wie neu installiert. Die Verbindung zu deiner Organics-One-Platine bleibt erhalten. Das kann nicht rückgängig gemacht werden.", rfConfirm:"Ja, alles zurücksetzen", resetCancel:"Abbrechen", toastCropsDone:"Fertig, deine Kulturen wurden gelöscht 🌱", toastPartsDone:"Fertig, die Auswahl wurde gelöscht",
+    layerGround:"Boden", layerUp:"Hochbeet", bedDraw:"✏️ Hochbeet zeichnen", bedDone:"✓ Fertig", bedHeightL:"Höhe des Hochbeets", bedDrawHint:"Tippe oder ziehe über die Blöcke, wo dein Hochbeet steht. Nochmal tippen zum Entfernen.", bedNoneHint:"Du hast noch keine Hochbeete. Tippe auf ✏️ Hochbeet zeichnen und markiere, wo es steht.", toastNoBed:"Hier ist kein Hochbeet. Tippe auf ✏️ Hochbeet zeichnen, um es hinzuzufügen.", posUp:"Hochbeet", ghShape:"Form des Gewächshauses", ghGable:"Satteldach", ghTunnel:"Tunnel", v3dTitle:"3D-Ansicht", v3dBack:"Zurück zu 2D zum Pflanzen", v3dHint:"3D-Ansicht zur Orientierung. Ziehen zum Drehen, mit zwei Fingern oder dem Mausrad zoomen. Zum Pflanzen zurück zu 2D.", v3dLoading:"3D-Ansicht wird geladen…", v3dError:"Die 3D-Ansicht konnte nicht geladen werden. Prüfe deine Verbindung.",
+    setupQ:"Wie baust du in deinem Gewächshaus an?", setupSub:"So wird dein Plan vorbereitet. Du kannst es später über die Gewächshausgröße ändern.", layoutGround:"Im Boden", layoutUp:"In Hochbeeten", layoutBoth:"Boden und Hochbeete", layoutTitle:"Wo du anbaust",
     boardTitle:'ORGANICS-ONE-PLATINE',
     boardConnect:'Platine verbinden',
     boardSave:'Verbinden',
@@ -2620,6 +2671,8 @@ const TRANSLATIONS = {
     sdRainTomorrow:"明天",
     sdRainNote:"温室内雨水不会落到作物上。建议浇水量不扣除降雨。",
     resetSec:"删除数据", resetCrops:"删除作物", resetCropsHint:"快速清空以便重新种植，保留灌溉和设置。", resetParts:"按项目删除…", resetPartsHint:"选择要删除的内容：作物、灌溉、设备、窗户或历史记录。", resetFactory:"恢复出厂设置", resetFactoryHint:"删除所有内容，应用恢复到刚安装的状态。控制板保持连接。", rcTitle:"要删除所有作物吗？", rcBody:"温室中的所有植物都将被移除。灌溉区、设备和设置会保留。此操作无法撤销。", rcConfirm:"是的，删除作物", rpTitle:"要删除哪些内容？", rpBody:"勾选要删除的内容。此操作无法撤销。", rpConfirm:"删除所选", rpCrops:"已种植的作物", rpIrr:"灌溉：区域、流量和浇水记录", rpPower:"设备：照明、风扇和水泵（耗电）", rpWin:"窗户", rpLog:"传感器历史（温度、湿度、光照、CO2）", rfTitle:"要恢复出厂设置吗？", rfBody:"所有内容都将被删除：作物、灌溉、设备、窗户、历史记录、自定义植物、温室尺寸、位置和语言。应用将恢复到刚安装的状态。与 Organics One 控制板的连接会保留。此操作无法撤销。", rfConfirm:"是的，全部恢复", resetCancel:"取消", toastCropsDone:"完成，作物已删除 🌱", toastPartsDone:"完成，所选内容已删除",
+    layerGround:"地面", layerUp:"种植台", bedDraw:"✏️ 绘制种植台", bedDone:"✓ 完成", bedHeightL:"种植台高度", bedDrawHint:"点按或拖动经过种植台所在的方块，再次点按可移除。", bedNoneHint:"你还没有种植台。点按 ✏️ 绘制种植台并标出位置。", toastNoBed:"这里没有种植台。点按 ✏️ 绘制种植台来添加。", posUp:"种植台", ghShape:"温室形状", ghGable:"人字顶", ghTunnel:"拱棚", v3dTitle:"3D 视图", v3dBack:"返回 2D 进行种植", v3dHint:"3D 视图帮助你了解布局。拖动旋转，双指或滚轮缩放。种植请返回 2D。", v3dLoading:"正在加载 3D 视图…", v3dError:"无法加载 3D 视图，请检查网络连接。",
+    setupQ:"你在温室里怎么种植？", setupSub:"这样可以准备你的布局。之后可点按温室尺寸进行更改。", layoutGround:"种在地面", layoutUp:"种在种植台", layoutBoth:"地面和种植台", layoutTitle:"种植方式",
     boardTitle:'ORGANICS ONE 控制板',
     boardConnect:'连接控制板',
     boardSave:'连接',
@@ -2948,6 +3001,8 @@ const TRANSLATIONS = {
     sdRainTomorrow:"कल",
     sdRainNote:"ग्रीनहाउस के अंदर बारिश फसलों तक नहीं पहुँचती। सुझाई गई सिंचाई इसे नहीं घटाती।",
     resetSec:"डेटा मिटाएँ", resetCrops:"फसलें मिटाएँ", resetCropsHint:"दोबारा बोने के लिए तेज़ तरीका। सिंचाई और सेटिंग्स बनी रहती हैं।", resetParts:"हिस्सों में मिटाएँ…", resetPartsHint:"चुनें क्या मिटाना है: फसलें, सिंचाई, उपकरण, खिड़कियाँ या इतिहास।", resetFactory:"फ़ैक्टरी रीसेट", resetFactoryHint:"सब कुछ मिटाता है और ऐप नया जैसा हो जाता है। बोर्ड जुड़ा रहता है।", rcTitle:"क्या सभी फसलें मिटानी हैं?", rcBody:"आपके ग्रीनहाउस के सभी पौधे हटा दिए जाएँगे। सिंचाई क्षेत्र, उपकरण और सेटिंग्स बनी रहेंगी। इसे वापस नहीं किया जा सकता।", rcConfirm:"हाँ, फसलें मिटाएँ", rpTitle:"आप क्या मिटाना चाहते हैं?", rpBody:"जो हटाना है उसे चुनें। इसे वापस नहीं किया जा सकता।", rpConfirm:"चुना हुआ मिटाएँ", rpCrops:"बोई गई फसलें", rpIrr:"सिंचाई: क्षेत्र, प्रवाह दर और सिंचाई रिकॉर्ड", rpPower:"उपकरण: रोशनी, पंखे और पंप (बिजली खपत)", rpWin:"खिड़कियाँ", rpLog:"सेंसर इतिहास (तापमान, आर्द्रता, रोशनी, CO2)", rfTitle:"क्या फ़ैक्टरी रीसेट करना है?", rfBody:"सब कुछ मिट जाएगा: फसलें, सिंचाई, उपकरण, खिड़कियाँ, इतिहास, आपके अपने पौधे, ग्रीनहाउस का आकार, स्थान और भाषा। ऐप नया जैसा हो जाएगा। आपके Organics One बोर्ड का कनेक्शन बना रहेगा। इसे वापस नहीं किया जा सकता।", rfConfirm:"हाँ, सब रीसेट करें", resetCancel:"रद्द करें", toastCropsDone:"हो गया, आपकी फसलें मिटा दी गईं 🌱", toastPartsDone:"हो गया, चुना हुआ डेटा मिटा दिया गया",
+    layerGround:"ज़मीन", layerUp:"ऊँची क्यारी", bedDraw:"✏️ ऊँची क्यारी बनाएँ", bedDone:"✓ हो गया", bedHeightL:"क्यारी की ऊँचाई", bedDrawHint:"जिन ब्लॉकों पर आपकी ऊँची क्यारी है उन पर टैप करें या खींचें। हटाने के लिए फिर टैप करें।", bedNoneHint:"अभी आपकी कोई ऊँची क्यारी नहीं है। ✏️ ऊँची क्यारी बनाएँ पर टैप करें और जगह चिह्नित करें।", toastNoBed:"यहाँ ऊँची क्यारी नहीं है। जोड़ने के लिए ✏️ ऊँची क्यारी बनाएँ पर टैप करें।", posUp:"ऊँची क्यारी", ghShape:"ग्रीनहाउस का आकार", ghGable:"दो ढलान वाली छत", ghTunnel:"सुरंग", v3dTitle:"3D दृश्य", v3dBack:"बोने के लिए 2D पर लौटें", v3dHint:"दिशा समझने के लिए 3D दृश्य। घुमाने के लिए खींचें, ज़ूम के लिए पिंच करें या व्हील चलाएँ। बोने के लिए 2D पर लौटें।", v3dLoading:"3D दृश्य लोड हो रहा है…", v3dError:"3D दृश्य लोड नहीं हो सका। अपना कनेक्शन जाँचें।",
+    setupQ:"आप अपने ग्रीनहाउस में कैसे उगाते हैं?", setupSub:"इससे आपका नक्शा तैयार होगा। बाद में ग्रीनहाउस के आकार पर टैप करके बदल सकते हैं।", layoutGround:"ज़मीन में", layoutUp:"ऊँची क्यारियों में", layoutBoth:"ज़मीन और ऊँची क्यारियाँ", layoutTitle:"आप कहाँ उगाते हैं",
     boardTitle:'ORGANICS ONE बोर्ड',
     boardConnect:'बोर्ड कनेक्ट करें',
     boardSave:'कनेक्ट करें',
@@ -3276,6 +3331,8 @@ const TRANSLATIONS = {
     sdRainTomorrow:"غدًا",
     sdRainNote:"داخل الدفيئة لا يصل المطر إلى المحاصيل. الري المقترح لا يخصمه.",
     resetSec:"حذف البيانات", resetCrops:"حذف المحاصيل", resetCropsHint:"سريع لإعادة الزراعة. يحتفظ بالري والإعدادات.", resetParts:"الحذف حسب الأجزاء…", resetPartsHint:"اختر ما تريد حذفه: المحاصيل أو الري أو المعدات أو النوافذ أو السجل.", resetFactory:"إعادة ضبط المصنع", resetFactoryHint:"يحذف كل شيء ويعود التطبيق كأنه مثبت حديثًا. تبقى اللوحة متصلة.", rcTitle:"هل تريد حذف جميع محاصيلك؟", rcBody:"ستتم إزالة جميع النباتات في دفيئتك. تبقى مناطق الري والمعدات والإعدادات كما هي. لا يمكن التراجع عن ذلك.", rcConfirm:"نعم، احذف المحاصيل", rpTitle:"ماذا تريد أن تحذف؟", rpBody:"حدد ما تريد إزالته. لا يمكن التراجع عن ذلك.", rpConfirm:"حذف المحدد", rpCrops:"المحاصيل المزروعة", rpIrr:"الري: المناطق ومعدل التدفق وسجل الري", rpPower:"المعدات: الإضاءة والمراوح والمضخة (استهلاك الكهرباء)", rpWin:"النوافذ", rpLog:"سجل المستشعرات (الحرارة والرطوبة والضوء وCO2)", rfTitle:"هل تريد إعادة ضبط المصنع؟", rfBody:"سيتم حذف كل شيء: المحاصيل والري والمعدات والنوافذ والسجل والنباتات المخصصة وحجم الدفيئة والموقع واللغة. سيعود التطبيق كأنه مثبت حديثًا. يبقى الاتصال بلوحة Organics One. لا يمكن التراجع عن ذلك.", rfConfirm:"نعم، أعد ضبط كل شيء", resetCancel:"إلغاء", toastCropsDone:"تم، حُذفت محاصيلك 🌱", toastPartsDone:"تم، حُذف ما حددته",
+    layerGround:"الأرض", layerUp:"طاولة زراعة", bedDraw:"✏️ ارسم طاولة الزراعة", bedDone:"✓ تم", bedHeightL:"ارتفاع الطاولة", bedDrawHint:"اضغط أو اسحب فوق المربعات التي توجد بها طاولة الزراعة. اضغط مرة أخرى لإزالتها.", bedNoneHint:"لا توجد لديك طاولات زراعة بعد. اضغط ✏️ ارسم طاولة الزراعة وحدد مكانها.", toastNoBed:"لا توجد طاولة هنا. اضغط ✏️ ارسم طاولة الزراعة لإضافتها.", posUp:"طاولة", ghShape:"شكل الدفيئة", ghGable:"سقف بميلين", ghTunnel:"نفق", v3dTitle:"عرض ثلاثي الأبعاد", v3dBack:"العودة إلى 2D للزراعة", v3dHint:"عرض ثلاثي الأبعاد لتتعرف على المكان. اسحب للتدوير، واقرص أو استخدم العجلة للتكبير. للزراعة، عد إلى 2D.", v3dLoading:"جارٍ تحميل العرض ثلاثي الأبعاد…", v3dError:"تعذّر تحميل العرض ثلاثي الأبعاد. تحقق من اتصالك.",
+    setupQ:"كيف تزرع في دفيئتك؟", setupSub:"بهذا أجهّز مخططك. يمكنك تغييره لاحقًا بالضغط على حجم الدفيئة.", layoutGround:"في الأرض", layoutUp:"على طاولات زراعة", layoutBoth:"الأرض والطاولات", layoutTitle:"أين تزرع",
     boardTitle:'لوحة ORGANICS ONE',
     boardConnect:'ربط اللوحة',
     boardSave:'اتصال',
@@ -3604,6 +3661,8 @@ const TRANSLATIONS = {
     sdRainTomorrow:"domani",
     sdRainNote:"Dentro la serra la pioggia non arriva alle colture. L'irrigazione consigliata non la sottrae.",
     resetSec:"Cancella dati", resetCrops:"Cancella colture", resetCropsHint:"Veloce, per riseminare. Mantiene irrigazione e impostazioni.", resetParts:"Cancella per parti…", resetPartsHint:"Scegli cosa cancellare: colture, irrigazione, attrezzature, finestre o cronologia.", resetFactory:"Ripristino di fabbrica", resetFactoryHint:"Cancella tutto e l’app torna come appena installata. La scheda resta collegata.", rcTitle:"Cancellare tutte le colture?", rcBody:"Tutte le piante della serra verranno rimosse. Zone di irrigazione, attrezzature e impostazioni restano. L’operazione non si può annullare.", rcConfirm:"Sì, cancella colture", rpTitle:"Cosa vuoi cancellare?", rpBody:"Seleziona cosa eliminare. L’operazione non si può annullare.", rpConfirm:"Cancella selezionati", rpCrops:"Colture piantate", rpIrr:"Irrigazione: zone, portata e registro irrigazioni", rpPower:"Attrezzature: illuminazione, ventole e pompa (consumo elettrico)", rpWin:"Finestre", rpLog:"Cronologia sensori (temperatura, umidità, luce, CO2)", rfTitle:"Ripristino di fabbrica?", rfBody:"Verrà cancellato tutto: colture, irrigazione, attrezzature, finestre, cronologia, piante personalizzate, dimensioni della serra, posizione e lingua. L’app tornerà come appena installata. Il collegamento con la tua scheda Organics One resta. L’operazione non si può annullare.", rfConfirm:"Sì, ripristina tutto", resetCancel:"Annulla", toastCropsDone:"Fatto, le colture sono state cancellate 🌱", toastPartsDone:"Fatto, la selezione è stata cancellata",
+    layerGround:"Terra", layerUp:"Bancale rialzato", bedDraw:"✏️ Disegna bancale", bedDone:"✓ Fatto", bedHeightL:"Altezza del bancale", bedDrawHint:"Tocca o trascina sui blocchi dove si trova il bancale. Tocca di nuovo per toglierlo.", bedNoneHint:"Non hai ancora bancali rialzati. Tocca ✏️ Disegna bancale e segna dove si trova.", toastNoBed:"Qui non c’è un bancale. Tocca ✏️ Disegna bancale per aggiungerlo.", posUp:"bancale", ghShape:"Forma della serra", ghGable:"A due falde", ghTunnel:"Tunnel", v3dTitle:"Vista 3D", v3dBack:"Torna al 2D per piantare", v3dHint:"Vista 3D per orientarti. Trascina per ruotare, pizzica o usa la rotella per ingrandire. Per piantare, torna al 2D.", v3dLoading:"Caricamento vista 3D…", v3dError:"Impossibile caricare la vista 3D. Controlla la connessione.",
+    setupQ:"Come coltivi nella tua serra?", setupSub:"Così preparo la tua pianta. Puoi cambiarlo dopo toccando la dimensione della serra.", layoutGround:"In piena terra", layoutUp:"Su bancali rialzati", layoutBoth:"Terra e bancali", layoutTitle:"Dove coltivi",
     boardTitle:'SCHEDA ORGANICS ONE',
     boardConnect:'Collega scheda',
     boardSave:'Collega',
@@ -3932,6 +3991,8 @@ const TRANSLATIONS = {
     sdRainTomorrow:"завтра",
     sdRainNote:"Внутри теплицы дождь не попадает на растения. Рекомендуемый полив его не учитывает.",
     resetSec:"Удаление данных", resetCrops:"Удалить культуры", resetCropsHint:"Быстро, чтобы посадить заново. Полив и настройки сохраняются.", resetParts:"Удалить выборочно…", resetPartsHint:"Выберите, что удалить: культуры, полив, оборудование, окна или историю.", resetFactory:"Сброс до заводских настроек", resetFactoryHint:"Удаляет всё, приложение как после установки. Плата остаётся подключённой.", rcTitle:"Удалить все культуры?", rcBody:"Все растения в теплице будут удалены. Зоны полива, оборудование и настройки сохранятся. Отменить это нельзя.", rcConfirm:"Да, удалить культуры", rpTitle:"Что удалить?", rpBody:"Отметьте, что нужно удалить. Отменить это нельзя.", rpConfirm:"Удалить выбранное", rpCrops:"Посаженные культуры", rpIrr:"Полив: зоны, расход и журнал полива", rpPower:"Оборудование: освещение, вентиляторы и насос (энергопотребление)", rpWin:"Окна", rpLog:"История датчиков (температура, влажность, свет, CO2)", rfTitle:"Сбросить до заводских настроек?", rfBody:"Будет удалено всё: культуры, полив, оборудование, окна, история, ваши растения, размер теплицы, местоположение и язык. Приложение станет как после установки. Подключение к плате Organics One сохранится. Отменить это нельзя.", rfConfirm:"Да, сбросить всё", resetCancel:"Отмена", toastCropsDone:"Готово, культуры удалены 🌱", toastPartsDone:"Готово, выбранное удалено",
+    layerGround:"Грунт", layerUp:"Стеллаж", bedDraw:"✏️ Нарисовать стеллаж", bedDone:"✓ Готово", bedHeightL:"Высота стеллажа", bedDrawHint:"Нажмите или проведите по блокам, где стоит стеллаж. Нажмите ещё раз, чтобы убрать.", bedNoneHint:"Стеллажей пока нет. Нажмите ✏️ Нарисовать стеллаж и отметьте, где он стоит.", toastNoBed:"Здесь нет стеллажа. Нажмите ✏️ Нарисовать стеллаж, чтобы добавить.", posUp:"стеллаж", ghShape:"Форма теплицы", ghGable:"Двускатная", ghTunnel:"Тоннель", v3dTitle:"3D-вид", v3dBack:"Вернуться в 2D для посадки", v3dHint:"3D-вид для ориентации. Перетаскивайте для поворота, сводите пальцы или крутите колесо для масштаба. Для посадки вернитесь в 2D.", v3dLoading:"Загрузка 3D-вида…", v3dError:"Не удалось загрузить 3D-вид. Проверьте подключение.",
+    setupQ:"Как вы выращиваете в теплице?", setupSub:"Так я подготовлю план. Позже можно изменить, нажав на размер теплицы.", layoutGround:"В грунте", layoutUp:"На стеллажах", layoutBoth:"Грунт и стеллажи", layoutTitle:"Где вы выращиваете",
     boardTitle:'ПЛАТА ORGANICS ONE',
     boardConnect:'Подключить плату',
     boardSave:'Подключить',
@@ -4234,7 +4295,8 @@ async function loadState(){
           libraryCollapsed: typeof parsed.libraryCollapsed === 'boolean' ? parsed.libraryCollapsed : true,
           gridSettingsCollapsed: typeof parsed.gridSettingsCollapsed === 'boolean' ? parsed.gridSettingsCollapsed : true,
           manualLocation: parsed.manualLocation || null,
-          roomRotated: typeof parsed.roomRotated === 'boolean' ? parsed.roomRotated : false
+          roomRotated: typeof parsed.roomRotated === 'boolean' ? parsed.roomRotated : false,
+          layout: ['ground','up','both'].includes(parsed.layout) ? parsed.layout : null, beds: parsed.beds || {}, bedH: typeof parsed.bedH === 'number' ? parsed.bedH : 85, ghShape: parsed.ghShape === 'tunnel' ? 'tunnel' : 'gable'
         };
       }
     }
@@ -4276,6 +4338,7 @@ function applyStaticText(){
   document.getElementById('gridDone').textContent = t('modalDone');
   document.getElementById('gridSizeLabel').title = t('gridSettingsTitle');
   document.getElementById('waterToggle').title = t('waterView');
+  if(typeof set3dUi === 'function') set3dUi();
   document.getElementById('heightLabel').textContent = t('heightLabel');
   document.getElementById('widthLabel').textContent = t('widthLabel');
   document.getElementById('envTitle').textContent = t('envTitle');
@@ -4306,7 +4369,7 @@ function applyLibraryCollapse(){
 libraryToggle.addEventListener('click', () => { state.libraryCollapsed = !state.libraryCollapsed; saveState(); applyLibraryCollapse(); });
 
 function applyGridSettingsCollapse(){ /* grid settings now live in a pop-up */ }
-function openGridSettings(){ renderWindowSettings(); document.getElementById('gridOverlay').classList.add('show'); }
+function openGridSettings(){ renderLayoutSet(); renderGhShape(); renderWindowSettings(); document.getElementById('gridOverlay').classList.add('show'); }
 function closeGridSettings(){ document.getElementById('gridOverlay').classList.remove('show'); }
 document.getElementById('gridSizeLabel').addEventListener('click', openGridSettings);
 document.getElementById('gridClose').addEventListener('click', closeGridSettings);
@@ -4315,7 +4378,7 @@ document.getElementById('gridOverlay').addEventListener('click', e => { if(e.tar
 document.addEventListener('keydown', e => { if(e.key === 'Escape') closeGridSettings(); });
 
 /* ---------- Render ---------- */
-function render(){ if(typeof renderSettings==='function' && document.getElementById('settingsOverlay')) renderSettings(); if(typeof renderStats==='function' && typeof OO!=='undefined') try{ renderStats(); }catch(e){} if(typeof renderTabbar==='function' && document.getElementById('tabbar')) renderTabbar(); if(typeof renderConsentTexts==='function') renderConsentTexts(); if(typeof renderIconPicker==='function') renderIconPicker(); if(typeof renderBoard==='function' && window.OrganicsOne && document.getElementById('boardCard')) renderBoard(); renderDims(); renderCatPills(); renderVegList(); renderRoom(); renderHeaderPills(); renderRipenessAlerts(); refreshEnvIfLoaded(); }
+function render(){ if(typeof renderSettings==='function' && document.getElementById('settingsOverlay')) renderSettings(); if(typeof renderStats==='function' && typeof OO!=='undefined') try{ renderStats(); }catch(e){} if(typeof renderTabbar==='function' && document.getElementById('tabbar')) renderTabbar(); if(typeof renderConsentTexts==='function') renderConsentTexts(); if(typeof renderIconPicker==='function') renderIconPicker(); if(typeof renderBoard==='function' && window.OrganicsOne && document.getElementById('boardCard')) renderBoard(); renderDims(); renderCatPills(); renderVegList(); if(typeof renderLayerBar==='function') renderLayerBar(); renderRoom(); renderHeaderPills(); renderRipenessAlerts(); refreshEnvIfLoaded(); }
 function refreshEnvIfLoaded(){ if(lastWeatherData) renderEnvConditions(lastWeatherData); }
 const CELL_M = 0.5;   /* each grid square is 50 x 50 cm */
 function fmtM(n){ return ((imperial() ? 3.28084 : 1) * n * CELL_M).toLocaleString(lang==='es'?'es-CL':lang, { maximumFractionDigits:1 }); }
@@ -4420,8 +4483,14 @@ function isMobileView(){ return window.matchMedia('(max-width: 700px)').matches;
 function isTransposed(){ return isMobileView() ? state.cols > state.rows : state.rows > state.cols; }
 
 const WOOD_COLOR = '#C9A16D';
+/* Layers: 'ground' (soil) and 'up' (raised bed / mesón). Raised-bed plantings use keys 'u:r-c'. */
+let curLayer = 'ground', bedEdit = false, bedPaint = null;
+const LK = (r, c, l) => ((l || curLayer) === 'up' ? 'u:' : '') + r + '-' + c;
+function parseKey(k){ const up = k.indexOf('u:') === 0; const [r, c] = (up ? k.slice(2) : k).split('-').map(Number); return { r, c, up, layer: up ? 'up' : 'ground' }; }
+function isBed(r, c){ return !!(state.beds && state.beds[r + '-' + c]); }
+function bedCount(){ return Object.keys(state.beds || {}).length; }
 function isCellPlanted(r, c){
-  const p = state.plantings[`${r}-${c}`];
+  const p = state.plantings[LK(r, c)];
   return !!(p && VEG_MAP[p.vegId]);
 }
 function applyWoodEdges(cell, r, c, transposed){
@@ -4475,9 +4544,9 @@ function applyTempWarnings(){
   Object.entries(state.plantings).forEach(([k,p]) => {
     if(!isTempMuted(k) && tempStatus(VEG_MAP[p.vegId])) warned[k] = p.vegId;
   });
-  const same = (k, r, c) => r >= 0 && c >= 0 && r < state.rows && c < state.cols && warned[r+'-'+c] === warned[k];
+  const same = (k, r, c) => r >= 0 && c >= 0 && r < state.rows && c < state.cols && warned[LK(r, c)] === warned[k];
   room.querySelectorAll('.cell.planted').forEach(cell => {
-    const r = +cell.dataset.r, c = +cell.dataset.c, k = r+'-'+c;
+    const r = +cell.dataset.r, c = +cell.dataset.c, k = LK(r, c);
     const p = state.plantings[k];
     const st = warned[k] ? tempStatus(VEG_MAP[p.vegId]) : null;
     cell.classList.toggle('temp-cold', !!st && st.kind==='cold');
@@ -4506,10 +4575,25 @@ function renderRoom(){
     for(let inner=0; inner<visualCols; inner++){
       const r = mobile ? inner : outer;
       const c = mobile ? outer : inner;
-      const key = `${r}-${c}`;
+      const key = LK(r, c);
       const planting = state.plantings[key];
       const cell = document.createElement('div');
       cell.dataset.r = r; cell.dataset.c = c;
+      const bedHere = isBed(r, c);
+      if(bedEdit){
+        cell.className = 'cell bed-edit' + (bedHere ? ' bed-on' : '');
+        cell.innerHTML = bedHere ? '<span class="bed-mark">🪵</span>' : '<span class="cell-empty-mark">·</span>';
+        cell.addEventListener('mousedown', (e) => { e.preventDefault(); startDrag(r, c); });
+        cell.addEventListener('mouseenter', () => continueDrag(r, c));
+        cell.addEventListener('touchstart', (e) => { e.preventDefault(); startDrag(r, c); }, { passive:false });
+        room.appendChild(cell); continue;
+      }
+      if(curLayer === 'up' && !bedHere && !planting){
+        cell.className = 'cell no-bed';
+        cell.addEventListener('click', () => showToast(t('toastNoBed')));
+        if(waterMode) decorateZoneCell(cell, key);
+        room.appendChild(cell); continue;
+      }
       if(planting && VEG_MAP[planting.vegId]){
         const veg = VEG_MAP[planting.vegId];
         const elapsed = daysBetween(new Date(planting.plantedDate+'T00:00:00'), new Date(new Date().toDateString()));
@@ -4529,30 +4613,42 @@ function renderRoom(){
           cell.addEventListener('click', () => { hideVegTooltip(); openModal(r, c); });
         }
       } else {
-        cell.className = 'cell';
+        cell.className = 'cell' + (curLayer === 'up' ? ' bed-empty' : (bedHere ? ' under-bed' : ''));
         cell.innerHTML = `<span class="cell-empty-mark">·</span>`;
         cell.addEventListener('mousedown', (e) => { e.preventDefault(); startDrag(r, c); });
         cell.addEventListener('mouseenter', () => continueDrag(r, c));
         cell.addEventListener('touchstart', (e) => { e.preventDefault(); startDrag(r, c); }, { passive:false });
       }
+      if(curLayer === 'ground' && bedHere && planting) cell.classList.add('under-bed');
       if(waterMode) decorateZoneCell(cell, key);
       room.appendChild(cell);
     }
   }
+  room.classList.toggle('layer-up', curLayer === 'up');
+  room.classList.toggle('bed-editing', bedEdit);
   room.classList.toggle('water-mode', waterMode);
   room.classList.toggle('zone-edit', waterMode && zoneEdit);
   applyTempWarnings();
   if(waterMode) renderWaterBar();
 }
 
+function paintBed(r, c){
+  const k = r + '-' + c; if(dragKeys.has(k)) return;
+  dragKeys.add(k); state.beds = state.beds || {};
+  if(bedPaint === null) bedPaint = !state.beds[k];
+  if(bedPaint) state.beds[k] = 1; else delete state.beds[k];
+  renderRoom();
+}
 function plantCellDuringDrag(r,c){
-  const key = `${r}-${c}`;
+  if(curLayer === 'up' && !isBed(r, c)) return false;
+  const key = LK(r, c);
   if(state.plantings[key]) return false;
   state.plantings[key] = { vegId: selectedVeg, plantedDate: todayStr() };
   dragKeys.add(key);
   return true;
 }
 function startDrag(r,c){
+  if(bedEdit){ dragging = true; dragKeys = new Set(); bedPaint = null; document.body.classList.add('dragging'); paintBed(r, c); return; }
   if(waterMode){ if(!zoneEdit){ waterTap(r, c); return; } dragging = true; dragKeys = new Set(); document.body.classList.add('dragging'); paintZone(r, c); return; }
   if(!selectedVeg){ showToast(t('toastPickPlant')); return; }
   dragging = true; dragKeys = new Set();
@@ -4561,6 +4657,7 @@ function startDrag(r,c){
 }
 function continueDrag(r,c){
   if(!dragging) return;
+  if(bedEdit){ paintBed(r, c); return; }
   if(waterMode){ paintZone(r, c); return; }
   if(plantCellDuringDrag(r,c)){ renderRoom(); renderHeaderPills(); }
 }
@@ -4568,6 +4665,7 @@ function endDrag(){
   if(!dragging) return;
   dragging = false;
   document.body.classList.remove('dragging');
+  if(bedEdit){ dragKeys = new Set(); bedPaint = null; saveState(); renderLayerBar(); return; }
   if(waterMode){ dragKeys = new Set(); saveState(); renderWaterBar(); return; }
   if(dragKeys.size > 0){
     saveState();
@@ -4577,7 +4675,7 @@ function endDrag(){
     const name = veg ? getVegName(veg) : '';
     if(dragKeys.size === 1){
       const [key] = [...dragKeys];
-      const [r,c] = key.split('-').map(n => parseInt(n,10) + 1);
+      const pk = parseKey(key), r = pk.r + 1, c = pk.c + 1;
       showToast(t('toastPlanted', { name, r, c }));
     } else {
       showToast(t('toastPlantedMulti', { name, n: dragKeys.size }));
@@ -4632,8 +4730,9 @@ function renderHeaderPills(){
   }
 }
 
-function openModal(r, c){
-  const key = `${r}-${c}`;
+function openModal(r, c, layer){
+  layer = layer || curLayer;
+  const key = LK(r, c, layer);
   const planting = state.plantings[key];
   if(!planting || !VEG_MAP[planting.vegId]) return;
   const veg = VEG_MAP[planting.vegId];
@@ -4651,7 +4750,7 @@ function openModal(r, c){
   modal.innerHTML = `
     <div class="head">
       <div class="icon-badge" style="background:${veg.light}">${veg.icon}</div>
-      <div><h3>${getVegName(veg)}</h3><div class="block-pos">${t('blockPos',{ r:r+1, c:c+1 })}</div></div>
+      <div><h3>${getVegName(veg)}</h3><div class="block-pos">${t('blockPos',{ r:r+1, c:c+1 })}${layer === 'up' ? ' · ' + t('posUp') : ''}</div></div>
     </div>
     ${tst ? `<div class="temp-alert ${tst.kind}"><span class="ta-text">${tst.kind==='cold'?'❄️':'🔥'} ${tempStatusText(tst)}</span><button class="mute-x" id="muteBtn" title="${t('muteTitle')}" aria-label="${t('muteTitle')}">✕</button></div><div id="mutePanel"></div>` : ''}
     ${tstRaw && tmuted ? `<div class="muted-note"><span>🔕 ${state.plantings[key].tempMute.forever ? t('mutedForever') : t('mutedUntil',{ d: fmtDateTime(state.plantings[key].tempMute.until) })}</span><button id="unmuteBtn">${t('unmute')}</button></div>` : ''}
@@ -4675,7 +4774,7 @@ function openModal(r, c){
   const muteBtn = document.getElementById('muteBtn');
   if(muteBtn) muteBtn.addEventListener('click', () => {
     const panel = document.getElementById('mutePanel');
-    const done = ms => { muteTemp(key, ms); openModal(r, c); showToast(t('mutedToast')); };
+    const done = ms => { muteTemp(key, ms); openModal(r, c, layer); showToast(t('mutedToast')); };
     const showOptions = () => {
       panel.innerHTML = `<div class="mute-panel"><div class="mp-title">${t('muteTitle')}</div><div class="mp-btns">
         <button data-m="day">${t('mute24h')}</button><button data-m="week">${t('muteWeek')}</button><button class="danger" data-m="forever">${t('muteForever')}</button></div></div>`;
@@ -4691,7 +4790,7 @@ function openModal(r, c){
     if(panel.innerHTML) panel.innerHTML = ''; else showOptions();
   });
   const unmuteBtn = document.getElementById('unmuteBtn');
-  if(unmuteBtn) unmuteBtn.addEventListener('click', () => { unmuteTemp(key); openModal(r, c); });
+  if(unmuteBtn) unmuteBtn.addEventListener('click', () => { unmuteTemp(key); openModal(r, c, layer); });
   document.getElementById('closeModalBtn').addEventListener('click', closeModal);
   document.getElementById('overlay').classList.add('show');
 }
@@ -4711,10 +4810,9 @@ document.getElementById('rowsDown').addEventListener('click', (e) => {
   e.stopPropagation();
   if(state.rows <= 2){ showToast(t('toastMinHeight')); return; }
   const newRows = state.rows - 1;
-  Object.keys(state.plantings).forEach(key => {
-    const [r] = key.split('-').map(Number);
-    if(r >= newRows) delete state.plantings[key];
-  });
+  Object.keys(state.plantings).forEach(key => { if(parseKey(key).r >= newRows) delete state.plantings[key]; });
+  Object.keys(state.irrZones || {}).forEach(key => { if(parseKey(key).r >= newRows) delete state.irrZones[key]; });
+  Object.keys(state.beds || {}).forEach(key => { if(parseKey(key).r >= newRows) delete state.beds[key]; });
   state.rows = newRows; saveState(); render();
 });
 document.getElementById('colsUp').addEventListener('click', (e) => {
@@ -4726,10 +4824,9 @@ document.getElementById('colsDown').addEventListener('click', (e) => {
   e.stopPropagation();
   if(state.cols <= 2){ showToast(t('toastMinWidth')); return; }
   const newCols = state.cols - 1;
-  Object.keys(state.plantings).forEach(key => {
-    const [,c] = key.split('-').map(Number);
-    if(c >= newCols) delete state.plantings[key];
-  });
+  Object.keys(state.plantings).forEach(key => { if(parseKey(key).c >= newCols) delete state.plantings[key]; });
+  Object.keys(state.irrZones || {}).forEach(key => { if(parseKey(key).c >= newCols) delete state.irrZones[key]; });
+  Object.keys(state.beds || {}).forEach(key => { if(parseKey(key).c >= newCols) delete state.beds[key]; });
   state.cols = newCols; saveState(); render();
 });
 
@@ -5188,13 +5285,12 @@ function renderRipenessAlerts(){
   badge.style.display = 'flex';
   badge.textContent = entries.length;
   el.innerHTML = entries.slice(0, 8).map(e => {
-    const [r,c] = e.key.split('-').map(n => parseInt(n,10)+1);
     const ripe = e.daysLeft <= 0;
     const tag = ripe ? `<span class="ready-tag">${t('readyTag')}</span>` : `<span class="soon-tag">${t('soonTag', { d: e.daysLeft })}</span>`;
     return `<div class="alert-row" data-key="${e.key}"><span class="hv-e">${e.veg.icon}</span><div><div class="an">${getVegName(e.veg)}</div>${tag}</div></div>`;
   }).join('');
   el.querySelectorAll('.alert-row').forEach(node => {
-    node.addEventListener('click', () => { const [r,c] = node.dataset.key.split('-').map(Number); openModal(r,c); });
+    node.addEventListener('click', () => { const pk = parseKey(node.dataset.key); openModal(pk.r, pk.c, pk.layer); });
   });
 }
 
@@ -5807,29 +5903,29 @@ function irrSuggestText(need, watered, soil){
 /* sequential scale, one hue: more blue = more water today */
 function decorateZoneCell(cell, key){
   const zones = state.irrZones || {}, z = zones[key];
-  const [r, c] = key.split('-').map(Number), tr = isTransposed();
+  const pk = parseKey(key), r = pk.r, c = pk.c, tr = isTransposed();
   if(!z){ cell.classList.add('wz-none'); return; }
   const mx = maxZoneLiters(), st = zoneStats(z);
   cell.classList.add('wz');
   cell.style.setProperty('--za', mx > 0 ? (0.12 + 0.68 * (st.liters / mx)).toFixed(2) : '0.08');
   if(zoneFocus === z) cell.classList.add('wz-focus');
   // white divider only where the neighbour belongs to another zone
-  const nb = (rr, cc) => zones[rr + '-' + cc];
+  const nb = (rr, cc) => zones[LK(rr, cc, pk.layer)];
   const up = tr ? nb(r, c-1) : nb(r-1, c), down = tr ? nb(r, c+1) : nb(r+1, c), left = tr ? nb(r-1, c) : nb(r, c-1), right = tr ? nb(r+1, c) : nb(r, c+1);
   cell.style.setProperty('--zt', up === z ? 0 : 1); cell.style.setProperty('--zb', down === z ? 0 : 1);
   cell.style.setProperty('--zl', left === z ? 0 : 1); cell.style.setProperty('--zr', right === z ? 0 : 1);
   // the zone number once per zone (its first block)
-  const first = Object.keys(zones).filter(k => zones[k] === z).sort((p, q) => { const [a1,b1] = p.split('-').map(Number), [a2,b2] = q.split('-').map(Number); return tr ? (b1 - b2 || a1 - a2) : (a1 - a2 || b1 - b2); })[0];
+  const first = Object.keys(zones).filter(k => zones[k] === z && parseKey(k).layer === pk.layer).sort((p, q) => { const P1 = parseKey(p), Q1 = parseKey(q), a1 = P1.r, b1 = P1.c, a2 = Q1.r, b2 = Q1.c; return tr ? (b1 - b2 || a1 - a2) : (a1 - a2 || b1 - b2); })[0];
   if(first === key){ const bd = document.createElement('span'); bd.className = 'zb'; bd.textContent = t('zoneShort', { n: z }); cell.appendChild(bd); }
 }
 function paintZone(r, c){
-  const key = r + '-' + c; if(dragKeys.has(key)) return;
+  const key = LK(r, c); if(dragKeys.has(key)) return;
   dragKeys.add(key);
   state.irrZones = state.irrZones || {};
   if(zoneBrush === 0) delete state.irrZones[key]; else state.irrZones[key] = zoneBrush;
   renderRoom();
 }
-function waterTap(r, c){ const z = (state.irrZones || {})[r + '-' + c]; zoneFocus = z || null; renderRoom(); }
+function waterTap(r, c){ const z = (state.irrZones || {})[LK(r, c)]; zoneFocus = z || null; renderRoom(); }
 function renderWaterBar(){
   const bar = document.getElementById('waterBar'); if(!bar) return;
   if(!waterMode){ bar.innerHTML = ''; return; }
@@ -5858,6 +5954,7 @@ function renderWaterBar(){
 }
 function toggleWater(){
   waterMode = !waterMode; zoneEdit = false; zoneFocus = null; hideVegTooltip();
+  if(waterMode && bedEdit){ bedEdit = false; renderLayerBar(); }
   const btn = document.getElementById('waterToggle');
   btn.classList.toggle('on', waterMode); btn.setAttribute('aria-pressed', String(waterMode));
   document.getElementById('roomPanel').classList.toggle('water-on', waterMode);
@@ -6002,6 +6099,245 @@ document.getElementById('settingsOverlay').addEventListener('click', e => { if(e
 document.querySelectorAll('#settingsOverlay [data-u]').forEach(b => b.addEventListener('click', () => {
   state.units = b.dataset.u; state.unitsManual = true; saveState(); renderSettings(); render(); refreshEnvIfLoaded();
 }));
+
+/* ---------- 3D view: only to look and get your bearings (planting stays in 2D) ----------
+   Three.js is loaded only when the person opens 3D, so the 2D app stays light. */
+const THREE_URL = 'https://unpkg.com/three@0.160.0/build/three.module.min.js';
+let view3d = false, R3 = null, threeMod = null;
+const CROP_H = { tomato:1.5, cucumber:1.6, pepper:0.75, chili:0.7, eggplant:0.8, zucchini:0.6, pumpkin:0.6, melon:0.45, watermelon:0.45, corn:1.9, peas:1.3, raspberry:1.2, blackberry:1.4, blueberry:1.1, grape:1.8, kiwi:1.8, lemon:1.6, cherry:2, peach:2 };
+const CAT_H = { fruit:0.7, berry:0.35, leafy:0.32, herb:0.38, root:0.28 };
+function crop3dHeight(veg){ return CROP_H[veg.id] || CAT_H[veg.category] || 0.4; }
+
+function set3dUi(){
+  const b = document.getElementById('view3dBtn'); if(!b) return;
+  b.textContent = view3d ? '2D' : '3D';
+  b.title = t(view3d ? 'v3dBack' : 'v3dTitle'); b.setAttribute('aria-label', b.title);
+  b.classList.toggle('on', view3d); b.setAttribute('aria-pressed', String(view3d));
+  const h = document.getElementById('room3dHint'); if(h) h.textContent = t('v3dHint');
+}
+async function toggle3d(){
+  view3d = !view3d;
+  if(view3d){ if(waterMode) toggleWater(); if(bedEdit){ bedEdit = false; renderLayerBar(); } hideVegTooltip(); }
+  document.getElementById('roomPanel').classList.toggle('v3d', view3d);
+  const box = document.getElementById('room3d'); box.hidden = !view3d;
+  set3dUi();
+  if(!view3d){ destroy3d(); return; }
+  const msg = document.getElementById('room3dMsg'); msg.textContent = t('v3dLoading');
+  try{
+    threeMod = threeMod || await import(THREE_URL);
+    if(!view3d) return;
+    msg.textContent = ''; build3d(threeMod);
+    const hint = document.getElementById('room3dHint'); hint.classList.remove('gone'); clearTimeout(window.__h3t); window.__h3t = setTimeout(() => hint.classList.add('gone'), 5000);
+  }catch(e){ msg.textContent = t('v3dError'); }
+}
+function rebuild3d(){ if(view3d && threeMod){ destroy3d(); build3d(threeMod); } }
+function destroy3d(){
+  if(!R3) return;
+  R3.cleanup.forEach(f => { try{ f(); }catch(e){} });
+  R3.scene.traverse(o => { if(o.geometry) o.geometry.dispose(); if(o.material){ (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => { if(m.map) m.map.dispose(); m.dispose(); }); } });
+  R3.renderer.dispose(); R3 = null;
+}
+
+function emojiTexture(THREE, ch, cache){
+  if(cache[ch]) return cache[ch];
+  const cv = document.createElement('canvas'); cv.width = cv.height = 128;
+  const g = cv.getContext('2d'); g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.font = '104px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif'; g.fillText(ch, 64, 70);
+  const tx = new THREE.CanvasTexture(cv); tx.colorSpace = THREE.SRGBColorSpace; tx.anisotropy = 2;
+  return (cache[ch] = tx);
+}
+
+function build3d(THREE){
+  const canvas = document.getElementById('room3dCanvas'), box = document.getElementById('room3d');
+  const mobile = isTransposed();
+  const nx = mobile ? state.rows : state.cols, nz = mobile ? state.cols : state.rows;   // same orientation as the 2D grid
+  const CELL = 0.5, W = nx * CELL, D = nz * CELL;
+  const pos = (r, c) => { const inner = mobile ? r : c, outer = mobile ? c : r; return [ (inner + 0.5) * CELL - W / 2, (outer + 0.5) * CELL - D / 2 ]; };
+  const small = Math.min(window.innerWidth, window.innerHeight) < 700;
+
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: !small, alpha: true, powerPreference: 'low-power' });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, small ? 1.5 : 2));
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  const scene = new THREE.Scene();
+  scene.fog = new THREE.Fog(0xDCE9E4, 14, 46);
+  const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 120);
+  scene.add(new THREE.HemisphereLight(0xEAF4FF, 0x7A6A50, 1.15));
+  const sun = new THREE.DirectionalLight(0xFFF3DC, 1.35); sun.position.set(-6, 12, 8); scene.add(sun);
+
+  const M = (color, extra) => new THREE.MeshLambertMaterial(Object.assign({ color }, extra || {}));
+  const mats = { grass: M(0x8DB26A), floor: M(0xCDC2AE), soil: M(0x6E4A30), wood: M(0xC08F57), woodDark: M(0x4A3A2C), leg: M(0xA77A47),
+    cover: M(0xF4FAFF, { transparent:true, opacity:0.13, side:THREE.DoubleSide, depthWrite:false }), frame: M(0x2B2F33), shadow: new THREE.MeshBasicMaterial({ color:0x000000, transparent:true, opacity:0.18, depthWrite:false }) };
+  const add = (geo, mat, x, y, z) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); scene.add(m); return m; };
+
+  // outside ground and the walking floor inside
+  const g0 = add(new THREE.CircleGeometry(60, 40), mats.grass, 0, -0.01, 0); g0.rotation.x = -Math.PI / 2;
+  const fl = add(new THREE.PlaneGeometry(W + 0.8, D + 0.8), mats.floor, 0, 0, 0); fl.rotation.x = -Math.PI / 2;
+
+  const groundH = 0.16, bedH = Math.max(0.2, Math.min(1.5, (state.bedH || 85) / 100)), bedSoil = 0.22;
+  const planted = (k) => { const p = state.plantings[k]; return p && VEG_MAP[p.vegId] ? p : null; };
+  const unitBox = new THREE.BoxGeometry(1, 1, 1);
+  const boxes = []; // [mat, sx, sy, sz, x, y, z]
+  const pushBox = (mat, sx, sy, sz, x, y, z) => boxes.push([mat, sx, sy, sz, x, y, z]);
+
+  // ground beds: soil blocks where something is planted, wood edge where the neighbour is not
+  for(let r = 0; r < state.rows; r++) for(let c = 0; c < state.cols; c++){
+    if(!planted(r + '-' + c)) continue;
+    const [x, z] = pos(r, c);
+    pushBox(mats.soil, CELL, groundH, CELL, x, groundH / 2, z);
+  }
+  // raised beds (mesón): legs, box and soil on top
+  const beds = state.beds || {};
+  Object.keys(beds).forEach(k => {
+    const pk = parseKey(k); if(pk.r >= state.rows || pk.c >= state.cols) return;
+    const [x, z] = pos(pk.r, pk.c);
+    pushBox(mats.wood, CELL, 0.06, CELL, x, bedH - bedSoil - 0.03, z);              // bottom board
+    pushBox(mats.soil, CELL * 0.96, bedSoil * 0.8, CELL * 0.96, x, bedH - bedSoil * 0.45, z);
+    const nb = (dr, dc) => !!beds[(pk.r + dr) + '-' + (pk.c + dc)];
+    // side walls on the visual edges that have no bed next to them
+    const sides = [[-1,0],[1,0],[0,-1],[0,1]];
+    sides.forEach(([dr, dc]) => {
+      if(nb(dr, dc)) return;
+      const [nx2, nz2] = pos(pk.r + dr, pk.c + dc), dx = (nx2 - x) / 2, dz = (nz2 - z) / 2;
+      const alongX = Math.abs(dz) > Math.abs(dx);
+      pushBox(mats.wood, alongX ? CELL + 0.05 : 0.05, bedSoil + 0.04, alongX ? 0.05 : CELL + 0.05, x + dx, bedH - bedSoil / 2 + 0.02, z + dz);
+    });
+    // a leg at each outer corner of the bed
+    [[-1,-1],[-1,1],[1,-1],[1,1]].forEach(([dr, dc]) => {
+      const a = nb(dr, 0), b2 = nb(0, dc);
+      if(a && b2) return;                                   // inside corner, no leg
+      if((a || b2) && (pk.r + pk.c) % 2) return;            // along a long side: a leg every other block
+      const [ax, az] = pos(pk.r + dr * 0.5 - (dr > 0 ? 0.1 : -0.1), pk.c + dc * 0.5 - (dc > 0 ? 0.1 : -0.1));
+      pushBox(mats.leg, 0.07, bedH - bedSoil, 0.07, ax, (bedH - bedSoil) / 2, az);
+    });
+  });
+  const byMat = new Map(); boxes.forEach(b => { if(!byMat.has(b[0])) byMat.set(b[0], []); byMat.get(b[0]).push(b); });
+  const dummy = new THREE.Object3D();
+  byMat.forEach((list, mat) => {
+    const im = new THREE.InstancedMesh(unitBox, mat, list.length);
+    list.forEach((b, i) => { dummy.position.set(b[4], b[5], b[6]); dummy.scale.set(b[1], b[2], b[3]); dummy.updateMatrix(); im.setMatrixAt(i, dummy.matrix); });
+    scene.add(im);
+  });
+
+  // crops as standing sprites, sized by growth
+  const texCache = {}, now = new Date(new Date().toDateString());
+  const shadowGeo = new THREE.CircleGeometry(0.2, 16);
+  Object.entries(state.plantings).forEach(([k, p]) => {
+    const veg = VEG_MAP[p.vegId]; if(!veg) return;
+    const pk = parseKey(k); if(pk.r >= state.rows || pk.c >= state.cols) return;
+    if(pk.up && !beds[pk.r + '-' + pk.c]) return;
+    const [x, z] = pos(pk.r, pk.c);
+    const pct = Math.max(0, Math.min(1, daysBetween(new Date(p.plantedDate + 'T00:00:00'), now) / veg.days));
+    const h = crop3dHeight(veg) * (0.3 + 0.7 * pct), base = pk.up ? bedH : groundH;
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: emojiTexture(THREE, veg.icon, texCache), alphaTest: 0.35 }));
+    const s = Math.max(0.22, Math.min(0.62, 0.22 + h * 0.3));
+    sp.scale.set(s, s, 1); sp.position.set(x, base + Math.max(h, s * 0.5) - s * 0.42, z); scene.add(sp);
+    if(h > s * 1.1){ // a thin stem or stake for tall crops
+      const st = add(new THREE.CylinderGeometry(0.012, 0.016, h, 5), M(0x5B8A3A), x, base + h / 2, z);
+      st.renderOrder = -1;
+    }
+    const sh = add(shadowGeo, mats.shadow, x, base + 0.005, z); sh.rotation.x = -Math.PI / 2;
+  });
+
+  // structure: gable roof (timber, like a wooden greenhouse) or tunnel (hoops)
+  const long = W >= D, L = Math.max(W, D) + 0.6, S = Math.min(W, D) + 0.6;
+  const g = new THREE.Group(); if(!long) g.rotation.y = Math.PI / 2; scene.add(g);
+  const gadd = (geo, mat, x, y, z) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); g.add(m); return m; };
+  const nBays = Math.max(1, Math.round(L / 1.2));
+  if(state.ghShape === 'tunnel'){
+    const R = Math.max(1.6, S / 2 + 0.2);
+    const cov = gadd(new THREE.CylinderGeometry(R, R, L, 36, 1, true, 0, Math.PI), mats.cover, 0, 0, 0);
+    cov.rotation.z = Math.PI / 2;
+    for(let i = 0; i <= nBays; i++){
+      const hp = gadd(new THREE.TorusGeometry(R, 0.022, 6, 28, Math.PI), mats.frame, -L / 2 + i * L / nBays, 0, 0);
+      hp.rotation.y = Math.PI / 2;
+    }
+    [-L / 2, L / 2].forEach(x0 => { const e = gadd(new THREE.CircleGeometry(R, 28, 0, Math.PI), mats.cover, x0, 0, 0); e.rotation.y = Math.PI / 2; });
+  } else {
+    const wallH = 2.0, ridge = wallH + Math.max(0.6, S * 0.28), half = S / 2;
+    const post = new THREE.BoxGeometry(0.09, wallH, 0.09);
+    for(let i = 0; i <= nBays; i++){
+      const x0 = -L / 2 + i * L / nBays;
+      [-half, half].forEach(z0 => gadd(post, mats.frame, x0, wallH / 2, z0));
+      // rafters
+      const raf = Math.hypot(half, ridge - wallH);
+      [-1, 1].forEach(sg => { const b = gadd(new THREE.BoxGeometry(0.08, 0.12, raf), mats.woodDark, x0, (wallH + ridge) / 2, sg * half / 2); b.rotation.x = sg * Math.atan2(ridge - wallH, half); });
+    }
+    [-half, half].forEach(z0 => { gadd(new THREE.BoxGeometry(L, 0.12, 0.1), mats.woodDark, 0, wallH, z0); gadd(new THREE.BoxGeometry(L, 0.08, 0.06), mats.wood, 0, 0.9, z0); });
+    gadd(new THREE.BoxGeometry(L, 0.12, 0.12), mats.woodDark, 0, ridge, 0);
+    // clear walls and roof
+    [-half, half].forEach(z0 => gadd(new THREE.PlaneGeometry(L, wallH), mats.cover, 0, wallH / 2, z0));
+    const slope = Math.hypot(half, ridge - wallH);
+    [-1, 1].forEach(sg => { const rp = gadd(new THREE.PlaneGeometry(L, slope), mats.cover, 0, (wallH + ridge) / 2, sg * half / 2); rp.rotation.x = sg > 0 ? -(Math.PI / 2 - Math.atan2(ridge - wallH, half)) : (Math.PI / 2 - Math.atan2(ridge - wallH, half)); });
+    const gableShape = new THREE.Shape(); gableShape.moveTo(-half, 0); gableShape.lineTo(half, 0); gableShape.lineTo(half, wallH); gableShape.lineTo(0, ridge); gableShape.lineTo(-half, wallH); gableShape.closePath();
+    [-L / 2, L / 2].forEach(x0 => { const e = gadd(new THREE.ShapeGeometry(gableShape), mats.cover, x0, 0, 0); e.rotation.y = Math.PI / 2; });
+  }
+
+  // camera orbit (drag to rotate, pinch / wheel to zoom), drawn only when something changes
+  const tgt = new THREE.Vector3(0, 0.45, 0), maxR = Math.max(W, D) * 1.9 + 4;
+  let th = 0.55, ph = 1.08, rad = Math.min(maxR, Math.max(W, D) * 1.35 + 3.2), need = true;
+  const place = () => { camera.position.set(tgt.x + rad * Math.sin(ph) * Math.sin(th), tgt.y + rad * Math.cos(ph), tgt.z + rad * Math.sin(ph) * Math.cos(th)); camera.lookAt(tgt); };
+  const resize = () => { const w = box.clientWidth, h = box.clientHeight; if(!w || !h) return; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); need = true; };
+  let raf = 0; const loop = () => { raf = requestAnimationFrame(loop); if(!need) return; need = false; place(); renderer.render(scene, camera); };
+  const ptrs = new Map(); let pinch0 = 0, rad0 = rad;
+  const down = e => { canvas.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, [e.clientX, e.clientY]); if(ptrs.size === 2){ const [a, b] = [...ptrs.values()]; pinch0 = Math.hypot(a[0] - b[0], a[1] - b[1]); rad0 = rad; } };
+  const move = e => {
+    if(!ptrs.has(e.pointerId)) return; const prev = ptrs.get(e.pointerId); ptrs.set(e.pointerId, [e.clientX, e.clientY]);
+    if(ptrs.size === 1){ th -= (e.clientX - prev[0]) * 0.008; ph = Math.max(0.22, Math.min(1.42, ph - (e.clientY - prev[1]) * 0.006)); need = true; }
+    else if(ptrs.size === 2 && pinch0){ const [a, b] = [...ptrs.values()]; rad = Math.max(1.6, Math.min(maxR, rad0 * pinch0 / Math.max(1, Math.hypot(a[0] - b[0], a[1] - b[1])))); need = true; }
+  };
+  const up = e => { ptrs.delete(e.pointerId); if(ptrs.size < 2) pinch0 = 0; };
+  const wheel = e => { e.preventDefault(); rad = Math.max(1.6, Math.min(maxR, rad * (1 + e.deltaY * 0.0012))); need = true; };
+  canvas.addEventListener('pointerdown', down); canvas.addEventListener('pointermove', move);
+  canvas.addEventListener('pointerup', up); canvas.addEventListener('pointercancel', up); canvas.addEventListener('wheel', wheel, { passive:false });
+  const ro = new ResizeObserver(resize); ro.observe(box); resize(); loop();
+  R3 = { renderer, scene, cleanup: [ () => cancelAnimationFrame(raf), () => ro.disconnect(),
+    () => { canvas.removeEventListener('pointerdown', down); canvas.removeEventListener('pointermove', move); canvas.removeEventListener('pointerup', up); canvas.removeEventListener('pointercancel', up); canvas.removeEventListener('wheel', wheel); } ] };
+}
+document.getElementById('view3dBtn').addEventListener('click', toggle3d);
+
+/* ---------- Layer bar: ground / raised bed (mesón) ---------- */
+function layoutOpts(sel){
+  return [['ground','🟫','layoutGround'],['up','🪵','layoutUp'],['both','🟫🪵','layoutBoth']].map(([v,ic,k]) => `<button class="ws-opt lay-opt${sel === v ? ' on' : ''}" data-lay="${v}"><span>${ic}</span> ${t(k)}</button>`).join('');
+}
+function setLayout(v){
+  state.layout = v; curLayer = v === 'up' ? 'up' : 'ground'; bedEdit = false;
+  saveState(); renderLayerBar(); renderRoom(); if(typeof renderLayoutSet === 'function') renderLayoutSet();
+}
+function renderLayerBar(){
+  const el = document.getElementById('layerBar'); if(!el) return;
+  const lay = state.layout;
+  if(lay === 'up') curLayer = 'up'; else if(lay !== 'both') { curLayer = 'ground'; bedEdit = false; }
+  if(!lay){
+    el.innerHTML = `<div class="lay-setup"><div class="ls-q">🌱 ${t('setupQ')}</div><div class="ws-opts">${layoutOpts(null)}</div><div class="ls-sub">${t('setupSub')}</div></div>`;
+    el.querySelectorAll('[data-lay]').forEach(b => b.addEventListener('click', () => setLayout(b.dataset.lay)));
+    return;
+  }
+  if(lay === 'ground'){ el.innerHTML = ''; return; }
+  const n = bedCount(), up = curLayer === 'up';
+  const hU = imperial() ? Math.round((state.bedH || 85) / 2.54) : (state.bedH || 85), hu = imperial() ? 'in' : 'cm';
+  el.innerHTML = `${lay === 'both' ? `<div class="lb-seg"><button class="lb-opt${!up ? ' on' : ''}" data-l="ground">🟫 ${t('layerGround')}</button><button class="lb-opt${up ? ' on' : ''}" data-l="up">🪵 ${t('layerUp')}${n ? ` <small>${n}</small>` : ''}</button></div>` : ''}
+    ${up ? `<div class="lb-tools"><button class="lb-draw${bedEdit ? ' on' : ''}" id="bedDrawBtn">${bedEdit ? t('bedDone') : t('bedDraw')}</button>
+      <label class="lb-h">${t('bedHeightL')} <input type="number" id="bedHInput" min="${imperial() ? 8 : 20}" max="${imperial() ? 60 : 150}" step="1" value="${hU}"> ${hu}</label></div>
+      ${bedEdit ? `<div class="lb-hint">${t('bedDrawHint')}</div>` : (!n ? `<div class="lb-hint">${t('bedNoneHint')}</div>` : '')}` : ''}`;
+  el.querySelectorAll('.lb-opt').forEach(b => b.addEventListener('click', () => {
+    curLayer = b.dataset.l; if(curLayer !== 'up') bedEdit = false; hideVegTooltip(); renderLayerBar(); renderRoom();
+  }));
+  const db = document.getElementById('bedDrawBtn');
+  if(db) db.addEventListener('click', () => { bedEdit = !bedEdit; if(bedEdit && waterMode) toggleWater(); renderLayerBar(); renderRoom(); });
+  const hi = document.getElementById('bedHInput');
+  if(hi) hi.addEventListener('change', () => { let v = Number(hi.value); if(!(v > 0)) return; if(imperial()) v = v * 2.54; state.bedH = Math.max(20, Math.min(150, Math.round(v))); saveState(); });
+}
+function renderLayoutSet(){
+  const el = document.getElementById('layoutSet'); if(!el) return;
+  el.innerHTML = `<div class="ws-title">🌱 ${t('layoutTitle')}</div><div class="ws-opts">${layoutOpts(state.layout || 'ground')}</div>`;
+  el.querySelectorAll('[data-lay]').forEach(b => b.addEventListener('click', () => setLayout(b.dataset.lay)));
+}
+function renderGhShape(){
+  const el = document.getElementById('ghShapeSet'); if(!el) return;
+  const sh = state.ghShape === 'tunnel' ? 'tunnel' : 'gable';
+  el.innerHTML = `<div class="ws-title">🏠 ${t('ghShape')}</div><div class="ws-opts">${[['gable','ghGable'],['tunnel','ghTunnel']].map(([v,k]) => `<button class="ws-opt${sh === v ? ' on' : ''}" data-g="${v}">${t(k)}</button>`).join('')}</div>`;
+  el.querySelectorAll('[data-g]').forEach(b => b.addEventListener('click', () => { state.ghShape = b.dataset.g; saveState(); renderGhShape(); if(typeof rebuild3d === 'function') rebuild3d(); }));
+}
 
 /* ---------- Delete data: crops, by parts, factory reset (always with confirmation) ---------- */
 const RESET_PARTS = [['crops','rpCrops'],['irr','rpIrr'],['power','rpPower'],['win','rpWin'],['log','rpLog']];
