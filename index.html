@@ -443,6 +443,7 @@
   .lb-hint{ font-size:11.5px; color:var(--pine-soft); margin-top:7px; line-height:1.45; }
   .room .cell.no-bed{ background:repeating-linear-gradient(45deg,#EEF0EA 0 6px,#E4E7DF 6px 12px); cursor:not-allowed; }
   .room .cell.bed-empty{ background:#E9DCC7; box-shadow:inset 0 0 0 2px #C9A16D; }
+  .room .cell.row-empty{ background:#E3D3BA; }
   .room .cell.under-bed{ box-shadow:inset 0 0 0 2px rgba(201,161,109,.75); }
   .room .cell.bed-edit{ cursor:crosshair; }
   .room .cell.bed-edit.bed-on{ background:#E2C99F; box-shadow:inset 0 0 0 2px #A67C45; }
@@ -682,6 +683,7 @@
         </div>
         <div class="cell-size-hint"><span class="sq"></span><span id="cellSizeHint">Each square is 50 × 50 cm</span></div>
         <div class="win-set" id="layoutSet"></div>
+        <div class="win-set" id="rowsSet"></div>
         <div class="win-set" id="ghShapeSet"></div>
         <div class="win-set" id="winSet"></div>
       </div>
@@ -1104,6 +1106,7 @@ const TRANSLATIONS = {
     resetSec:"Delete data", resetCrops:"Delete crops", resetCropsHint:"Quick, to plant again. Keeps irrigation and settings.", resetParts:"Delete by parts…", resetPartsHint:"Choose what to delete: crops, irrigation, equipment, windows or history.", resetFactory:"Factory reset", resetFactoryHint:"Deletes everything and the app is like newly installed. The board stays connected.", rcTitle:"Delete all your crops?", rcBody:"All plants in your greenhouse will be removed. Irrigation zones, equipment and your settings are kept. This cannot be undone.", rcConfirm:"Yes, delete crops", rpTitle:"What do you want to delete?", rpBody:"Check what you want to remove. This cannot be undone.", rpConfirm:"Delete selected", rpCrops:"Planted crops", rpIrr:"Irrigation: zones, flow rate and watering log", rpPower:"Equipment: lighting, fans and pump (power use)", rpWin:"Windows", rpLog:"Sensor history (temperature, humidity, light, CO2)", rfTitle:"Factory reset?", rfBody:"Everything will be deleted: crops, irrigation, equipment, windows, history, custom plants, greenhouse size, location and language. The app will be like newly installed. Your Organics One board connection is kept. This cannot be undone.", rfConfirm:"Yes, reset everything", resetCancel:"Cancel", toastCropsDone:"Done, your crops were deleted 🌱", toastPartsDone:"Done, the selected data was deleted",
     layerGround:"Ground", layerUp:"Raised bed", bedDraw:"✏️ Draw raised bed", bedDone:"✓ Done", bedHeightL:"Bed height", bedDrawHint:"Tap or drag over the blocks where your raised bed is. Tap again to remove it.", bedNoneHint:"You have no raised beds yet. Tap ✏️ Draw raised bed and mark where it is.", toastNoBed:"There is no raised bed here. Tap ✏️ Draw raised bed to add it.", posUp:"raised bed", ghShape:"Greenhouse shape", ghGable:"Gable roof", ghTunnel:"Tunnel", v3dTitle:"3D view", v3dBack:"Back to 2D to plant", v3dHint:"3D view to get your bearings. Drag to rotate, pinch or scroll to zoom. To plant, go back to 2D.", v3dLoading:"Loading 3D view…", v3dError:"Could not load the 3D view. Check your connection.",
     setupQ:"How do you grow in your greenhouse?", setupSub:"This sets up your plan. You can change it later by tapping the greenhouse size.", layoutGround:"In the ground", layoutUp:"On raised beds", layoutBoth:"Ground and raised beds", layoutTitle:"Where you grow",
+    wzSizeQ:"Your greenhouse size", wzLong:"Length", wzWide:"Width", wzRowsQ:"How many rows do you have?", wzGround:"Rows in the ground", wzUp:"Raised beds", wzCreate:"Create my plan", wzSkip:"I'll draw it myself", wzBack:"Back", wzMax:"Up to {n} rows fit with aisles in between.", wzRedo:"Set up the plan again", bedDrawG:"✏️ Draw row", toastNoRow:"This is an aisle. Tap ✏️ Draw row to plant here.", wzDone:"Your plan is ready 🌱", rowDrawHint:"Tap or drag over the blocks where your row is. Tap again to remove it.", setupPrompt:"Set up your greenhouse: size, rows and whether you grow in the ground or on raised beds.", setupBtn:"Set up",
     boardTitle:'ORGANICS ONE BOARD', boardConnect:'Connect board', boardSave:'Connect', boardDisc:'Disconnect', boardForget:'Forget', boardServer:'Server (EMQX host)', boardUser:'User', boardPass:'Password', boardInv:'Greenhouse name', boardOff:'Not connected', boardOn:'Board online', boardNoBoard:'Board offline', boardUpdate:'Update firmware', boardTemp:'Temperature', boardHum:'Humidity', boardVpd:'VPD', boardSoil:'Soil', boardValveOpen:'watering', boardZone:'Zone', boardAlarm:'Alarm', boardConnecting:'Connecting…', boardLiveTemp:'Real sensor',
     useAutoLocation:'📍 Use automatic location', locationManualLabel:'Manual location',
     locationApprox:'Approximate location', locationPrecise:'Precise location',
@@ -1122,8 +1125,8 @@ const TRANSLATIONS = {
     toastPickPlant:'Pick a plant from the library first 🌱',
     toastPlanted:'Planted {name} in block {r}-{c}', toastPlantedMulti:'Planted {name} in {n} blocks',
     toastCleared:'Block cleared',
-    toastMaxHeight:'Maximum length is 6 m (12 blocks)', toastMinHeight:'Minimum length is 1 m (2 blocks)',
-    toastMaxWidth:'Maximum width is 6 m (12 blocks)', toastMinWidth:'Minimum width is 1 m (2 blocks)',
+    toastMaxHeight:'Maximum length is 30 m (60 blocks)', toastMinHeight:'Minimum length is 1 m (2 blocks)',
+    toastMaxWidth:'Maximum width is 12 m (24 blocks)', toastMinWidth:'Minimum width is 1 m (2 blocks)',
     toastGiveName:'Give your plant a name first', toastAlreadyLibrary:'{name} is already in your library — selected it for you',
     toastAdded:'Added {name} to your library {icon}', toastSaveFail:"Couldn't save — your changes may not persist.",
     grown:'grown', toGo:'to go', day:'day', days:'days',
@@ -1394,6 +1397,7 @@ const TRANSLATIONS = {
     resetSec:"Borrar datos", resetCrops:"Borrar cultivos", resetCropsHint:"Rápido, para volver a sembrar. Mantiene el riego y la configuración.", resetParts:"Borrar por partes…", resetPartsHint:"Eliges qué borrar: cultivos, riego, equipos, ventanas o historial.", resetFactory:"Restablecer de fábrica", resetFactoryHint:"Borra todo y la app queda como recién instalada. La tarjeta sigue conectada.", rcTitle:"¿Borrar todos tus cultivos?", rcBody:"Se eliminarán todas las plantas sembradas en tu invernadero. Las zonas de riego, los equipos y tu configuración se mantienen. Esto no se puede deshacer.", rcConfirm:"Sí, borrar cultivos", rpTitle:"¿Qué quieres borrar?", rpBody:"Marca lo que quieres eliminar. Esto no se puede deshacer.", rpConfirm:"Borrar lo seleccionado", rpCrops:"Cultivos sembrados", rpIrr:"Riego: zonas, caudal y registro de riegos", rpPower:"Equipos: iluminación, ventiladores y bomba (consumo eléctrico)", rpWin:"Ventanas", rpLog:"Historial de sensores (temperatura, humedad, luz, CO2)", rfTitle:"¿Restablecer de fábrica?", rfBody:"Se borrará todo: cultivos, riego, equipos, ventanas, historial, plantas personalizadas, tamaño del invernadero, ubicación e idioma. La app quedará como recién instalada. La conexión con tu tarjeta Organics One se mantiene. Esto no se puede deshacer.", rfConfirm:"Sí, restablecer todo", resetCancel:"Cancelar", toastCropsDone:"Listo, tus cultivos se borraron 🌱", toastPartsDone:"Listo, se borró lo seleccionado",
     layerGround:"Suelo", layerUp:"Mesón", bedDraw:"✏️ Dibujar mesón", bedDone:"✓ Listo", bedHeightL:"Altura del mesón", bedDrawHint:"Toca o arrastra sobre los bloques donde está tu mesón. Toca de nuevo para quitarlo.", bedNoneHint:"Aún no tienes mesones. Toca ✏️ Dibujar mesón y marca dónde está.", toastNoBed:"Aquí no hay mesón. Toca ✏️ Dibujar mesón para agregarlo.", posUp:"mesón", ghShape:"Forma del invernadero", ghGable:"Dos aguas", ghTunnel:"Túnel", v3dTitle:"Vista 3D", v3dBack:"Volver a 2D para sembrar", v3dHint:"Vista 3D para orientarte. Arrastra para girar, pellizca o usa la rueda para acercar. Para sembrar, vuelve a 2D.", v3dLoading:"Cargando vista 3D…", v3dError:"No se pudo cargar la vista 3D. Revisa tu conexión.",
     setupQ:"¿Cómo cultivas en tu invernadero?", setupSub:"Así preparo tu plano. Lo puedes cambiar después tocando el tamaño del invernadero.", layoutGround:"En el suelo", layoutUp:"En mesones", layoutBoth:"Suelo y mesones", layoutTitle:"Dónde cultivas",
+    wzSizeQ:"Medidas de tu invernadero", wzLong:"Largo", wzWide:"Ancho", wzRowsQ:"¿Cuántas hileras tienes?", wzGround:"Hileras en el suelo", wzUp:"Mesones", wzCreate:"Crear mi plano", wzSkip:"Prefiero dibujarlo yo", wzBack:"Atrás", wzMax:"Caben hasta {n} hileras con pasillos entre ellas.", wzRedo:"Armar el plano de nuevo", bedDrawG:"✏️ Dibujar hilera", toastNoRow:"Aquí es pasillo. Toca ✏️ Dibujar hilera para sembrar aquí.", wzDone:"Tu plano está listo 🌱", rowDrawHint:"Toca o arrastra sobre los bloques donde está tu hilera. Toca de nuevo para quitarla.", setupPrompt:"Configura tu invernadero: medidas, hileras y si cultivas en el suelo o en mesones.", setupBtn:"Configurar",
     boardTitle:'TARJETA ORGANICS ONE', boardConnect:'Conectar tarjeta', boardSave:'Conectar', boardDisc:'Desconectar', boardForget:'Olvidar', boardServer:'Servidor (host de EMQX)', boardUser:'Usuario', boardPass:'Clave', boardInv:'Nombre del invernadero', boardOff:'Sin conexión', boardOn:'Tarjeta en línea', boardNoBoard:'Tarjeta desconectada', boardUpdate:'Actualizar firmware', boardTemp:'Temperatura', boardHum:'Humedad', boardVpd:'VPD', boardSoil:'Suelo', boardValveOpen:'regando', boardZone:'Zona', boardAlarm:'Alarma', boardConnecting:'Conectando…', boardLiveTemp:'Sensor real',
     useAutoLocation:'📍 Usar ubicación automática', locationManualLabel:'Ubicación manual',
     locationApprox:'Ubicación aproximada', locationPrecise:'Ubicación precisa',
@@ -1412,8 +1416,8 @@ const TRANSLATIONS = {
     toastPickPlant:'Primero elige una planta de la biblioteca 🌱',
     toastPlanted:'Plantado {name} en el bloque {r}-{c}', toastPlantedMulti:'Plantado {name} en {n} bloques',
     toastCleared:'Bloque vaciado',
-    toastMaxHeight:'El largo máximo es 6 m (12 bloques)', toastMinHeight:'El largo mínimo es 1 m (2 bloques)',
-    toastMaxWidth:'El ancho máximo es 6 m (12 bloques)', toastMinWidth:'El ancho mínimo es 1 m (2 bloques)',
+    toastMaxHeight:'El largo máximo es 30 m (60 bloques)', toastMinHeight:'El largo mínimo es 1 m (2 bloques)',
+    toastMaxWidth:'El ancho máximo es 12 m (24 bloques)', toastMinWidth:'El ancho mínimo es 1 m (2 bloques)',
     toastGiveName:'Primero dale un nombre a tu planta', toastAlreadyLibrary:'{name} ya está en tu biblioteca — la seleccionamos por ti',
     toastAdded:'Se añadió {name} a tu biblioteca {icon}', toastSaveFail:'No se pudo guardar — es posible que tus cambios no persistan.',
     grown:'crecido', toGo:'restantes', day:'día', days:'días',
@@ -1683,6 +1687,7 @@ const TRANSLATIONS = {
     resetSec:"Effacer des données", resetCrops:"Effacer les cultures", resetCropsHint:"Rapide, pour replanter. Conserve l’arrosage et les réglages.", resetParts:"Effacer par parties…", resetPartsHint:"Choisissez quoi effacer : cultures, arrosage, équipements, fenêtres ou historique.", resetFactory:"Réinitialisation d’usine", resetFactoryHint:"Efface tout et l’app redevient comme neuve. La carte reste connectée.", rcTitle:"Effacer toutes vos cultures ?", rcBody:"Toutes les plantes de votre serre seront supprimées. Les zones d’arrosage, les équipements et vos réglages sont conservés. Action irréversible.", rcConfirm:"Oui, effacer les cultures", rpTitle:"Que voulez-vous effacer ?", rpBody:"Cochez ce que vous voulez supprimer. Action irréversible.", rpConfirm:"Effacer la sélection", rpCrops:"Cultures plantées", rpIrr:"Arrosage : zones, débit et historique d’arrosage", rpPower:"Équipements : éclairage, ventilateurs et pompe (consommation)", rpWin:"Fenêtres", rpLog:"Historique des capteurs (température, humidité, lumière, CO2)", rfTitle:"Réinitialisation d’usine ?", rfBody:"Tout sera effacé : cultures, arrosage, équipements, fenêtres, historique, plantes personnalisées, taille de la serre, position et langue. L’app sera comme neuve. La connexion à votre carte Organics One est conservée. Action irréversible.", rfConfirm:"Oui, tout réinitialiser", resetCancel:"Annuler", toastCropsDone:"C’est fait, vos cultures ont été effacées 🌱", toastPartsDone:"C’est fait, la sélection a été effacée",
     layerGround:"Sol", layerUp:"Table de culture", bedDraw:"✏️ Dessiner la table", bedDone:"✓ Terminé", bedHeightL:"Hauteur de la table", bedDrawHint:"Touchez ou glissez sur les blocs où se trouve votre table de culture. Touchez à nouveau pour la retirer.", bedNoneHint:"Vous n’avez pas encore de table de culture. Touchez ✏️ Dessiner la table et indiquez où elle se trouve.", toastNoBed:"Il n’y a pas de table ici. Touchez ✏️ Dessiner la table pour l’ajouter.", posUp:"table", ghShape:"Forme de la serre", ghGable:"Deux pentes", ghTunnel:"Tunnel", v3dTitle:"Vue 3D", v3dBack:"Revenir en 2D pour planter", v3dHint:"Vue 3D pour vous repérer. Faites glisser pour tourner, pincez ou utilisez la molette pour zoomer. Pour planter, revenez en 2D.", v3dLoading:"Chargement de la vue 3D…", v3dError:"Impossible de charger la vue 3D. Vérifiez votre connexion.",
     setupQ:"Comment cultivez-vous dans votre serre ?", setupSub:"Cela prépare votre plan. Vous pourrez le changer en touchant la taille de la serre.", layoutGround:"En pleine terre", layoutUp:"Sur tables de culture", layoutBoth:"Sol et tables", layoutTitle:"Où vous cultivez",
+    wzSizeQ:"Dimensions de votre serre", wzLong:"Longueur", wzWide:"Largeur", wzRowsQ:"Combien de rangs avez-vous ?", wzGround:"Rangs en pleine terre", wzUp:"Tables de culture", wzCreate:"Créer mon plan", wzSkip:"Je préfère le dessiner", wzBack:"Retour", wzMax:"Jusqu’à {n} rangs avec des allées entre eux.", wzRedo:"Refaire le plan", bedDrawG:"✏️ Dessiner un rang", toastNoRow:"Ici c’est une allée. Touchez ✏️ Dessiner un rang pour planter ici.", wzDone:"Votre plan est prêt 🌱", rowDrawHint:"Touchez ou glissez sur les blocs de votre rang. Touchez à nouveau pour le retirer.", setupPrompt:"Configurez votre serre : dimensions, rangs et culture en pleine terre ou sur tables.", setupBtn:"Configurer",
     boardTitle:'CARTE ORGANICS ONE',
     boardConnect:'Connecter la carte',
     boardSave:'Connecter',
@@ -1742,8 +1747,8 @@ const TRANSLATIONS = {
     toastPickPlant:"Choisissez d'abord une plante dans la bibliothèque 🌱",
     toastPlanted:'{name} planté dans le bloc {r}-{c}', toastPlantedMulti:'{name} planté dans {n} blocs',
     toastCleared:'Bloc vidé',
-    toastMaxHeight:'La longueur maximale est de 6 m (12 cases)', toastMinHeight:'La longueur minimale est de 1 m (2 cases)',
-    toastMaxWidth:'La largeur maximale est de 6 m (12 cases)', toastMinWidth:'La largeur minimale est de 1 m (2 cases)',
+    toastMaxHeight:'La longueur maximale est de 30 m (60 cases)', toastMinHeight:'La longueur minimale est de 1 m (2 cases)',
+    toastMaxWidth:'La largeur maximale est de 12 m (24 cases)', toastMinWidth:'La largeur minimale est de 1 m (2 cases)',
     toastGiveName:"Donnez d'abord un nom à votre plante", toastAlreadyLibrary:'{name} est déjà dans votre bibliothèque — sélectionnée pour vous',
     toastAdded:'{name} ajouté à votre bibliothèque {icon}', toastSaveFail:"Impossible d'enregistrer — vos modifications pourraient ne pas être conservées.",
     grown:'poussé', toGo:'restants', day:'jour', days:'jours',
@@ -2013,6 +2018,7 @@ const TRANSLATIONS = {
     resetSec:"Apagar dados", resetCrops:"Apagar cultivos", resetCropsHint:"Rápido, para plantar de novo. Mantém a rega e as configurações.", resetParts:"Apagar por partes…", resetPartsHint:"Escolha o que apagar: cultivos, rega, equipamentos, janelas ou histórico.", resetFactory:"Restaurar padrões de fábrica", resetFactoryHint:"Apaga tudo e o app fica como recém-instalado. A placa continua conectada.", rcTitle:"Apagar todos os seus cultivos?", rcBody:"Todas as plantas da sua estufa serão removidas. As zonas de rega, os equipamentos e suas configurações são mantidos. Isso não pode ser desfeito.", rcConfirm:"Sim, apagar cultivos", rpTitle:"O que você quer apagar?", rpBody:"Marque o que quer remover. Isso não pode ser desfeito.", rpConfirm:"Apagar selecionados", rpCrops:"Cultivos plantados", rpIrr:"Rega: zonas, vazão e registro de regas", rpPower:"Equipamentos: iluminação, ventiladores e bomba (consumo elétrico)", rpWin:"Janelas", rpLog:"Histórico dos sensores (temperatura, umidade, luz, CO2)", rfTitle:"Restaurar padrões de fábrica?", rfBody:"Tudo será apagado: cultivos, rega, equipamentos, janelas, histórico, plantas personalizadas, tamanho da estufa, localização e idioma. O app ficará como recém-instalado. A conexão com sua placa Organics One é mantida. Isso não pode ser desfeito.", rfConfirm:"Sim, restaurar tudo", resetCancel:"Cancelar", toastCropsDone:"Pronto, seus cultivos foram apagados 🌱", toastPartsDone:"Pronto, o que foi selecionado foi apagado",
     layerGround:"Solo", layerUp:"Bancada", bedDraw:"✏️ Desenhar bancada", bedDone:"✓ Pronto", bedHeightL:"Altura da bancada", bedDrawHint:"Toque ou arraste sobre os blocos onde fica sua bancada. Toque de novo para removê-la.", bedNoneHint:"Você ainda não tem bancadas. Toque em ✏️ Desenhar bancada e marque onde ela fica.", toastNoBed:"Aqui não há bancada. Toque em ✏️ Desenhar bancada para adicioná-la.", posUp:"bancada", ghShape:"Formato da estufa", ghGable:"Duas águas", ghTunnel:"Túnel", v3dTitle:"Vista 3D", v3dBack:"Voltar ao 2D para plantar", v3dHint:"Vista 3D para se orientar. Arraste para girar, pince ou use a roda para aproximar. Para plantar, volte ao 2D.", v3dLoading:"Carregando vista 3D…", v3dError:"Não foi possível carregar a vista 3D. Verifique sua conexão.",
     setupQ:"Como você cultiva na sua estufa?", setupSub:"Assim preparo sua planta. Você pode mudar depois tocando no tamanho da estufa.", layoutGround:"No solo", layoutUp:"Em bancadas", layoutBoth:"Solo e bancadas", layoutTitle:"Onde você cultiva",
+    wzSizeQ:"Medidas da sua estufa", wzLong:"Comprimento", wzWide:"Largura", wzRowsQ:"Quantas fileiras você tem?", wzGround:"Fileiras no solo", wzUp:"Bancadas", wzCreate:"Criar minha planta", wzSkip:"Prefiro desenhar", wzBack:"Voltar", wzMax:"Cabem até {n} fileiras com corredores entre elas.", wzRedo:"Montar a planta de novo", bedDrawG:"✏️ Desenhar fileira", toastNoRow:"Aqui é corredor. Toque em ✏️ Desenhar fileira para plantar aqui.", wzDone:"Sua planta está pronta 🌱", rowDrawHint:"Toque ou arraste sobre os blocos da sua fileira. Toque de novo para removê-la.", setupPrompt:"Configure sua estufa: medidas, fileiras e se cultiva no solo ou em bancadas.", setupBtn:"Configurar",
     boardTitle:'PLACA ORGANICS ONE',
     boardConnect:'Conectar placa',
     boardSave:'Conectar',
@@ -2072,8 +2078,8 @@ const TRANSLATIONS = {
     toastPickPlant:'Escolha uma planta da biblioteca primeiro 🌱',
     toastPlanted:'{name} plantado no bloco {r}-{c}', toastPlantedMulti:'{name} plantado em {n} blocos',
     toastCleared:'Bloco limpo',
-    toastMaxHeight:'O comprimento máximo é 6 m (12 quadrados)', toastMinHeight:'O comprimento mínimo é 1 m (2 quadrados)',
-    toastMaxWidth:'A largura máxima é 6 m (12 quadrados)', toastMinWidth:'A largura mínima é 1 m (2 quadrados)',
+    toastMaxHeight:'O comprimento máximo é 30 m (60 quadrados)', toastMinHeight:'O comprimento mínimo é 1 m (2 quadrados)',
+    toastMaxWidth:'A largura máxima é 12 m (24 quadrados)', toastMinWidth:'A largura mínima é 1 m (2 quadrados)',
     toastGiveName:'Dê um nome à sua planta primeiro', toastAlreadyLibrary:'{name} já está na sua biblioteca — selecionamos para você',
     toastAdded:'{name} adicionado à sua biblioteca {icon}', toastSaveFail:'Não foi possível salvar — suas alterações podem não persistir.',
     grown:'crescido', toGo:'restantes', day:'dia', days:'dias',
@@ -2343,6 +2349,7 @@ const TRANSLATIONS = {
     resetSec:"Daten löschen", resetCrops:"Kulturen löschen", resetCropsHint:"Schnell, um neu zu pflanzen. Bewässerung und Einstellungen bleiben.", resetParts:"Teilweise löschen…", resetPartsHint:"Wähle, was gelöscht wird: Kulturen, Bewässerung, Geräte, Fenster oder Verlauf.", resetFactory:"Auf Werkseinstellungen zurücksetzen", resetFactoryHint:"Löscht alles, die App ist wie neu installiert. Die Platine bleibt verbunden.", rcTitle:"Alle Kulturen löschen?", rcBody:"Alle Pflanzen in deinem Gewächshaus werden entfernt. Bewässerungszonen, Geräte und Einstellungen bleiben erhalten. Das kann nicht rückgängig gemacht werden.", rcConfirm:"Ja, Kulturen löschen", rpTitle:"Was möchtest du löschen?", rpBody:"Markiere, was entfernt werden soll. Das kann nicht rückgängig gemacht werden.", rpConfirm:"Auswahl löschen", rpCrops:"Gepflanzte Kulturen", rpIrr:"Bewässerung: Zonen, Durchfluss und Bewässerungsprotokoll", rpPower:"Geräte: Beleuchtung, Lüfter und Pumpe (Stromverbrauch)", rpWin:"Fenster", rpLog:"Sensorverlauf (Temperatur, Feuchte, Licht, CO2)", rfTitle:"Auf Werkseinstellungen zurücksetzen?", rfBody:"Alles wird gelöscht: Kulturen, Bewässerung, Geräte, Fenster, Verlauf, eigene Pflanzen, Gewächshausgröße, Standort und Sprache. Die App ist dann wie neu installiert. Die Verbindung zu deiner Organics-One-Platine bleibt erhalten. Das kann nicht rückgängig gemacht werden.", rfConfirm:"Ja, alles zurücksetzen", resetCancel:"Abbrechen", toastCropsDone:"Fertig, deine Kulturen wurden gelöscht 🌱", toastPartsDone:"Fertig, die Auswahl wurde gelöscht",
     layerGround:"Boden", layerUp:"Hochbeet", bedDraw:"✏️ Hochbeet zeichnen", bedDone:"✓ Fertig", bedHeightL:"Höhe des Hochbeets", bedDrawHint:"Tippe oder ziehe über die Blöcke, wo dein Hochbeet steht. Nochmal tippen zum Entfernen.", bedNoneHint:"Du hast noch keine Hochbeete. Tippe auf ✏️ Hochbeet zeichnen und markiere, wo es steht.", toastNoBed:"Hier ist kein Hochbeet. Tippe auf ✏️ Hochbeet zeichnen, um es hinzuzufügen.", posUp:"Hochbeet", ghShape:"Form des Gewächshauses", ghGable:"Satteldach", ghTunnel:"Tunnel", v3dTitle:"3D-Ansicht", v3dBack:"Zurück zu 2D zum Pflanzen", v3dHint:"3D-Ansicht zur Orientierung. Ziehen zum Drehen, mit zwei Fingern oder dem Mausrad zoomen. Zum Pflanzen zurück zu 2D.", v3dLoading:"3D-Ansicht wird geladen…", v3dError:"Die 3D-Ansicht konnte nicht geladen werden. Prüfe deine Verbindung.",
     setupQ:"Wie baust du in deinem Gewächshaus an?", setupSub:"So wird dein Plan vorbereitet. Du kannst es später über die Gewächshausgröße ändern.", layoutGround:"Im Boden", layoutUp:"In Hochbeeten", layoutBoth:"Boden und Hochbeete", layoutTitle:"Wo du anbaust",
+    wzSizeQ:"Maße deines Gewächshauses", wzLong:"Länge", wzWide:"Breite", wzRowsQ:"Wie viele Reihen hast du?", wzGround:"Reihen im Boden", wzUp:"Hochbeete", wzCreate:"Meinen Plan erstellen", wzSkip:"Ich zeichne selbst", wzBack:"Zurück", wzMax:"Es passen bis zu {n} Reihen mit Gängen dazwischen.", wzRedo:"Plan neu erstellen", bedDrawG:"✏️ Reihe zeichnen", toastNoRow:"Hier ist ein Gang. Tippe auf ✏️ Reihe zeichnen, um hier zu pflanzen.", wzDone:"Dein Plan ist fertig 🌱", rowDrawHint:"Tippe oder ziehe über die Blöcke deiner Reihe. Nochmal tippen zum Entfernen.", setupPrompt:"Richte dein Gewächshaus ein: Maße, Reihen und ob du im Boden oder in Hochbeeten anbaust.", setupBtn:"Einrichten",
     boardTitle:'ORGANICS-ONE-PLATINE',
     boardConnect:'Platine verbinden',
     boardSave:'Verbinden',
@@ -2402,8 +2409,8 @@ const TRANSLATIONS = {
     toastPickPlant:'Wähle zuerst eine Pflanze aus der Bibliothek 🌱',
     toastPlanted:'{name} in Feld {r}-{c} gepflanzt', toastPlantedMulti:'{name} in {n} Feldern gepflanzt',
     toastCleared:'Feld geleert',
-    toastMaxHeight:'Maximale Länge: 6 m (12 Felder)', toastMinHeight:'Minimale Länge: 1 m (2 Felder)',
-    toastMaxWidth:'Maximale Breite: 6 m (12 Felder)', toastMinWidth:'Minimale Breite: 1 m (2 Felder)',
+    toastMaxHeight:'Maximale Länge: 30 m (60 Felder)', toastMinHeight:'Minimale Länge: 1 m (2 Felder)',
+    toastMaxWidth:'Maximale Breite: 12 m (24 Felder)', toastMinWidth:'Minimale Breite: 1 m (2 Felder)',
     toastGiveName:'Gib deiner Pflanze zuerst einen Namen', toastAlreadyLibrary:'{name} ist bereits in deiner Bibliothek — für dich ausgewählt',
     toastAdded:'{name} zu deiner Bibliothek hinzugefügt {icon}', toastSaveFail:'Speichern fehlgeschlagen — deine Änderungen bleiben möglicherweise nicht erhalten.',
     grown:'gewachsen', toGo:'verbleibend', day:'Tag', days:'Tage',
@@ -2673,6 +2680,7 @@ const TRANSLATIONS = {
     resetSec:"删除数据", resetCrops:"删除作物", resetCropsHint:"快速清空以便重新种植，保留灌溉和设置。", resetParts:"按项目删除…", resetPartsHint:"选择要删除的内容：作物、灌溉、设备、窗户或历史记录。", resetFactory:"恢复出厂设置", resetFactoryHint:"删除所有内容，应用恢复到刚安装的状态。控制板保持连接。", rcTitle:"要删除所有作物吗？", rcBody:"温室中的所有植物都将被移除。灌溉区、设备和设置会保留。此操作无法撤销。", rcConfirm:"是的，删除作物", rpTitle:"要删除哪些内容？", rpBody:"勾选要删除的内容。此操作无法撤销。", rpConfirm:"删除所选", rpCrops:"已种植的作物", rpIrr:"灌溉：区域、流量和浇水记录", rpPower:"设备：照明、风扇和水泵（耗电）", rpWin:"窗户", rpLog:"传感器历史（温度、湿度、光照、CO2）", rfTitle:"要恢复出厂设置吗？", rfBody:"所有内容都将被删除：作物、灌溉、设备、窗户、历史记录、自定义植物、温室尺寸、位置和语言。应用将恢复到刚安装的状态。与 Organics One 控制板的连接会保留。此操作无法撤销。", rfConfirm:"是的，全部恢复", resetCancel:"取消", toastCropsDone:"完成，作物已删除 🌱", toastPartsDone:"完成，所选内容已删除",
     layerGround:"地面", layerUp:"种植台", bedDraw:"✏️ 绘制种植台", bedDone:"✓ 完成", bedHeightL:"种植台高度", bedDrawHint:"点按或拖动经过种植台所在的方块，再次点按可移除。", bedNoneHint:"你还没有种植台。点按 ✏️ 绘制种植台并标出位置。", toastNoBed:"这里没有种植台。点按 ✏️ 绘制种植台来添加。", posUp:"种植台", ghShape:"温室形状", ghGable:"人字顶", ghTunnel:"拱棚", v3dTitle:"3D 视图", v3dBack:"返回 2D 进行种植", v3dHint:"3D 视图帮助你了解布局。拖动旋转，双指或滚轮缩放。种植请返回 2D。", v3dLoading:"正在加载 3D 视图…", v3dError:"无法加载 3D 视图，请检查网络连接。",
     setupQ:"你在温室里怎么种植？", setupSub:"这样可以准备你的布局。之后可点按温室尺寸进行更改。", layoutGround:"种在地面", layoutUp:"种在种植台", layoutBoth:"地面和种植台", layoutTitle:"种植方式",
+    wzSizeQ:"温室尺寸", wzLong:"长度", wzWide:"宽度", wzRowsQ:"你有几行种植？", wzGround:"地面种植行", wzUp:"种植台", wzCreate:"生成我的布局", wzSkip:"我自己画", wzBack:"返回", wzMax:"最多可放 {n} 行，中间留出走道。", wzRedo:"重新设置布局", bedDrawG:"✏️ 绘制种植行", toastNoRow:"这里是走道。点按 ✏️ 绘制种植行即可在此种植。", wzDone:"布局已就绪 🌱", rowDrawHint:"点按或拖动经过种植行所在的方块，再次点按可移除。", setupPrompt:"设置你的温室：尺寸、种植行，以及种在地面还是种植台。", setupBtn:"设置",
     boardTitle:'ORGANICS ONE 控制板',
     boardConnect:'连接控制板',
     boardSave:'连接',
@@ -2732,8 +2740,8 @@ const TRANSLATIONS = {
     toastPickPlant:'请先从植物库中选择一种植物 🌱',
     toastPlanted:'已在 {r}-{c} 格种植{name}', toastPlantedMulti:'已在 {n} 个格子种植{name}',
     toastCleared:'格子已清空',
-    toastMaxHeight:'最大长度为 6 米（12 格）', toastMinHeight:'最小长度为 1 米（2 格）',
-    toastMaxWidth:'最大宽度为 6 米（12 格）', toastMinWidth:'最小宽度为 1 米（2 格）',
+    toastMaxHeight:'最大长度为 30 米（60 格）', toastMinHeight:'最小长度为 1 米（2 格）',
+    toastMaxWidth:'最大宽度为 12 米（24 格）', toastMinWidth:'最小宽度为 1 米（2 格）',
     toastGiveName:'请先为您的植物命名', toastAlreadyLibrary:'{name} 已在您的植物库中 — 已为您选中',
     toastAdded:'已将 {name} 添加到您的植物库 {icon}', toastSaveFail:'保存失败 — 您的更改可能不会保留。',
     grown:'已生长', toGo:'剩余', day:'天', days:'天',
@@ -3003,6 +3011,7 @@ const TRANSLATIONS = {
     resetSec:"डेटा मिटाएँ", resetCrops:"फसलें मिटाएँ", resetCropsHint:"दोबारा बोने के लिए तेज़ तरीका। सिंचाई और सेटिंग्स बनी रहती हैं।", resetParts:"हिस्सों में मिटाएँ…", resetPartsHint:"चुनें क्या मिटाना है: फसलें, सिंचाई, उपकरण, खिड़कियाँ या इतिहास।", resetFactory:"फ़ैक्टरी रीसेट", resetFactoryHint:"सब कुछ मिटाता है और ऐप नया जैसा हो जाता है। बोर्ड जुड़ा रहता है।", rcTitle:"क्या सभी फसलें मिटानी हैं?", rcBody:"आपके ग्रीनहाउस के सभी पौधे हटा दिए जाएँगे। सिंचाई क्षेत्र, उपकरण और सेटिंग्स बनी रहेंगी। इसे वापस नहीं किया जा सकता।", rcConfirm:"हाँ, फसलें मिटाएँ", rpTitle:"आप क्या मिटाना चाहते हैं?", rpBody:"जो हटाना है उसे चुनें। इसे वापस नहीं किया जा सकता।", rpConfirm:"चुना हुआ मिटाएँ", rpCrops:"बोई गई फसलें", rpIrr:"सिंचाई: क्षेत्र, प्रवाह दर और सिंचाई रिकॉर्ड", rpPower:"उपकरण: रोशनी, पंखे और पंप (बिजली खपत)", rpWin:"खिड़कियाँ", rpLog:"सेंसर इतिहास (तापमान, आर्द्रता, रोशनी, CO2)", rfTitle:"क्या फ़ैक्टरी रीसेट करना है?", rfBody:"सब कुछ मिट जाएगा: फसलें, सिंचाई, उपकरण, खिड़कियाँ, इतिहास, आपके अपने पौधे, ग्रीनहाउस का आकार, स्थान और भाषा। ऐप नया जैसा हो जाएगा। आपके Organics One बोर्ड का कनेक्शन बना रहेगा। इसे वापस नहीं किया जा सकता।", rfConfirm:"हाँ, सब रीसेट करें", resetCancel:"रद्द करें", toastCropsDone:"हो गया, आपकी फसलें मिटा दी गईं 🌱", toastPartsDone:"हो गया, चुना हुआ डेटा मिटा दिया गया",
     layerGround:"ज़मीन", layerUp:"ऊँची क्यारी", bedDraw:"✏️ ऊँची क्यारी बनाएँ", bedDone:"✓ हो गया", bedHeightL:"क्यारी की ऊँचाई", bedDrawHint:"जिन ब्लॉकों पर आपकी ऊँची क्यारी है उन पर टैप करें या खींचें। हटाने के लिए फिर टैप करें।", bedNoneHint:"अभी आपकी कोई ऊँची क्यारी नहीं है। ✏️ ऊँची क्यारी बनाएँ पर टैप करें और जगह चिह्नित करें।", toastNoBed:"यहाँ ऊँची क्यारी नहीं है। जोड़ने के लिए ✏️ ऊँची क्यारी बनाएँ पर टैप करें।", posUp:"ऊँची क्यारी", ghShape:"ग्रीनहाउस का आकार", ghGable:"दो ढलान वाली छत", ghTunnel:"सुरंग", v3dTitle:"3D दृश्य", v3dBack:"बोने के लिए 2D पर लौटें", v3dHint:"दिशा समझने के लिए 3D दृश्य। घुमाने के लिए खींचें, ज़ूम के लिए पिंच करें या व्हील चलाएँ। बोने के लिए 2D पर लौटें।", v3dLoading:"3D दृश्य लोड हो रहा है…", v3dError:"3D दृश्य लोड नहीं हो सका। अपना कनेक्शन जाँचें।",
     setupQ:"आप अपने ग्रीनहाउस में कैसे उगाते हैं?", setupSub:"इससे आपका नक्शा तैयार होगा। बाद में ग्रीनहाउस के आकार पर टैप करके बदल सकते हैं।", layoutGround:"ज़मीन में", layoutUp:"ऊँची क्यारियों में", layoutBoth:"ज़मीन और ऊँची क्यारियाँ", layoutTitle:"आप कहाँ उगाते हैं",
+    wzSizeQ:"आपके ग्रीनहाउस का माप", wzLong:"लंबाई", wzWide:"चौड़ाई", wzRowsQ:"आपकी कितनी कतारें हैं?", wzGround:"ज़मीन में कतारें", wzUp:"ऊँची क्यारियाँ", wzCreate:"मेरा नक्शा बनाएँ", wzSkip:"मैं खुद बनाऊँगा", wzBack:"वापस", wzMax:"बीच में रास्ते के साथ अधिकतम {n} कतारें आ सकती हैं।", wzRedo:"नक्शा फिर से बनाएँ", bedDrawG:"✏️ कतार बनाएँ", toastNoRow:"यह रास्ता है। यहाँ बोने के लिए ✏️ कतार बनाएँ पर टैप करें।", wzDone:"आपका नक्शा तैयार है 🌱", rowDrawHint:"जिन ब्लॉकों पर आपकी कतार है उन पर टैप करें या खींचें। हटाने के लिए फिर टैप करें।", setupPrompt:"अपना ग्रीनहाउस सेट करें: माप, कतारें और ज़मीन या ऊँची क्यारियों में उगाना।", setupBtn:"सेट करें",
     boardTitle:'ORGANICS ONE बोर्ड',
     boardConnect:'बोर्ड कनेक्ट करें',
     boardSave:'कनेक्ट करें',
@@ -3062,8 +3071,8 @@ const TRANSLATIONS = {
     toastPickPlant:'पहले पुस्तकालय से एक पौधा चुनें 🌱',
     toastPlanted:'ब्लॉक {r}-{c} में {name} लगाया गया', toastPlantedMulti:'{n} ब्लॉक में {name} लगाया गया',
     toastCleared:'ब्लॉक खाली किया गया',
-    toastMaxHeight:'अधिकतम लंबाई 6 मी (12 खाने)', toastMinHeight:'न्यूनतम लंबाई 1 मी (2 खाने)',
-    toastMaxWidth:'अधिकतम चौड़ाई 6 मी (12 खाने)', toastMinWidth:'न्यूनतम चौड़ाई 1 मी (2 खाने)',
+    toastMaxHeight:'अधिकतम लंबाई 30 मी (60 खाने)', toastMinHeight:'न्यूनतम लंबाई 1 मी (2 खाने)',
+    toastMaxWidth:'अधिकतम चौड़ाई 12 मी (24 खाने)', toastMinWidth:'न्यूनतम चौड़ाई 1 मी (2 खाने)',
     toastGiveName:'पहले अपने पौधे को नाम दें', toastAlreadyLibrary:'{name} पहले से आपकी लाइब्रेरी में है — आपके लिए चुन लिया गया',
     toastAdded:'{name} आपकी लाइब्रेरी में जोड़ा गया {icon}', toastSaveFail:'सेव नहीं हो सका — आपके बदलाव सुरक्षित नहीं रह सकते।',
     grown:'विकसित', toGo:'शेष', day:'दिन', days:'दिन',
@@ -3333,6 +3342,7 @@ const TRANSLATIONS = {
     resetSec:"حذف البيانات", resetCrops:"حذف المحاصيل", resetCropsHint:"سريع لإعادة الزراعة. يحتفظ بالري والإعدادات.", resetParts:"الحذف حسب الأجزاء…", resetPartsHint:"اختر ما تريد حذفه: المحاصيل أو الري أو المعدات أو النوافذ أو السجل.", resetFactory:"إعادة ضبط المصنع", resetFactoryHint:"يحذف كل شيء ويعود التطبيق كأنه مثبت حديثًا. تبقى اللوحة متصلة.", rcTitle:"هل تريد حذف جميع محاصيلك؟", rcBody:"ستتم إزالة جميع النباتات في دفيئتك. تبقى مناطق الري والمعدات والإعدادات كما هي. لا يمكن التراجع عن ذلك.", rcConfirm:"نعم، احذف المحاصيل", rpTitle:"ماذا تريد أن تحذف؟", rpBody:"حدد ما تريد إزالته. لا يمكن التراجع عن ذلك.", rpConfirm:"حذف المحدد", rpCrops:"المحاصيل المزروعة", rpIrr:"الري: المناطق ومعدل التدفق وسجل الري", rpPower:"المعدات: الإضاءة والمراوح والمضخة (استهلاك الكهرباء)", rpWin:"النوافذ", rpLog:"سجل المستشعرات (الحرارة والرطوبة والضوء وCO2)", rfTitle:"هل تريد إعادة ضبط المصنع؟", rfBody:"سيتم حذف كل شيء: المحاصيل والري والمعدات والنوافذ والسجل والنباتات المخصصة وحجم الدفيئة والموقع واللغة. سيعود التطبيق كأنه مثبت حديثًا. يبقى الاتصال بلوحة Organics One. لا يمكن التراجع عن ذلك.", rfConfirm:"نعم، أعد ضبط كل شيء", resetCancel:"إلغاء", toastCropsDone:"تم، حُذفت محاصيلك 🌱", toastPartsDone:"تم، حُذف ما حددته",
     layerGround:"الأرض", layerUp:"طاولة زراعة", bedDraw:"✏️ ارسم طاولة الزراعة", bedDone:"✓ تم", bedHeightL:"ارتفاع الطاولة", bedDrawHint:"اضغط أو اسحب فوق المربعات التي توجد بها طاولة الزراعة. اضغط مرة أخرى لإزالتها.", bedNoneHint:"لا توجد لديك طاولات زراعة بعد. اضغط ✏️ ارسم طاولة الزراعة وحدد مكانها.", toastNoBed:"لا توجد طاولة هنا. اضغط ✏️ ارسم طاولة الزراعة لإضافتها.", posUp:"طاولة", ghShape:"شكل الدفيئة", ghGable:"سقف بميلين", ghTunnel:"نفق", v3dTitle:"عرض ثلاثي الأبعاد", v3dBack:"العودة إلى 2D للزراعة", v3dHint:"عرض ثلاثي الأبعاد لتتعرف على المكان. اسحب للتدوير، واقرص أو استخدم العجلة للتكبير. للزراعة، عد إلى 2D.", v3dLoading:"جارٍ تحميل العرض ثلاثي الأبعاد…", v3dError:"تعذّر تحميل العرض ثلاثي الأبعاد. تحقق من اتصالك.",
     setupQ:"كيف تزرع في دفيئتك؟", setupSub:"بهذا أجهّز مخططك. يمكنك تغييره لاحقًا بالضغط على حجم الدفيئة.", layoutGround:"في الأرض", layoutUp:"على طاولات زراعة", layoutBoth:"الأرض والطاولات", layoutTitle:"أين تزرع",
+    wzSizeQ:"مقاسات دفيئتك", wzLong:"الطول", wzWide:"العرض", wzRowsQ:"كم صفًا لديك؟", wzGround:"صفوف في الأرض", wzUp:"طاولات زراعة", wzCreate:"أنشئ مخططي", wzSkip:"أفضّل رسمه بنفسي", wzBack:"رجوع", wzMax:"يتسع حتى {n} صفوف مع ممرات بينها.", wzRedo:"أعد إعداد المخطط", bedDrawG:"✏️ ارسم صفًا", toastNoRow:"هذا ممر. اضغط ✏️ ارسم صفًا للزراعة هنا.", wzDone:"مخططك جاهز 🌱", rowDrawHint:"اضغط أو اسحب فوق مربعات الصف. اضغط مرة أخرى لإزالته.", setupPrompt:"اضبط دفيئتك: المقاسات والصفوف وهل تزرع في الأرض أو على طاولات.", setupBtn:"اضبط",
     boardTitle:'لوحة ORGANICS ONE',
     boardConnect:'ربط اللوحة',
     boardSave:'اتصال',
@@ -3392,8 +3402,8 @@ const TRANSLATIONS = {
     toastPickPlant:'اختر نبتة من المكتبة أولاً 🌱',
     toastPlanted:'تمت زراعة {name} في المربع {r}-{c}', toastPlantedMulti:'تمت زراعة {name} في {n} مربعات',
     toastCleared:'تم إفراغ المربع',
-    toastMaxHeight:'أقصى طول 6 م (12 مربعًا)', toastMinHeight:'أدنى طول 1 م (مربعان)',
-    toastMaxWidth:'أقصى عرض 6 م (12 مربعًا)', toastMinWidth:'أدنى عرض 1 م (مربعان)',
+    toastMaxHeight:'أقصى طول 30 م (60 مربعًا)', toastMinHeight:'أدنى طول 1 م (مربعان)',
+    toastMaxWidth:'أقصى عرض 12 م (24 مربعًا)', toastMinWidth:'أدنى عرض 1 م (مربعان)',
     toastGiveName:'أعطِ نبتتك اسمًا أولاً', toastAlreadyLibrary:'{name} موجودة بالفعل في مكتبتك — تم اختيارها لك',
     toastAdded:'تمت إضافة {name} إلى مكتبتك {icon}', toastSaveFail:'تعذّر الحفظ — قد لا تُحفظ تغييراتك.',
     grown:'نما', toGo:'متبقٍ', day:'يوم', days:'أيام',
@@ -3663,6 +3673,7 @@ const TRANSLATIONS = {
     resetSec:"Cancella dati", resetCrops:"Cancella colture", resetCropsHint:"Veloce, per riseminare. Mantiene irrigazione e impostazioni.", resetParts:"Cancella per parti…", resetPartsHint:"Scegli cosa cancellare: colture, irrigazione, attrezzature, finestre o cronologia.", resetFactory:"Ripristino di fabbrica", resetFactoryHint:"Cancella tutto e l’app torna come appena installata. La scheda resta collegata.", rcTitle:"Cancellare tutte le colture?", rcBody:"Tutte le piante della serra verranno rimosse. Zone di irrigazione, attrezzature e impostazioni restano. L’operazione non si può annullare.", rcConfirm:"Sì, cancella colture", rpTitle:"Cosa vuoi cancellare?", rpBody:"Seleziona cosa eliminare. L’operazione non si può annullare.", rpConfirm:"Cancella selezionati", rpCrops:"Colture piantate", rpIrr:"Irrigazione: zone, portata e registro irrigazioni", rpPower:"Attrezzature: illuminazione, ventole e pompa (consumo elettrico)", rpWin:"Finestre", rpLog:"Cronologia sensori (temperatura, umidità, luce, CO2)", rfTitle:"Ripristino di fabbrica?", rfBody:"Verrà cancellato tutto: colture, irrigazione, attrezzature, finestre, cronologia, piante personalizzate, dimensioni della serra, posizione e lingua. L’app tornerà come appena installata. Il collegamento con la tua scheda Organics One resta. L’operazione non si può annullare.", rfConfirm:"Sì, ripristina tutto", resetCancel:"Annulla", toastCropsDone:"Fatto, le colture sono state cancellate 🌱", toastPartsDone:"Fatto, la selezione è stata cancellata",
     layerGround:"Terra", layerUp:"Bancale rialzato", bedDraw:"✏️ Disegna bancale", bedDone:"✓ Fatto", bedHeightL:"Altezza del bancale", bedDrawHint:"Tocca o trascina sui blocchi dove si trova il bancale. Tocca di nuovo per toglierlo.", bedNoneHint:"Non hai ancora bancali rialzati. Tocca ✏️ Disegna bancale e segna dove si trova.", toastNoBed:"Qui non c’è un bancale. Tocca ✏️ Disegna bancale per aggiungerlo.", posUp:"bancale", ghShape:"Forma della serra", ghGable:"A due falde", ghTunnel:"Tunnel", v3dTitle:"Vista 3D", v3dBack:"Torna al 2D per piantare", v3dHint:"Vista 3D per orientarti. Trascina per ruotare, pizzica o usa la rotella per ingrandire. Per piantare, torna al 2D.", v3dLoading:"Caricamento vista 3D…", v3dError:"Impossibile caricare la vista 3D. Controlla la connessione.",
     setupQ:"Come coltivi nella tua serra?", setupSub:"Così preparo la tua pianta. Puoi cambiarlo dopo toccando la dimensione della serra.", layoutGround:"In piena terra", layoutUp:"Su bancali rialzati", layoutBoth:"Terra e bancali", layoutTitle:"Dove coltivi",
+    wzSizeQ:"Misure della tua serra", wzLong:"Lunghezza", wzWide:"Larghezza", wzRowsQ:"Quante file hai?", wzGround:"File in piena terra", wzUp:"Bancali rialzati", wzCreate:"Crea la mia pianta", wzSkip:"Preferisco disegnarla io", wzBack:"Indietro", wzMax:"Ci stanno fino a {n} file con corridoi in mezzo.", wzRedo:"Rifai la pianta", bedDrawG:"✏️ Disegna fila", toastNoRow:"Qui c’è un corridoio. Tocca ✏️ Disegna fila per piantare qui.", wzDone:"La tua pianta è pronta 🌱", rowDrawHint:"Tocca o trascina sui blocchi della tua fila. Tocca di nuovo per toglierla.", setupPrompt:"Configura la serra: misure, file e se coltivi in terra o su bancali.", setupBtn:"Configura",
     boardTitle:'SCHEDA ORGANICS ONE',
     boardConnect:'Collega scheda',
     boardSave:'Collega',
@@ -3722,8 +3733,8 @@ const TRANSLATIONS = {
     toastPickPlant:'Scegli prima una pianta dalla libreria 🌱',
     toastPlanted:'{name} piantato nel blocco {r}-{c}', toastPlantedMulti:'{name} piantato in {n} blocchi',
     toastCleared:'Blocco svuotato',
-    toastMaxHeight:'La lunghezza massima è 6 m (12 caselle)', toastMinHeight:'La lunghezza minima è 1 m (2 caselle)',
-    toastMaxWidth:'La larghezza massima è 6 m (12 caselle)', toastMinWidth:'La larghezza minima è 1 m (2 caselle)',
+    toastMaxHeight:'La lunghezza massima è 30 m (60 caselle)', toastMinHeight:'La lunghezza minima è 1 m (2 caselle)',
+    toastMaxWidth:'La larghezza massima è 12 m (24 caselle)', toastMinWidth:'La larghezza minima è 1 m (2 caselle)',
     toastGiveName:'Dai prima un nome alla tua pianta', toastAlreadyLibrary:'{name} è già nella tua libreria — selezionata per te',
     toastAdded:'{name} aggiunta alla tua libreria {icon}', toastSaveFail:'Impossibile salvare — le modifiche potrebbero non essere mantenute.',
     grown:'cresciuto', toGo:'rimanenti', day:'giorno', days:'giorni',
@@ -3993,6 +4004,7 @@ const TRANSLATIONS = {
     resetSec:"Удаление данных", resetCrops:"Удалить культуры", resetCropsHint:"Быстро, чтобы посадить заново. Полив и настройки сохраняются.", resetParts:"Удалить выборочно…", resetPartsHint:"Выберите, что удалить: культуры, полив, оборудование, окна или историю.", resetFactory:"Сброс до заводских настроек", resetFactoryHint:"Удаляет всё, приложение как после установки. Плата остаётся подключённой.", rcTitle:"Удалить все культуры?", rcBody:"Все растения в теплице будут удалены. Зоны полива, оборудование и настройки сохранятся. Отменить это нельзя.", rcConfirm:"Да, удалить культуры", rpTitle:"Что удалить?", rpBody:"Отметьте, что нужно удалить. Отменить это нельзя.", rpConfirm:"Удалить выбранное", rpCrops:"Посаженные культуры", rpIrr:"Полив: зоны, расход и журнал полива", rpPower:"Оборудование: освещение, вентиляторы и насос (энергопотребление)", rpWin:"Окна", rpLog:"История датчиков (температура, влажность, свет, CO2)", rfTitle:"Сбросить до заводских настроек?", rfBody:"Будет удалено всё: культуры, полив, оборудование, окна, история, ваши растения, размер теплицы, местоположение и язык. Приложение станет как после установки. Подключение к плате Organics One сохранится. Отменить это нельзя.", rfConfirm:"Да, сбросить всё", resetCancel:"Отмена", toastCropsDone:"Готово, культуры удалены 🌱", toastPartsDone:"Готово, выбранное удалено",
     layerGround:"Грунт", layerUp:"Стеллаж", bedDraw:"✏️ Нарисовать стеллаж", bedDone:"✓ Готово", bedHeightL:"Высота стеллажа", bedDrawHint:"Нажмите или проведите по блокам, где стоит стеллаж. Нажмите ещё раз, чтобы убрать.", bedNoneHint:"Стеллажей пока нет. Нажмите ✏️ Нарисовать стеллаж и отметьте, где он стоит.", toastNoBed:"Здесь нет стеллажа. Нажмите ✏️ Нарисовать стеллаж, чтобы добавить.", posUp:"стеллаж", ghShape:"Форма теплицы", ghGable:"Двускатная", ghTunnel:"Тоннель", v3dTitle:"3D-вид", v3dBack:"Вернуться в 2D для посадки", v3dHint:"3D-вид для ориентации. Перетаскивайте для поворота, сводите пальцы или крутите колесо для масштаба. Для посадки вернитесь в 2D.", v3dLoading:"Загрузка 3D-вида…", v3dError:"Не удалось загрузить 3D-вид. Проверьте подключение.",
     setupQ:"Как вы выращиваете в теплице?", setupSub:"Так я подготовлю план. Позже можно изменить, нажав на размер теплицы.", layoutGround:"В грунте", layoutUp:"На стеллажах", layoutBoth:"Грунт и стеллажи", layoutTitle:"Где вы выращиваете",
+    wzSizeQ:"Размеры теплицы", wzLong:"Длина", wzWide:"Ширина", wzRowsQ:"Сколько у вас рядов?", wzGround:"Ряды в грунте", wzUp:"Стеллажи", wzCreate:"Создать план", wzSkip:"Нарисую сам", wzBack:"Назад", wzMax:"Помещается до {n} рядов с проходами между ними.", wzRedo:"Настроить план заново", bedDrawG:"✏️ Нарисовать ряд", toastNoRow:"Здесь проход. Нажмите ✏️ Нарисовать ряд, чтобы сажать здесь.", wzDone:"План готов 🌱", rowDrawHint:"Нажмите или проведите по блокам ряда. Нажмите ещё раз, чтобы убрать.", setupPrompt:"Настройте теплицу: размеры, ряды и где выращиваете — в грунте или на стеллажах.", setupBtn:"Настроить",
     boardTitle:'ПЛАТА ORGANICS ONE',
     boardConnect:'Подключить плату',
     boardSave:'Подключить',
@@ -4052,8 +4064,8 @@ const TRANSLATIONS = {
     toastPickPlant:'Сначала выберите растение из библиотеки 🌱',
     toastPlanted:'{name} посажено в клетке {r}-{c}', toastPlantedMulti:'{name} посажено в {n} клетках',
     toastCleared:'Клетка очищена',
-    toastMaxHeight:'Максимальная длина 6 м (12 клеток)', toastMinHeight:'Минимальная длина 1 м (2 клетки)',
-    toastMaxWidth:'Максимальная ширина 6 м (12 клеток)', toastMinWidth:'Минимальная ширина 1 м (2 клетки)',
+    toastMaxHeight:'Максимальная длина 30 м (60 клеток)', toastMinHeight:'Минимальная длина 1 м (2 клетки)',
+    toastMaxWidth:'Максимальная ширина 12 м (24 клеток)', toastMinWidth:'Минимальная ширина 1 м (2 клетки)',
     toastGiveName:'Сначала дайте название вашему растению', toastAlreadyLibrary:'{name} уже есть в вашей библиотеке — выбрано для вас',
     toastAdded:'{name} добавлено в вашу библиотеку {icon}', toastSaveFail:'Не удалось сохранить — изменения могут не сохраниться.',
     grown:'выросло', toGo:'осталось', day:'день', days:'дней',
@@ -4296,7 +4308,7 @@ async function loadState(){
           gridSettingsCollapsed: typeof parsed.gridSettingsCollapsed === 'boolean' ? parsed.gridSettingsCollapsed : true,
           manualLocation: parsed.manualLocation || null,
           roomRotated: typeof parsed.roomRotated === 'boolean' ? parsed.roomRotated : false,
-          layout: ['ground','up','both'].includes(parsed.layout) ? parsed.layout : null, beds: parsed.beds || {}, bedH: typeof parsed.bedH === 'number' ? parsed.bedH : 85, ghShape: parsed.ghShape === 'tunnel' ? 'tunnel' : 'gable'
+          layout: ['ground','up','both'].includes(parsed.layout) ? parsed.layout : null, beds: parsed.beds || {}, gbeds: parsed.gbeds || {}, nRowsG: parsed.nRowsG || 0, nRowsU: parsed.nRowsU || 0, bedH: typeof parsed.bedH === 'number' ? parsed.bedH : 85, ghShape: parsed.ghShape === 'tunnel' ? 'tunnel' : 'gable'
         };
       }
     }
@@ -4369,7 +4381,7 @@ function applyLibraryCollapse(){
 libraryToggle.addEventListener('click', () => { state.libraryCollapsed = !state.libraryCollapsed; saveState(); applyLibraryCollapse(); });
 
 function applyGridSettingsCollapse(){ /* grid settings now live in a pop-up */ }
-function openGridSettings(){ renderLayoutSet(); renderGhShape(); renderWindowSettings(); document.getElementById('gridOverlay').classList.add('show'); }
+function openGridSettings(){ renderLayoutSet(); renderRowsSet(); renderGhShape(); renderWindowSettings(); document.getElementById('gridOverlay').classList.add('show'); }
 function closeGridSettings(){ document.getElementById('gridOverlay').classList.remove('show'); }
 document.getElementById('gridSizeLabel').addEventListener('click', openGridSettings);
 document.getElementById('gridClose').addEventListener('click', closeGridSettings);
@@ -4487,8 +4499,10 @@ const WOOD_COLOR = '#C9A16D';
 let curLayer = 'ground', bedEdit = false, bedPaint = null;
 const LK = (r, c, l) => ((l || curLayer) === 'up' ? 'u:' : '') + r + '-' + c;
 function parseKey(k){ const up = k.indexOf('u:') === 0; const [r, c] = (up ? k.slice(2) : k).split('-').map(Number); return { r, c, up, layer: up ? 'up' : 'ground' }; }
-function isBed(r, c){ return !!(state.beds && state.beds[r + '-' + c]); }
-function bedCount(){ return Object.keys(state.beds || {}).length; }
+function bedsOf(l){ const k = (l || curLayer) === 'up' ? 'beds' : 'gbeds'; state[k] = state[k] || {}; return state[k]; }
+function isBed(r, c, l){ return !!bedsOf(l)[r + '-' + c]; }
+function bedCount(l){ return Object.keys(bedsOf(l)).length; }
+function layerRestricted(l){ l = l || curLayer; return l === 'up' || bedCount('ground') > 0; }
 function isCellPlanted(r, c){
   const p = state.plantings[LK(r, c)];
   return !!(p && VEG_MAP[p.vegId]);
@@ -4588,9 +4602,9 @@ function renderRoom(){
         cell.addEventListener('touchstart', (e) => { e.preventDefault(); startDrag(r, c); }, { passive:false });
         room.appendChild(cell); continue;
       }
-      if(curLayer === 'up' && !bedHere && !planting){
+      if(layerRestricted() && !bedHere && !planting){
         cell.className = 'cell no-bed';
-        cell.addEventListener('click', () => showToast(t('toastNoBed')));
+        cell.addEventListener('click', () => showToast(t(curLayer === 'up' ? 'toastNoBed' : 'toastNoRow')));
         if(waterMode) decorateZoneCell(cell, key);
         room.appendChild(cell); continue;
       }
@@ -4613,13 +4627,13 @@ function renderRoom(){
           cell.addEventListener('click', () => { hideVegTooltip(); openModal(r, c); });
         }
       } else {
-        cell.className = 'cell' + (curLayer === 'up' ? ' bed-empty' : (bedHere ? ' under-bed' : ''));
+        cell.className = 'cell' + (curLayer === 'up' ? ' bed-empty' : (bedHere ? ' row-empty' : '')) + (curLayer === 'ground' && isBed(r, c, 'up') ? ' under-bed' : '');
         cell.innerHTML = `<span class="cell-empty-mark">·</span>`;
         cell.addEventListener('mousedown', (e) => { e.preventDefault(); startDrag(r, c); });
         cell.addEventListener('mouseenter', () => continueDrag(r, c));
         cell.addEventListener('touchstart', (e) => { e.preventDefault(); startDrag(r, c); }, { passive:false });
       }
-      if(curLayer === 'ground' && bedHere && planting) cell.classList.add('under-bed');
+      if(curLayer === 'ground' && isBed(r, c, 'up') && planting) cell.classList.add('under-bed');
       if(waterMode) decorateZoneCell(cell, key);
       room.appendChild(cell);
     }
@@ -4634,13 +4648,13 @@ function renderRoom(){
 
 function paintBed(r, c){
   const k = r + '-' + c; if(dragKeys.has(k)) return;
-  dragKeys.add(k); state.beds = state.beds || {};
-  if(bedPaint === null) bedPaint = !state.beds[k];
-  if(bedPaint) state.beds[k] = 1; else delete state.beds[k];
+  dragKeys.add(k); const B = bedsOf();
+  if(bedPaint === null) bedPaint = !B[k];
+  if(bedPaint) B[k] = 1; else delete B[k];
   renderRoom();
 }
 function plantCellDuringDrag(r,c){
-  if(curLayer === 'up' && !isBed(r, c)) return false;
+  if(layerRestricted() && !isBed(r, c)) return false;
   const key = LK(r, c);
   if(state.plantings[key]) return false;
   state.plantings[key] = { vegId: selectedVeg, plantedDate: todayStr() };
@@ -4803,8 +4817,8 @@ document.addEventListener('keydown', (e) => {
 /* Grid settings: height (rows) first, then width (cols) */
 document.getElementById('rowsUp').addEventListener('click', (e) => {
   e.stopPropagation();
-  if(state.rows >= 12){ showToast(t('toastMaxHeight')); return; }
-  state.rows++; saveState(); render();
+  if(state.rows >= 60){ showToast(t('toastMaxHeight')); return; }
+  state.rows++; if(state.nRowsG || state.nRowsU){ const mx = maxRowsFit(); if((state.nRowsG||0) + (state.nRowsU||0) > mx){ state.nRowsG = Math.min(state.nRowsG||0, mx); state.nRowsU = Math.max(0, Math.min(state.nRowsU||0, mx - (state.nRowsG||0))); } layoutRows(); } saveState(); render(); renderRowsSet();
 });
 document.getElementById('rowsDown').addEventListener('click', (e) => {
   e.stopPropagation();
@@ -4812,13 +4826,13 @@ document.getElementById('rowsDown').addEventListener('click', (e) => {
   const newRows = state.rows - 1;
   Object.keys(state.plantings).forEach(key => { if(parseKey(key).r >= newRows) delete state.plantings[key]; });
   Object.keys(state.irrZones || {}).forEach(key => { if(parseKey(key).r >= newRows) delete state.irrZones[key]; });
-  Object.keys(state.beds || {}).forEach(key => { if(parseKey(key).r >= newRows) delete state.beds[key]; });
-  state.rows = newRows; saveState(); render();
+  ['beds','gbeds'].forEach(b => Object.keys(state[b] || {}).forEach(key => { if(parseKey(key).r >= newRows) delete state[b][key]; }));
+  state.rows = newRows; if(state.nRowsG || state.nRowsU){ const mx = maxRowsFit(); if((state.nRowsG||0) + (state.nRowsU||0) > mx){ state.nRowsG = Math.min(state.nRowsG||0, mx); state.nRowsU = Math.max(0, Math.min(state.nRowsU||0, mx - (state.nRowsG||0))); } layoutRows(); } saveState(); render(); renderRowsSet();
 });
 document.getElementById('colsUp').addEventListener('click', (e) => {
   e.stopPropagation();
-  if(state.cols >= 12){ showToast(t('toastMaxWidth')); return; }
-  state.cols++; saveState(); render();
+  if(state.cols >= 24){ showToast(t('toastMaxWidth')); return; }
+  state.cols++; if(state.nRowsG || state.nRowsU){ const mx = maxRowsFit(); if((state.nRowsG||0) + (state.nRowsU||0) > mx){ state.nRowsG = Math.min(state.nRowsG||0, mx); state.nRowsU = Math.max(0, Math.min(state.nRowsU||0, mx - (state.nRowsG||0))); } layoutRows(); } saveState(); render(); renderRowsSet();
 });
 document.getElementById('colsDown').addEventListener('click', (e) => {
   e.stopPropagation();
@@ -4826,8 +4840,8 @@ document.getElementById('colsDown').addEventListener('click', (e) => {
   const newCols = state.cols - 1;
   Object.keys(state.plantings).forEach(key => { if(parseKey(key).c >= newCols) delete state.plantings[key]; });
   Object.keys(state.irrZones || {}).forEach(key => { if(parseKey(key).c >= newCols) delete state.irrZones[key]; });
-  Object.keys(state.beds || {}).forEach(key => { if(parseKey(key).c >= newCols) delete state.beds[key]; });
-  state.cols = newCols; saveState(); render();
+  ['beds','gbeds'].forEach(b => Object.keys(state[b] || {}).forEach(key => { if(parseKey(key).c >= newCols) delete state[b][key]; }));
+  state.cols = newCols; if(state.nRowsG || state.nRowsU){ const mx = maxRowsFit(); if((state.nRowsG||0) + (state.nRowsU||0) > mx){ state.nRowsG = Math.min(state.nRowsG||0, mx); state.nRowsU = Math.max(0, Math.min(state.nRowsU||0, mx - (state.nRowsG||0))); } layoutRows(); } saveState(); render(); renderRowsSet();
 });
 
 document.getElementById('searchInput').addEventListener('input', (e) => { searchQuery = e.target.value; renderVegList(); });
@@ -6173,15 +6187,16 @@ function build3d(THREE){
   const g0 = add(new THREE.CircleGeometry(60, 40), mats.grass, 0, -0.01, 0); g0.rotation.x = -Math.PI / 2;
   const fl = add(new THREE.PlaneGeometry(W + 0.8, D + 0.8), mats.floor, 0, 0, 0); fl.rotation.x = -Math.PI / 2;
 
-  const groundH = 0.16, bedH = Math.max(0.2, Math.min(1.5, (state.bedH || 85) / 100)), bedSoil = 0.22;
+  const groundH = 0.16, bedH = 0.85, bedSoil = 0.22;
   const planted = (k) => { const p = state.plantings[k]; return p && VEG_MAP[p.vegId] ? p : null; };
   const unitBox = new THREE.BoxGeometry(1, 1, 1);
   const boxes = []; // [mat, sx, sy, sz, x, y, z]
   const pushBox = (mat, sx, sy, sz, x, y, z) => boxes.push([mat, sx, sy, sz, x, y, z]);
 
   // ground beds: soil blocks where something is planted, wood edge where the neighbour is not
+  const gb = state.gbeds || {};
   for(let r = 0; r < state.rows; r++) for(let c = 0; c < state.cols; c++){
-    if(!planted(r + '-' + c)) continue;
+    if(!planted(r + '-' + c) && !gb[r + '-' + c]) continue;
     const [x, z] = pos(r, c);
     pushBox(mats.soil, CELL, groundH, CELL, x, groundH / 2, z);
   }
@@ -6227,14 +6242,11 @@ function build3d(THREE){
     if(pk.up && !beds[pk.r + '-' + pk.c]) return;
     const [x, z] = pos(pk.r, pk.c);
     const pct = Math.max(0, Math.min(1, daysBetween(new Date(p.plantedDate + 'T00:00:00'), now) / veg.days));
-    const h = crop3dHeight(veg) * (0.3 + 0.7 * pct), base = pk.up ? bedH : groundH;
+    const h = crop3dHeight(veg) * (0.35 + 0.65 * pct), base = pk.up ? bedH : groundH;
     const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: emojiTexture(THREE, veg.icon, texCache), alphaTest: 0.35 }));
-    const s = Math.max(0.22, Math.min(0.62, 0.22 + h * 0.3));
-    sp.scale.set(s, s, 1); sp.position.set(x, base + Math.max(h, s * 0.5) - s * 0.42, z); scene.add(sp);
-    if(h > s * 1.1){ // a thin stem or stake for tall crops
-      const st = add(new THREE.CylinderGeometry(0.012, 0.016, h, 5), M(0x5B8A3A), x, base + h / 2, z);
-      st.renderOrder = -1;
-    }
+    const s = Math.max(0.2, Math.min(0.48, 0.18 + h * 0.22));
+    sp.center.set(0.5, 0.06);                    // the plant stands on the soil
+    sp.scale.set(s, s, 1); sp.position.set(x, base, z); scene.add(sp);
     const sh = add(shadowGeo, mats.shadow, x, base + 0.005, z); sh.rotation.x = -Math.PI / 2;
   });
 
@@ -6300,32 +6312,60 @@ function layoutOpts(sel){
   return [['ground','🟫','layoutGround'],['up','🪵','layoutUp'],['both','🟫🪵','layoutBoth']].map(([v,ic,k]) => `<button class="ws-opt lay-opt${sel === v ? ' on' : ''}" data-lay="${v}"><span>${ic}</span> ${t(k)}</button>`).join('');
 }
 function setLayout(v){
+  const first = !state.layout;
   state.layout = v; curLayer = v === 'up' ? 'up' : 'ground'; bedEdit = false;
-  saveState(); renderLayerBar(); renderRoom(); if(typeof renderLayoutSet === 'function') renderLayoutSet();
+  if(first && !state.nRowsG && !state.nRowsU){ if(v !== 'up') state.nRowsG = Math.min(2, maxRowsFit()); if(v !== 'ground') state.nRowsU = 1; }
+  if(state.nRowsG || state.nRowsU) layoutRows();
+  saveState(); renderLayerBar(); renderRoom(); renderLayoutSet(); renderRowsSet();
 }
 function renderLayerBar(){
   const el = document.getElementById('layerBar'); if(!el) return;
   const lay = state.layout;
-  if(lay === 'up') curLayer = 'up'; else if(lay !== 'both') { curLayer = 'ground'; bedEdit = false; }
+  if(lay === 'up') curLayer = 'up'; else if(lay !== 'both') curLayer = 'ground';
   if(!lay){
-    el.innerHTML = `<div class="lay-setup"><div class="ls-q">🌱 ${t('setupQ')}</div><div class="ws-opts">${layoutOpts(null)}</div><div class="ls-sub">${t('setupSub')}</div></div>`;
-    el.querySelectorAll('[data-lay]').forEach(b => b.addEventListener('click', () => setLayout(b.dataset.lay)));
+    el.innerHTML = `<div class="lay-setup"><div class="ls-q">🌱 ${t('setupPrompt')}</div><button class="lb-draw on" id="setupOpenBtn">⚙️ ${t('setupBtn')}</button></div>`;
+    document.getElementById('setupOpenBtn').addEventListener('click', openGridSettings);
     return;
   }
-  if(lay === 'ground'){ el.innerHTML = ''; return; }
-  const n = bedCount(), up = curLayer === 'up';
-  const hU = imperial() ? Math.round((state.bedH || 85) / 2.54) : (state.bedH || 85), hu = imperial() ? 'in' : 'cm';
-  el.innerHTML = `${lay === 'both' ? `<div class="lb-seg"><button class="lb-opt${!up ? ' on' : ''}" data-l="ground">🟫 ${t('layerGround')}</button><button class="lb-opt${up ? ' on' : ''}" data-l="up">🪵 ${t('layerUp')}${n ? ` <small>${n}</small>` : ''}</button></div>` : ''}
-    ${up ? `<div class="lb-tools"><button class="lb-draw${bedEdit ? ' on' : ''}" id="bedDrawBtn">${bedEdit ? t('bedDone') : t('bedDraw')}</button>
-      <label class="lb-h">${t('bedHeightL')} <input type="number" id="bedHInput" min="${imperial() ? 8 : 20}" max="${imperial() ? 60 : 150}" step="1" value="${hU}"> ${hu}</label></div>
-      ${bedEdit ? `<div class="lb-hint">${t('bedDrawHint')}</div>` : (!n ? `<div class="lb-hint">${t('bedNoneHint')}</div>` : '')}` : ''}`;
+  const up = curLayer === 'up', nU = bedCount('up'), nG = bedCount('ground');
+  el.innerHTML = `${lay === 'both' ? `<div class="lb-seg"><button class="lb-opt${!up ? ' on' : ''}" data-l="ground">🟫 ${t('layerGround')}</button><button class="lb-opt${up ? ' on' : ''}" data-l="up">🪵 ${t('layerUp')}</button></div>` : ''}
+    <div class="lb-tools"><button class="lb-draw${bedEdit ? ' on' : ''}" id="bedDrawBtn">${bedEdit ? t('bedDone') : t(up ? 'bedDraw' : 'bedDrawG')}</button></div>
+    ${bedEdit ? `<div class="lb-hint">${t(up ? 'bedDrawHint' : 'rowDrawHint')}</div>` : (up && !nU ? `<div class="lb-hint">${t('bedNoneHint')}</div>` : '')}`;
   el.querySelectorAll('.lb-opt').forEach(b => b.addEventListener('click', () => {
-    curLayer = b.dataset.l; if(curLayer !== 'up') bedEdit = false; hideVegTooltip(); renderLayerBar(); renderRoom();
+    curLayer = b.dataset.l; bedEdit = false; hideVegTooltip(); renderLayerBar(); renderRoom();
   }));
   const db = document.getElementById('bedDrawBtn');
   if(db) db.addEventListener('click', () => { bedEdit = !bedEdit; if(bedEdit && waterMode) toggleWater(); renderLayerBar(); renderRoom(); });
-  const hi = document.getElementById('bedHInput');
-  if(hi) hi.addEventListener('change', () => { let v = Number(hi.value); if(!(v > 0)) return; if(imperial()) v = v * 2.54; state.bedH = Math.max(20, Math.min(150, Math.round(v))); saveState(); });
+}
+/* Rows run along the length; spread them across the width with aisles in between */
+function maxRowsFit(){ return Math.max(1, Math.floor((state.cols + 1) / 2)); }
+function layoutRows(){
+  const lay = state.layout || 'ground';
+  let g = lay === 'up' ? 0 : (state.nRowsG || 0), u = lay === 'ground' ? 0 : (state.nRowsU || 0);
+  const mx = maxRowsFit(); if(g + u > mx){ const k = mx / (g + u); g = Math.floor(g * k); u = Math.min(mx - g, Math.max(lay === 'ground' ? 0 : 1, Math.round(u * k))); }
+  const n = g + u, C = state.cols, cols = [];
+  for(let i = 0; i < n; i++) cols.push(n === 1 ? Math.floor((C - 1) / 2) : Math.round(i * (C - 1) / (n - 1)));
+  // raised beds take the outer positions first (along the walls), ground rows the rest
+  const order = []; for(let i = 0, j = n - 1; i <= j; i++, j--){ order.push(i); if(j !== i) order.push(j); }
+  const isUp = new Array(n).fill(false); order.slice(0, u).forEach(i => isUp[i] = true);
+  state.beds = {}; state.gbeds = {};
+  cols.forEach((c, i) => { for(let r = 0; r < state.rows; r++) (isUp[i] ? state.beds : state.gbeds)[r + '-' + c] = 1; });
+  saveState();
+}
+function renderRowsSet(){
+  const el = document.getElementById('rowsSet'); if(!el) return;
+  const lay = state.layout; if(!lay){ el.innerHTML = ''; return; }
+  const row = (k, key) => `<div class="dim-row"><span>${t(k)}</span><div class="stepper"><button data-rk="${key}" data-d="-1">−</button><div class="val">${state[key] || 0}</div><button data-rk="${key}" data-d="1">+</button></div></div>`;
+  el.innerHTML = `<div class="ws-title">↕️ ${t('wzRowsQ')}</div>
+    ${lay !== 'up' ? row('wzGround','nRowsG') : ''}${lay !== 'ground' ? row('wzUp','nRowsU') : ''}
+    <div class="ls-sub">${t('wzMax', { n: maxRowsFit() })}</div>`;
+  el.querySelectorAll('[data-rk]').forEach(b => b.addEventListener('click', () => {
+    const k = b.dataset.rk;
+    const tot = (lay === 'up' ? 0 : (state.nRowsG || 0)) + (lay === 'ground' ? 0 : (state.nRowsU || 0));
+    const d = +b.dataset.d, v = (state[k] || 0) + d;
+    if(v < 0 || (d > 0 && tot >= maxRowsFit())) return;
+    state[k] = v; layoutRows(); renderRowsSet(); renderLayerBar(); renderRoom();
+  }));
 }
 function renderLayoutSet(){
   const el = document.getElementById('layoutSet'); if(!el) return;
