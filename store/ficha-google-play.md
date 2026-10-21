@@ -8,7 +8,7 @@ Textos listos para copiar en Play Console (Crecimiento de usuarios → Presencia
 My GreenHouse Planner
 
 **Descripción breve** (máx. 80)
-Planifica tu invernadero, sigue el clima y riega mejor cada cultivo.
+Tu invernadero sabe lo que necesita. Ahora tú también.
 
 **Descripción completa** (máx. 4000)
 
@@ -53,7 +53,7 @@ Las recomendaciones son una referencia general de cultivo y no reemplazan la rev
 My GreenHouse Planner
 
 **Short description** (max 80)
-Plan your greenhouse, follow the weather and water each crop just right.
+Your greenhouse knows what it needs. Now you do too.
 
 **Full description** (max 4000)
 
@@ -102,5 +102,6 @@ Recommendations are general growing references and do not replace checking your 
 | Sitio web | https://aidex.cl/invernaderos/ |
 | Política de privacidad | https://ferbakspa.github.io/GreenHouse/privacy.html |
 | Icono 512 × 512 | icons/play-store-512.png |
-| Imagen destacada 1024 × 500 | store/feature-graphic-es.png y store/feature-graphic-en.png |
+| Imagen destacada 1024 × 500 | store/feature-graphic-es.png y store/feature-graphic-en.png (foto de fondo: Aleksandrs Karevs, Unsplash, licencia libre) |
+| Imagen 7 (pendiente) | Tarjeta Organics One conectada al cultivo, cuando esté lista la carcasa impresa en 3D |
 | Capturas de teléfono | store/screenshots/es y store/screenshots/en |
