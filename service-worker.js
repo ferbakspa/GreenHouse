@@ -1,4 +1,4 @@
-const CACHE_NAME = 'greenhouse-planner-v15';
+const CACHE_NAME = 'greenhouse-planner-v16';
 const CORE_ASSETS = [
   './',
   './index.html',
