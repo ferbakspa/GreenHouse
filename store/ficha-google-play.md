@@ -97,7 +97,7 @@ Recommendations are general growing references and do not replace checking your 
 | Campo | Valor |
 |---|---|
 | Categoría | Productividad (alternativa: Herramientas) |
-| Etiquetas sugeridas | Jardinería, Agricultura, Clima |
+| Etiquetas (aplicadas) | Productividad, Tiempo, Casa y hogar, Domótica (Google no ofrece Jardinería ni Agricultura) |
 | Correo de contacto | contacto@aidex.cl |
 | Sitio web | https://aidex.cl/invernaderos/ |
 | Política de privacidad | https://ferbakspa.github.io/GreenHouse/privacy.html |
