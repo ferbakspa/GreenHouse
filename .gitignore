@@ -1,0 +1,5 @@
+
+# Never commit signing material
+*.keystore
+*.jks
+signing-key-info.txt
