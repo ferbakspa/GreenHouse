@@ -90,13 +90,13 @@ Con esto la vista de riego muestra litros reales en lugar de estimados.
 
 ## 7. Servidor operado por Aidex y configuración de fábrica
 
-**Decisión de negocio (2026-10-20):** por defecto el servidor MQTT lo opera Aidex. Queda la opción de "servidor propio" para empresas. Las alertas al teléfono del plan de pago necesitan que los datos pasen por un servidor de Aidex.
+**Decisión de negocio (2026-10-20):** por defecto el servidor MQTT lo opera Aidex y se cobra por cuenta administrada (por tarjeta). El "servidor propio" queda como opción para cualquier cliente que lo prefiera. Las alertas al teléfono del plan de pago necesitan que los datos pasen por un servidor de Aidex.
 
 Pedido a evaluar por el proyecto de hardware:
 - **Un servidor central** (EMQX administrado) con **credenciales separadas por tarjeta** y permisos por invernadero, de modo que cada tarjeta y cada app solo vean sus propios topics.
 - **Configuración de fábrica:** cada tarjeta sale con su identificador y credenciales, y una **etiqueta con QR o código corto**. La app lee el QR (o se escribe el código) y queda conectada sin escribir servidor, usuario ni clave.
 - **Revocar y cambiar** las credenciales de una tarjeta (venta, robo, cambio de dueño) sin reprogramarla en terreno.
-- **Servidor propio:** mantener la forma actual de `conectar({ servidor, usuario, clave })` para clientes empresa.
+- **Servidor propio:** mantener la forma actual de `conectar({ servidor, usuario, clave })` para cualquier cliente que lo elija.
 - **Base para alertas:** un servicio del lado del servidor que lea las alarmas y lecturas, y que pueda enviar avisos (push, WhatsApp o SMS). Lo define el proyecto, la app solo necesita saber si la tarjeta tiene alertas activas.
 
 Sugerencia de formato del QR, a definir por el proyecto:

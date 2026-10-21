@@ -20,7 +20,9 @@ Fecha: 2026-10-20. Precio de referencia del plan de pago: **US$1 al mes, en revi
 
 ## Servidor de la tarjeta (MQTT / EMQX): modelo mixto (decidido 2026-10-20)
 - **Por defecto lo opera Aidex:** un servidor central con credenciales por tarjeta (cada tarjeta solo ve lo suyo). Configuración de fábrica con QR o código por tarjeta (pedido al contrato v1.2, punto 7).
-- **Opción "servidor propio"** para empresas.
+- **Cobro por cuenta administrada:** US$1, 2 o 3 al mes por tarjeta o usuario. Una empresa con 100 tarjetas paga 100 cuentas. El cliente se evita la responsabilidad de operar el servidor y Aidex gana margen.
+- **Servidor propio: 100% opcional para cualquier cliente** (no solo empresas), sin el servicio administrado ni las alertas de Aidex.
+- Por verificar: si el cobro del servicio administrado debe hacerse con Google Play Billing (contenido digital dentro de la app) o puede cobrarse fuera (por ejemplo, junto con la tarjeta o por contrato a empresas).
 - Razón: las notificaciones al teléfono del plan de pago necesitan que los datos pasen por un servidor de Aidex.
 - Si el servidor se cae, la tarjeta sigue funcionando sola con sus reglas; solo se pierde la vista remota.
 - Ya hecho: política de privacidad con la sección "Tarjeta Organics One (opcional)" y guía de Google Play declarando las lecturas de sensores.
@@ -38,7 +40,7 @@ Fecha: 2026-10-20. Precio de referencia del plan de pago: **US$1 al mes, en revi
 - Dueño de tarjeta con la tarjeta caída: el aviso "Tu tarjeta está sin conexión" es un aviso de estado útil, no publicidad. No se oculta y debe verse distinto a la promoción.
 
 ## Pendiente de definir
-- Precio mensual final (US$1, 2 o 3).
+- Precio mensual final por cuenta administrada (US$1, 2 o 3).
 - Duración del período gratis al comprar la tarjeta.
 - Cómo se activa (código en la caja o activación al conectar la tarjeta por primera vez).
 - Servicio de notificaciones y canal.
