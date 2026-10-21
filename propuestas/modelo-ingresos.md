@@ -27,6 +27,18 @@ Fecha: 2026-10-20. Precio de referencia del plan de pago: **US$1 al mes, en revi
 - Si el servidor se cae, la tarjeta sigue funcionando sola con sus reglas; solo se pierde la vista remota.
 - Ya hecho: política de privacidad con la sección "Tarjeta Organics One (opcional)" y guía de Google Play declarando las lecturas de sensores.
 
+## Cuentas de usuario (acordado 2026-10-20)
+- Sin cuenta obligatoria al abrir la app. Se puede probar todo sin registrarse.
+- Cuenta opcional con **"Iniciar sesión con Google"** (sin correo y contraseña propios).
+- La cuenta se pide al conectar una tarjeta administrada, suscribirse o respaldar datos.
+- Quien no inicia sesión no tiene respaldo en la nube: sus datos (cultivos, ubicación, ajustes) quedan solo en su dispositivo.
+- Al existir cuentas, Google exige poder borrar la cuenta desde la app y desde una web, y declararlo en seguridad de datos.
+
+## Publicidad en la versión gratis
+- Se mantiene lo acordado: 1 o 2 anuncios solo al abrir o reingresar la app.
+- En Google Play hoy se declara "sin anuncios" porque la versión actual no los tiene. Al publicar la versión con anuncios se cambia la declaración a "Sí" antes de enviarla.
+- Por revisar: qué red de anuncios funciona en esta app (es una web empaquetada), ya que AdMob está pensado para apps nativas.
+
 ## Venta de la tarjeta
 - Canales a evaluar: Mercado Libre, Amazon u otros marketplaces, además de aidex.cl/invernaderos.
 - Cuando existan, el enlace de la promoción en la app puede llevar directo a la compra.
