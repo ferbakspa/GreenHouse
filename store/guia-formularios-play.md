@@ -48,11 +48,12 @@ Google cuenta como "recopilado" todo dato que sale del teléfono, aunque nosotro
 |---|---|---|---|---|
 | Ubicación aproximada | Sí | No | Funcionalidad de la app (clima) | Sí, se puede escribir la ciudad a mano |
 | Ubicación precisa (GPS) | Sí | No | Funcionalidad de la app (clima) | Sí, el permiso se puede rechazar |
+| Otros datos de la app (lecturas de sensores y órdenes de la tarjeta Organics One) | Sí | No | Funcionalidad de la app | Sí, solo si el usuario conecta una tarjeta |
 
 - "Compartido" va en **No** porque Open-Meteo e ipwho.is solo prestan el servicio de clima y ubicación (Google los considera proveedores de servicio, no se cuenta como compartir).
 - No hay cuentas, ni analítica, ni publicidad, ni datos de contacto, ni archivos, ni salud, ni pagos.
 
-**Pendiente de confirmar por Nano:** el servidor MQTT de la tarjeta Organics One (EMQX), ¿lo opera Aidex o cada cliente el suyo? Si lo opera Aidex, hay que declarar también **"Otros datos de la app"** (lecturas de sensores y órdenes de riego), recopilados para funcionalidad, y agregar un párrafo en la política de privacidad.
+- Modelo decidido: el servidor de la tarjeta lo opera Aidex por defecto (con opción de servidor propio). Por eso se declaran las lecturas de sensores. Falta agregar un párrafo sobre esto en la política de privacidad antes de publicar.
 
 ## 8. Otras declaraciones
 | Formulario | Respuesta |
