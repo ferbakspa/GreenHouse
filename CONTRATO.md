@@ -1,6 +1,6 @@
 # Contrato tarjeta y app (Organics One + Greenhouse Planner)
 
-**Versión 1.1, 2026-10-20.** Corresponde a: firmware del Gateway v1.04, firmware del nodo v1.01, módulo de audio v1.00.
+**Versión 1.2, 2026-10-21.** Corresponde a: firmware del Gateway v1.05, firmware del nodo v1.01, módulo de audio v1.00.
 
 Este documento es la única fuente de verdad de cómo conversan la tarjeta y la app. Lo mantiene el proyecto de hardware (Organics One), a partir del firmware real.
 
@@ -71,7 +71,7 @@ Todos bajo `greenhouse/{id}/`. `{n}` = número de zona (1, 2...) o de ventana (1
 | `window/{n}/position` | % (0 cerrada, 100 abierta) | |
 | `window/{n}/state` | `stopped` / `opening` / `closing` | |
 | `window/{n}/alarm` | `none` / `no_limit_switch` / `both_limit_switches` | |
-| `output/{nombre}/state` | `on` / `off` | Nombres: `extractor`, `fan`, `grow_light`, `work_light`, `spare` |
+| `output/{nombre}/state` | `on` / `off` | Nombres: `extractor`, `fan`, `grow_light`, `work_light`. `spare` solo existe si la tarjeta no usa J25 como luz de conexión (desde v1.05 la usa por defecto) |
 | `input/irrigation_stop` | `on` / `off` | Pulsador físico de paro de riego |
 | `rodent/{n}/count` | entero | Detecciones de ratones desde el encendido |
 | `rodent/{n}/event` | `detected` | **No retenido.** Una vez por detección |
@@ -227,4 +227,5 @@ c.publish(P + 'zone/1/irrigation/set', '600', { qos: 1, retain: false });
 | Versión | Fecha | Cambio |
 |---|---|---|
 | 1.0 | 2026-10-19 | Primera versión: Gateway v1.03, nodo v1.01, audio v1.00 |
+| 1.2 | 2026-10-21 | Gateway v1.05: J25 es la luz de conexión de la carcasa; `spare` deja de publicarse por defecto |
 | 1.1 | 2026-10-20 | Fuente de agua seleccionable (`water/source`, `water/source/set`), Gateway v1.04 |
