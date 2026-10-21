@@ -37,7 +37,7 @@ ESTADÍSTICAS DEL DÍA
 • Consumo eléctrico estimado de tus equipos.
 • Exporta el resumen o los datos en CSV para Excel, o compártelos por WhatsApp o correo.
 
-CONECTA TU TARJETA ORGANICS ONE (OPCIONAL)
+CONECTA TU TARJETA ORGANICS ONE (PRÓXIMAMENTE)
 Con la tarjeta Organics One de Aidex Technologies ves los sensores reales de tu invernadero (temperatura, humedad, luz, CO2, humedad del suelo y tanque de agua), controlas riego, ventanas y salidas, y recibes el aviso de riesgo de hongos. La tarjeta sigue funcionando sola aunque no tengas internet.
 
 PENSADA PARA TI
@@ -82,7 +82,7 @@ TODAY'S STATISTICS
 • Estimated electricity use of your equipment.
 • Export the summary or the data as CSV for Excel, or share it by WhatsApp or email.
 
-CONNECT YOUR ORGANICS ONE BOARD (OPTIONAL)
+CONNECT YOUR ORGANICS ONE BOARD (COMING SOON)
 With the Organics One board by Aidex Technologies you see your greenhouse's real sensors (temperature, humidity, light, CO2, soil moisture and water tank), control watering, windows and outputs, and get the fungus risk alert. The board keeps working on its own even without internet.
 
 MADE FOR YOU
