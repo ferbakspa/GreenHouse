@@ -478,7 +478,7 @@
   .modal .temp-alert.hot{ background:#FBE4E2; color:#8C1C16; border-left:4px solid #A3201A; }
   .modal .temp-alert{ display:flex; align-items:center; gap:6px; padding:9px 10px; }
   .modal .temp-alert .ta-text{ flex:1; }
-  .modal .temp-alert .mute-x{ flex:0 0 auto; width:32px; height:32px; border-radius:8px; border:none; font-size:17px; font-weight:800; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; color:inherit; }
+  .modal .temp-alert .mute-x{ flex:0 0 auto; width:32px; height:32px; border-radius:50%; border:none; font-size:15px; font-weight:400; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; color:inherit; }
   .modal .temp-alert.hot .mute-x{ background:#F2C6C1; } .modal .temp-alert.hot .mute-x:hover{ background:#E9AFA8; }
   .modal .temp-alert.cold .mute-x{ background:#C4E3FA; } .modal .temp-alert.cold .mute-x:hover{ background:#A9D6F7; }
   .modal .mute-panel{ margin:-2px 0 6px; padding:9px 11px; border-radius:10px; background:var(--bg-warm); font-size:12.5px; }
@@ -1109,6 +1109,7 @@ const TRANSLATIONS = {
     layerGround:"Ground", layerUp:"Raised bed", bedDraw:"✏️ Draw raised bed", bedDone:"✓ Done", bedHeightL:"Bed height", bedDrawHint:"Tap or drag over the blocks where your raised bed is. Tap again to remove it.", bedNoneHint:"You have no raised beds yet. Tap ✏️ Draw raised bed and mark where it is.", toastNoBed:"There is no raised bed here. Tap ✏️ Draw raised bed to add it.", posUp:"raised bed", ghShape:"Greenhouse shape", ghGable:"Gable roof", ghTunnel:"Tunnel", v3dTitle:"3D view", v3dBack:"Back to 2D to plant", v3dHint:"3D view to get your bearings. Drag to rotate, pinch or scroll to zoom. To plant, go back to 2D.", v3dLoading:"Loading 3D view…", v3dError:"Could not load the 3D view. Check your connection.",
     setupQ:"How do you grow in your greenhouse?", setupSub:"This sets up your plan. You can change it later by tapping the greenhouse size.", layoutGround:"In the ground", layoutUp:"On raised beds", layoutBoth:"Ground and raised beds", layoutTitle:"Where you grow",
     wzSizeQ:"Your greenhouse size", wzLong:"Length", wzWide:"Width", wzRowsQ:"How many rows do you have?", wzGround:"Rows in the ground", wzUp:"Raised beds", wzCreate:"Create my plan", wzSkip:"I'll draw it myself", wzBack:"Back", wzMax:"Up to {n} rows fit with aisles in between.", wzRedo:"Set up the plan again", bedDrawG:"✏️ Draw row", toastNoRow:"This is an aisle. Tap ✏️ Draw row to plant here.", wzDone:"Your plan is ready 🌱", rowDrawHint:"Tap or drag over the blocks where your row is. Tap again to remove it.", setupPrompt:"Set up your greenhouse: size, rows and whether you grow in the ground or on raised beds.", setupBtn:"Set up",
+    modalClose:"Close",
     boardTitle:'ORGANICS ONE BOARD', boardConnect:'Connect board', boardSave:'Connect', boardDisc:'Disconnect', boardForget:'Forget', boardServer:'Server (EMQX host)', boardUser:'User', boardPass:'Password', boardInv:'Greenhouse name', boardOff:'Not connected', boardOn:'Board online', boardNoBoard:'Board offline', boardUpdate:'Update firmware', boardTemp:'Temperature', boardHum:'Humidity', boardVpd:'VPD', boardSoil:'Soil', boardValveOpen:'watering', boardZone:'Zone', boardAlarm:'Alarm', boardConnecting:'Connecting…', boardLiveTemp:'Real sensor',
     useAutoLocation:'📍 Use automatic location', locationManualLabel:'Manual location',
     locationApprox:'Approximate location', locationPrecise:'Precise location',
@@ -1400,6 +1401,7 @@ const TRANSLATIONS = {
     layerGround:"Suelo", layerUp:"Bancal elevado", bedDraw:"✏️ Dibujar bancal", bedDone:"✓ Listo", bedHeightL:"Altura del bancal elevado", bedDrawHint:"Toca o arrastra sobre los bloques donde está tu bancal elevado. Toca de nuevo para quitarlo.", bedNoneHint:"Aún no tienes bancales elevados. Toca ✏️ Dibujar bancal y marca dónde está.", toastNoBed:"Aquí no hay bancal elevado. Toca ✏️ Dibujar bancal para agregarlo.", posUp:"bancal elevado", ghShape:"Forma del invernadero", ghGable:"Dos aguas", ghTunnel:"Túnel", v3dTitle:"Vista 3D", v3dBack:"Volver a 2D para sembrar", v3dHint:"Vista 3D para orientarte. Arrastra para girar, pellizca o usa la rueda para acercar. Para sembrar, vuelve a 2D.", v3dLoading:"Cargando vista 3D…", v3dError:"No se pudo cargar la vista 3D. Revisa tu conexión.",
     setupQ:"¿Cómo cultivas en tu invernadero?", setupSub:"Así preparo tu plano. Lo puedes cambiar después tocando el tamaño del invernadero.", layoutGround:"En el suelo", layoutUp:"En bancales elevados", layoutBoth:"Suelo y bancales elevados", layoutTitle:"Dónde cultivas",
     wzSizeQ:"Medidas de tu invernadero", wzLong:"Largo", wzWide:"Ancho", wzRowsQ:"¿Cuántas hileras tienes?", wzGround:"Hileras en el suelo", wzUp:"Bancales elevados", wzCreate:"Crear mi plano", wzSkip:"Prefiero dibujarlo yo", wzBack:"Atrás", wzMax:"Caben hasta {n} hileras con pasillos entre ellas.", wzRedo:"Armar el plano de nuevo", bedDrawG:"✏️ Dibujar hilera", toastNoRow:"Aquí es pasillo. Toca ✏️ Dibujar hilera para sembrar aquí.", wzDone:"Tu plano está listo 🌱", rowDrawHint:"Toca o arrastra sobre los bloques donde está tu hilera. Toca de nuevo para quitarla.", setupPrompt:"Configura tu invernadero: medidas, hileras y si cultivas en el suelo o en bancales elevados.", setupBtn:"Configurar",
+    modalClose:"Cerrar",
     boardTitle:'TARJETA ORGANICS ONE', boardConnect:'Conectar tarjeta', boardSave:'Conectar', boardDisc:'Desconectar', boardForget:'Olvidar', boardServer:'Servidor (host de EMQX)', boardUser:'Usuario', boardPass:'Clave', boardInv:'Nombre del invernadero', boardOff:'Sin conexión', boardOn:'Tarjeta en línea', boardNoBoard:'Tarjeta desconectada', boardUpdate:'Actualizar firmware', boardTemp:'Temperatura', boardHum:'Humedad', boardVpd:'VPD', boardSoil:'Suelo', boardValveOpen:'regando', boardZone:'Zona', boardAlarm:'Alarma', boardConnecting:'Conectando…', boardLiveTemp:'Sensor real',
     useAutoLocation:'📍 Usar ubicación automática', locationManualLabel:'Ubicación manual',
     locationApprox:'Ubicación aproximada', locationPrecise:'Ubicación precisa',
@@ -1690,6 +1692,7 @@ const TRANSLATIONS = {
     layerGround:"Sol", layerUp:"Table de culture", bedDraw:"✏️ Dessiner la table", bedDone:"✓ Terminé", bedHeightL:"Hauteur de la table", bedDrawHint:"Touchez ou glissez sur les blocs où se trouve votre table de culture. Touchez à nouveau pour la retirer.", bedNoneHint:"Vous n’avez pas encore de table de culture. Touchez ✏️ Dessiner la table et indiquez où elle se trouve.", toastNoBed:"Il n’y a pas de table ici. Touchez ✏️ Dessiner la table pour l’ajouter.", posUp:"table", ghShape:"Forme de la serre", ghGable:"Deux pentes", ghTunnel:"Tunnel", v3dTitle:"Vue 3D", v3dBack:"Revenir en 2D pour planter", v3dHint:"Vue 3D pour vous repérer. Faites glisser pour tourner, pincez ou utilisez la molette pour zoomer. Pour planter, revenez en 2D.", v3dLoading:"Chargement de la vue 3D…", v3dError:"Impossible de charger la vue 3D. Vérifiez votre connexion.",
     setupQ:"Comment cultivez-vous dans votre serre ?", setupSub:"Cela prépare votre plan. Vous pourrez le changer en touchant la taille de la serre.", layoutGround:"En pleine terre", layoutUp:"Sur tables de culture", layoutBoth:"Sol et tables", layoutTitle:"Où vous cultivez",
     wzSizeQ:"Dimensions de votre serre", wzLong:"Longueur", wzWide:"Largeur", wzRowsQ:"Combien de rangs avez-vous ?", wzGround:"Rangs en pleine terre", wzUp:"Tables de culture", wzCreate:"Créer mon plan", wzSkip:"Je préfère le dessiner", wzBack:"Retour", wzMax:"Jusqu’à {n} rangs avec des allées entre eux.", wzRedo:"Refaire le plan", bedDrawG:"✏️ Dessiner un rang", toastNoRow:"Ici c’est une allée. Touchez ✏️ Dessiner un rang pour planter ici.", wzDone:"Votre plan est prêt 🌱", rowDrawHint:"Touchez ou glissez sur les blocs de votre rang. Touchez à nouveau pour le retirer.", setupPrompt:"Configurez votre serre : dimensions, rangs et culture en pleine terre ou sur tables.", setupBtn:"Configurer",
+    modalClose:"Fermer",
     boardTitle:'CARTE ORGANICS ONE',
     boardConnect:'Connecter la carte',
     boardSave:'Connecter',
@@ -2021,6 +2024,7 @@ const TRANSLATIONS = {
     layerGround:"Solo", layerUp:"Bancada", bedDraw:"✏️ Desenhar bancada", bedDone:"✓ Pronto", bedHeightL:"Altura da bancada", bedDrawHint:"Toque ou arraste sobre os blocos onde fica sua bancada. Toque de novo para removê-la.", bedNoneHint:"Você ainda não tem bancadas. Toque em ✏️ Desenhar bancada e marque onde ela fica.", toastNoBed:"Aqui não há bancada. Toque em ✏️ Desenhar bancada para adicioná-la.", posUp:"bancada", ghShape:"Formato da estufa", ghGable:"Duas águas", ghTunnel:"Túnel", v3dTitle:"Vista 3D", v3dBack:"Voltar ao 2D para plantar", v3dHint:"Vista 3D para se orientar. Arraste para girar, pince ou use a roda para aproximar. Para plantar, volte ao 2D.", v3dLoading:"Carregando vista 3D…", v3dError:"Não foi possível carregar a vista 3D. Verifique sua conexão.",
     setupQ:"Como você cultiva na sua estufa?", setupSub:"Assim preparo sua planta. Você pode mudar depois tocando no tamanho da estufa.", layoutGround:"No solo", layoutUp:"Em bancadas", layoutBoth:"Solo e bancadas", layoutTitle:"Onde você cultiva",
     wzSizeQ:"Medidas da sua estufa", wzLong:"Comprimento", wzWide:"Largura", wzRowsQ:"Quantas fileiras você tem?", wzGround:"Fileiras no solo", wzUp:"Bancadas", wzCreate:"Criar minha planta", wzSkip:"Prefiro desenhar", wzBack:"Voltar", wzMax:"Cabem até {n} fileiras com corredores entre elas.", wzRedo:"Montar a planta de novo", bedDrawG:"✏️ Desenhar fileira", toastNoRow:"Aqui é corredor. Toque em ✏️ Desenhar fileira para plantar aqui.", wzDone:"Sua planta está pronta 🌱", rowDrawHint:"Toque ou arraste sobre os blocos da sua fileira. Toque de novo para removê-la.", setupPrompt:"Configure sua estufa: medidas, fileiras e se cultiva no solo ou em bancadas.", setupBtn:"Configurar",
+    modalClose:"Fechar",
     boardTitle:'PLACA ORGANICS ONE',
     boardConnect:'Conectar placa',
     boardSave:'Conectar',
@@ -2352,6 +2356,7 @@ const TRANSLATIONS = {
     layerGround:"Boden", layerUp:"Hochbeet", bedDraw:"✏️ Hochbeet zeichnen", bedDone:"✓ Fertig", bedHeightL:"Höhe des Hochbeets", bedDrawHint:"Tippe oder ziehe über die Blöcke, wo dein Hochbeet steht. Nochmal tippen zum Entfernen.", bedNoneHint:"Du hast noch keine Hochbeete. Tippe auf ✏️ Hochbeet zeichnen und markiere, wo es steht.", toastNoBed:"Hier ist kein Hochbeet. Tippe auf ✏️ Hochbeet zeichnen, um es hinzuzufügen.", posUp:"Hochbeet", ghShape:"Form des Gewächshauses", ghGable:"Satteldach", ghTunnel:"Tunnel", v3dTitle:"3D-Ansicht", v3dBack:"Zurück zu 2D zum Pflanzen", v3dHint:"3D-Ansicht zur Orientierung. Ziehen zum Drehen, mit zwei Fingern oder dem Mausrad zoomen. Zum Pflanzen zurück zu 2D.", v3dLoading:"3D-Ansicht wird geladen…", v3dError:"Die 3D-Ansicht konnte nicht geladen werden. Prüfe deine Verbindung.",
     setupQ:"Wie baust du in deinem Gewächshaus an?", setupSub:"So wird dein Plan vorbereitet. Du kannst es später über die Gewächshausgröße ändern.", layoutGround:"Im Boden", layoutUp:"In Hochbeeten", layoutBoth:"Boden und Hochbeete", layoutTitle:"Wo du anbaust",
     wzSizeQ:"Maße deines Gewächshauses", wzLong:"Länge", wzWide:"Breite", wzRowsQ:"Wie viele Reihen hast du?", wzGround:"Reihen im Boden", wzUp:"Hochbeete", wzCreate:"Meinen Plan erstellen", wzSkip:"Ich zeichne selbst", wzBack:"Zurück", wzMax:"Es passen bis zu {n} Reihen mit Gängen dazwischen.", wzRedo:"Plan neu erstellen", bedDrawG:"✏️ Reihe zeichnen", toastNoRow:"Hier ist ein Gang. Tippe auf ✏️ Reihe zeichnen, um hier zu pflanzen.", wzDone:"Dein Plan ist fertig 🌱", rowDrawHint:"Tippe oder ziehe über die Blöcke deiner Reihe. Nochmal tippen zum Entfernen.", setupPrompt:"Richte dein Gewächshaus ein: Maße, Reihen und ob du im Boden oder in Hochbeeten anbaust.", setupBtn:"Einrichten",
+    modalClose:"Schließen",
     boardTitle:'ORGANICS-ONE-PLATINE',
     boardConnect:'Platine verbinden',
     boardSave:'Verbinden',
@@ -2683,6 +2688,7 @@ const TRANSLATIONS = {
     layerGround:"地面", layerUp:"种植台", bedDraw:"✏️ 绘制种植台", bedDone:"✓ 完成", bedHeightL:"种植台高度", bedDrawHint:"点按或拖动经过种植台所在的方块，再次点按可移除。", bedNoneHint:"你还没有种植台。点按 ✏️ 绘制种植台并标出位置。", toastNoBed:"这里没有种植台。点按 ✏️ 绘制种植台来添加。", posUp:"种植台", ghShape:"温室形状", ghGable:"人字顶", ghTunnel:"拱棚", v3dTitle:"3D 视图", v3dBack:"返回 2D 进行种植", v3dHint:"3D 视图帮助你了解布局。拖动旋转，双指或滚轮缩放。种植请返回 2D。", v3dLoading:"正在加载 3D 视图…", v3dError:"无法加载 3D 视图，请检查网络连接。",
     setupQ:"你在温室里怎么种植？", setupSub:"这样可以准备你的布局。之后可点按温室尺寸进行更改。", layoutGround:"种在地面", layoutUp:"种在种植台", layoutBoth:"地面和种植台", layoutTitle:"种植方式",
     wzSizeQ:"温室尺寸", wzLong:"长度", wzWide:"宽度", wzRowsQ:"你有几行种植？", wzGround:"地面种植行", wzUp:"种植台", wzCreate:"生成我的布局", wzSkip:"我自己画", wzBack:"返回", wzMax:"最多可放 {n} 行，中间留出走道。", wzRedo:"重新设置布局", bedDrawG:"✏️ 绘制种植行", toastNoRow:"这里是走道。点按 ✏️ 绘制种植行即可在此种植。", wzDone:"布局已就绪 🌱", rowDrawHint:"点按或拖动经过种植行所在的方块，再次点按可移除。", setupPrompt:"设置你的温室：尺寸、种植行，以及种在地面还是种植台。", setupBtn:"设置",
+    modalClose:"关闭",
     boardTitle:'ORGANICS ONE 控制板',
     boardConnect:'连接控制板',
     boardSave:'连接',
@@ -3014,6 +3020,7 @@ const TRANSLATIONS = {
     layerGround:"ज़मीन", layerUp:"ऊँची क्यारी", bedDraw:"✏️ ऊँची क्यारी बनाएँ", bedDone:"✓ हो गया", bedHeightL:"क्यारी की ऊँचाई", bedDrawHint:"जिन ब्लॉकों पर आपकी ऊँची क्यारी है उन पर टैप करें या खींचें। हटाने के लिए फिर टैप करें।", bedNoneHint:"अभी आपकी कोई ऊँची क्यारी नहीं है। ✏️ ऊँची क्यारी बनाएँ पर टैप करें और जगह चिह्नित करें।", toastNoBed:"यहाँ ऊँची क्यारी नहीं है। जोड़ने के लिए ✏️ ऊँची क्यारी बनाएँ पर टैप करें।", posUp:"ऊँची क्यारी", ghShape:"ग्रीनहाउस का आकार", ghGable:"दो ढलान वाली छत", ghTunnel:"सुरंग", v3dTitle:"3D दृश्य", v3dBack:"बोने के लिए 2D पर लौटें", v3dHint:"दिशा समझने के लिए 3D दृश्य। घुमाने के लिए खींचें, ज़ूम के लिए पिंच करें या व्हील चलाएँ। बोने के लिए 2D पर लौटें।", v3dLoading:"3D दृश्य लोड हो रहा है…", v3dError:"3D दृश्य लोड नहीं हो सका। अपना कनेक्शन जाँचें।",
     setupQ:"आप अपने ग्रीनहाउस में कैसे उगाते हैं?", setupSub:"इससे आपका नक्शा तैयार होगा। बाद में ग्रीनहाउस के आकार पर टैप करके बदल सकते हैं।", layoutGround:"ज़मीन में", layoutUp:"ऊँची क्यारियों में", layoutBoth:"ज़मीन और ऊँची क्यारियाँ", layoutTitle:"आप कहाँ उगाते हैं",
     wzSizeQ:"आपके ग्रीनहाउस का माप", wzLong:"लंबाई", wzWide:"चौड़ाई", wzRowsQ:"आपकी कितनी कतारें हैं?", wzGround:"ज़मीन में कतारें", wzUp:"ऊँची क्यारियाँ", wzCreate:"मेरा नक्शा बनाएँ", wzSkip:"मैं खुद बनाऊँगा", wzBack:"वापस", wzMax:"बीच में रास्ते के साथ अधिकतम {n} कतारें आ सकती हैं।", wzRedo:"नक्शा फिर से बनाएँ", bedDrawG:"✏️ कतार बनाएँ", toastNoRow:"यह रास्ता है। यहाँ बोने के लिए ✏️ कतार बनाएँ पर टैप करें।", wzDone:"आपका नक्शा तैयार है 🌱", rowDrawHint:"जिन ब्लॉकों पर आपकी कतार है उन पर टैप करें या खींचें। हटाने के लिए फिर टैप करें।", setupPrompt:"अपना ग्रीनहाउस सेट करें: माप, कतारें और ज़मीन या ऊँची क्यारियों में उगाना।", setupBtn:"सेट करें",
+    modalClose:"बंद करें",
     boardTitle:'ORGANICS ONE बोर्ड',
     boardConnect:'बोर्ड कनेक्ट करें',
     boardSave:'कनेक्ट करें',
@@ -3345,6 +3352,7 @@ const TRANSLATIONS = {
     layerGround:"الأرض", layerUp:"طاولة زراعة", bedDraw:"✏️ ارسم طاولة الزراعة", bedDone:"✓ تم", bedHeightL:"ارتفاع الطاولة", bedDrawHint:"اضغط أو اسحب فوق المربعات التي توجد بها طاولة الزراعة. اضغط مرة أخرى لإزالتها.", bedNoneHint:"لا توجد لديك طاولات زراعة بعد. اضغط ✏️ ارسم طاولة الزراعة وحدد مكانها.", toastNoBed:"لا توجد طاولة هنا. اضغط ✏️ ارسم طاولة الزراعة لإضافتها.", posUp:"طاولة", ghShape:"شكل الدفيئة", ghGable:"سقف بميلين", ghTunnel:"نفق", v3dTitle:"عرض ثلاثي الأبعاد", v3dBack:"العودة إلى 2D للزراعة", v3dHint:"عرض ثلاثي الأبعاد لتتعرف على المكان. اسحب للتدوير، واقرص أو استخدم العجلة للتكبير. للزراعة، عد إلى 2D.", v3dLoading:"جارٍ تحميل العرض ثلاثي الأبعاد…", v3dError:"تعذّر تحميل العرض ثلاثي الأبعاد. تحقق من اتصالك.",
     setupQ:"كيف تزرع في دفيئتك؟", setupSub:"بهذا أجهّز مخططك. يمكنك تغييره لاحقًا بالضغط على حجم الدفيئة.", layoutGround:"في الأرض", layoutUp:"على طاولات زراعة", layoutBoth:"الأرض والطاولات", layoutTitle:"أين تزرع",
     wzSizeQ:"مقاسات دفيئتك", wzLong:"الطول", wzWide:"العرض", wzRowsQ:"كم صفًا لديك؟", wzGround:"صفوف في الأرض", wzUp:"طاولات زراعة", wzCreate:"أنشئ مخططي", wzSkip:"أفضّل رسمه بنفسي", wzBack:"رجوع", wzMax:"يتسع حتى {n} صفوف مع ممرات بينها.", wzRedo:"أعد إعداد المخطط", bedDrawG:"✏️ ارسم صفًا", toastNoRow:"هذا ممر. اضغط ✏️ ارسم صفًا للزراعة هنا.", wzDone:"مخططك جاهز 🌱", rowDrawHint:"اضغط أو اسحب فوق مربعات الصف. اضغط مرة أخرى لإزالته.", setupPrompt:"اضبط دفيئتك: المقاسات والصفوف وهل تزرع في الأرض أو على طاولات.", setupBtn:"اضبط",
+    modalClose:"إغلاق",
     boardTitle:'لوحة ORGANICS ONE',
     boardConnect:'ربط اللوحة',
     boardSave:'اتصال',
@@ -3676,6 +3684,7 @@ const TRANSLATIONS = {
     layerGround:"Terra", layerUp:"Bancale rialzato", bedDraw:"✏️ Disegna bancale", bedDone:"✓ Fatto", bedHeightL:"Altezza del bancale", bedDrawHint:"Tocca o trascina sui blocchi dove si trova il bancale. Tocca di nuovo per toglierlo.", bedNoneHint:"Non hai ancora bancali rialzati. Tocca ✏️ Disegna bancale e segna dove si trova.", toastNoBed:"Qui non c’è un bancale. Tocca ✏️ Disegna bancale per aggiungerlo.", posUp:"bancale", ghShape:"Forma della serra", ghGable:"A due falde", ghTunnel:"Tunnel", v3dTitle:"Vista 3D", v3dBack:"Torna al 2D per piantare", v3dHint:"Vista 3D per orientarti. Trascina per ruotare, pizzica o usa la rotella per ingrandire. Per piantare, torna al 2D.", v3dLoading:"Caricamento vista 3D…", v3dError:"Impossibile caricare la vista 3D. Controlla la connessione.",
     setupQ:"Come coltivi nella tua serra?", setupSub:"Così preparo la tua pianta. Puoi cambiarlo dopo toccando la dimensione della serra.", layoutGround:"In piena terra", layoutUp:"Su bancali rialzati", layoutBoth:"Terra e bancali", layoutTitle:"Dove coltivi",
     wzSizeQ:"Misure della tua serra", wzLong:"Lunghezza", wzWide:"Larghezza", wzRowsQ:"Quante file hai?", wzGround:"File in piena terra", wzUp:"Bancali rialzati", wzCreate:"Crea la mia pianta", wzSkip:"Preferisco disegnarla io", wzBack:"Indietro", wzMax:"Ci stanno fino a {n} file con corridoi in mezzo.", wzRedo:"Rifai la pianta", bedDrawG:"✏️ Disegna fila", toastNoRow:"Qui c’è un corridoio. Tocca ✏️ Disegna fila per piantare qui.", wzDone:"La tua pianta è pronta 🌱", rowDrawHint:"Tocca o trascina sui blocchi della tua fila. Tocca di nuovo per toglierla.", setupPrompt:"Configura la serra: misure, file e se coltivi in terra o su bancali.", setupBtn:"Configura",
+    modalClose:"Chiudi",
     boardTitle:'SCHEDA ORGANICS ONE',
     boardConnect:'Collega scheda',
     boardSave:'Collega',
@@ -4007,6 +4016,7 @@ const TRANSLATIONS = {
     layerGround:"Грунт", layerUp:"Стеллаж", bedDraw:"✏️ Нарисовать стеллаж", bedDone:"✓ Готово", bedHeightL:"Высота стеллажа", bedDrawHint:"Нажмите или проведите по блокам, где стоит стеллаж. Нажмите ещё раз, чтобы убрать.", bedNoneHint:"Стеллажей пока нет. Нажмите ✏️ Нарисовать стеллаж и отметьте, где он стоит.", toastNoBed:"Здесь нет стеллажа. Нажмите ✏️ Нарисовать стеллаж, чтобы добавить.", posUp:"стеллаж", ghShape:"Форма теплицы", ghGable:"Двускатная", ghTunnel:"Тоннель", v3dTitle:"3D-вид", v3dBack:"Вернуться в 2D для посадки", v3dHint:"3D-вид для ориентации. Перетаскивайте для поворота, сводите пальцы или крутите колесо для масштаба. Для посадки вернитесь в 2D.", v3dLoading:"Загрузка 3D-вида…", v3dError:"Не удалось загрузить 3D-вид. Проверьте подключение.",
     setupQ:"Как вы выращиваете в теплице?", setupSub:"Так я подготовлю план. Позже можно изменить, нажав на размер теплицы.", layoutGround:"В грунте", layoutUp:"На стеллажах", layoutBoth:"Грунт и стеллажи", layoutTitle:"Где вы выращиваете",
     wzSizeQ:"Размеры теплицы", wzLong:"Длина", wzWide:"Ширина", wzRowsQ:"Сколько у вас рядов?", wzGround:"Ряды в грунте", wzUp:"Стеллажи", wzCreate:"Создать план", wzSkip:"Нарисую сам", wzBack:"Назад", wzMax:"Помещается до {n} рядов с проходами между ними.", wzRedo:"Настроить план заново", bedDrawG:"✏️ Нарисовать ряд", toastNoRow:"Здесь проход. Нажмите ✏️ Нарисовать ряд, чтобы сажать здесь.", wzDone:"План готов 🌱", rowDrawHint:"Нажмите или проведите по блокам ряда. Нажмите ещё раз, чтобы убрать.", setupPrompt:"Настройте теплицу: размеры, ряды и где выращиваете — в грунте или на стеллажах.", setupBtn:"Настроить",
+    modalClose:"Закрыть",
     boardTitle:'ПЛАТА ORGANICS ONE',
     boardConnect:'Подключить плату',
     boardSave:'Подключить',
@@ -4791,7 +4801,7 @@ function openModal(r, c, layer){
       <div class="icon-badge" style="background:${veg.light}">${veg.icon}</div>
       <div><h3>${getVegName(veg)}</h3><div class="block-pos">${t('blockPos',{ r:r+1, c:c+1 })}${layer === 'up' ? ' · ' + t('posUp') : ''}</div></div>
     </div>
-    ${tst ? `<div class="temp-alert ${tst.kind}"><span class="ta-text">${tst.kind==='cold'?'❄️':'🔥'} ${tempStatusText(tst)}</span><button class="mute-x" id="muteBtn" title="${t('muteTitle')}" aria-label="${t('muteTitle')}">✕</button></div><div id="mutePanel"></div>` : ''}
+    ${tst ? `<div class="temp-alert ${tst.kind}"><span class="ta-text">${tst.kind==='cold'?'❄️':'🔥'} ${tempStatusText(tst)}</span><button class="mute-x" id="muteBtn" title="${t('muteTitle')}" aria-label="${t('muteTitle')}">🔕</button></div><div id="mutePanel"></div>` : ''}
     ${tstRaw && tmuted ? `<div class="muted-note"><span>🔕 ${state.plantings[key].tempMute.forever ? t('mutedForever') : t('mutedUntil',{ d: fmtDateTime(state.plantings[key].tempMute.until) })}</span><button id="unmuteBtn">${t('unmute')}</button></div>` : ''}
     <div class="row"><span class="k">${t('modalPlantedOn')}</span><span class="v">${fmtDate(planting.plantedDate)}</span></div>
     <div class="row"><span class="k">${t('modalDaysGrowing')}</span><span class="v">${elapsed} ${elapsed===1?t('day'):t('days')}</span></div>
@@ -4802,7 +4812,7 @@ function openModal(r, c, layer){
     <div class="progress-label ${ready?'ready':''}">${ready ? t('modalReady') : `${pct}% ${t('grown')} · ${daysLeft} ${dayWord} ${t('toGo')}`}</div>
     <div class="modal-actions">
       <button class="btn-clear" id="clearBlockBtn">${t('modalClear')}</button>
-      <button class="btn-close" id="closeModalBtn">${t('modalDone')}</button>
+      <button class="btn-close" id="closeModalBtn">${t('modalClose')}</button>
     </div>
   `;
   document.getElementById('clearBlockBtn').addEventListener('click', () => {
@@ -4816,9 +4826,8 @@ function openModal(r, c, layer){
     const done = ms => { muteTemp(key, ms); openModal(r, c, layer); showToast(t('mutedToast')); };
     const showOptions = () => {
       panel.innerHTML = `<div class="mute-panel"><div class="mp-title">${t('muteTitle')}</div><div class="mp-btns">
-        <button data-m="day">${t('mute24h')}</button><button data-m="week">${t('muteWeek')}</button><button class="danger" data-m="forever">${t('muteForever')}</button></div></div>`;
+        <button data-m="day">${t('mute24h')}</button><button class="danger" data-m="forever">${t('muteForever')}</button></div></div>`;
       panel.querySelector('[data-m=day]').onclick = () => done(24*3600*1000);
-      panel.querySelector('[data-m=week]').onclick = () => done(7*24*3600*1000);
       panel.querySelector('[data-m=forever]').onclick = () => {
         panel.innerHTML = `<div class="mute-panel"><div class="mp-warn">⚠️ ${t('muteConfirmText')}</div><div class="mp-btns">
           <button class="danger solid" id="muteYes">${t('muteConfirmYes')}</button><button id="muteBack">${t('muteBack')}</button></div></div>`;
