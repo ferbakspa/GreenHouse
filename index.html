@@ -428,8 +428,20 @@
   .legend-empty{ display:inline-block; width:12px; height:12px; border-radius:3px; background: var(--bg); box-shadow: inset 0 0 0 1px rgba(38,67,58,0.22); vertical-align:-2px; margin-right:5px; }
 
   .layer-bar{ margin:-4px 0 12px; }
+  .icon-btn.bell-all{ width:30px; height:30px; color:var(--pine-dark); }
+  .icon-btn.bell-all.alerting{ color:#B4561A; box-shadow:0 0 0 2px rgba(236,125,55,.9); animation:bellPulse 1.6s ease-in-out infinite; }
+  @keyframes bellPulse{ 0%,100%{ box-shadow:0 0 0 2px rgba(236,125,55,.95); } 50%{ box-shadow:0 0 0 5px rgba(236,125,55,.25); } }
+  .icon-btn.bell-all.muted{ color:var(--pine-soft); animation:none; box-shadow:none; }
+  .bell-ic{ display:block; }
+  .lb-tools .icon-btn{ flex:0 0 auto; }
+  .draw-from-set{ margin-top:10px; }
+  .lay-ico{ width:1.25em; height:1.25em; vertical-align:-.25em; }
+  #roomPanel.bed-ed #tabPlantBar, #roomPanel.bed-ed #waterToggle, #roomPanel.bed-ed #view3dBtn{ display:none !important; }
+  .modal .temp-alert.is-muted{ opacity:.75; }
+  .modal .temp-alert .mute-x.muted{ background:#fff !important; }
   .layer-bar:empty{ display:none; }
   .lay-setup{ background:linear-gradient(135deg,#F3F8EF,#FBF5EA); border:1.5px solid #E3D6BF; border-radius:14px; padding:12px 12px 10px; }
+  .lay-setup .lb-tools{ margin-top:0; }
   .ls-q{ font-weight:800; font-size:14px; color:var(--pine-dark); margin-bottom:9px; }
   .ls-sub{ font-size:11.5px; color:var(--pine-soft); margin-top:8px; line-height:1.4; }
   .lay-opt span{ font-size:13px; }
@@ -481,14 +493,14 @@
   .modal .temp-alert .mute-x{ flex:0 0 auto; width:32px; height:32px; border-radius:50%; border:none; font-size:15px; font-weight:400; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; color:inherit; }
   .modal .temp-alert.hot .mute-x{ background:#F2C6C1; } .modal .temp-alert.hot .mute-x:hover{ background:#E9AFA8; }
   .modal .temp-alert.cold .mute-x{ background:#C4E3FA; } .modal .temp-alert.cold .mute-x:hover{ background:#A9D6F7; }
-  .modal .mute-panel{ margin:-2px 0 6px; padding:9px 11px; border-radius:10px; background:var(--bg-warm); font-size:12.5px; }
-  .modal .mute-panel .mp-title{ font-weight:700; margin-bottom:7px; color:var(--pine-dark); }
-  .modal .mute-panel .mp-btns{ display:flex; gap:6px; flex-wrap:wrap; }
-  .modal .mute-panel button{ font:inherit; font-size:12px; padding:6px 10px; border-radius:8px; border:1px solid var(--soil-line); background:#fff; cursor:pointer; }
-  .modal .mute-panel button.danger{ border-color:#A3201A; color:#8C1C16; }
-  .modal .mute-panel button.danger.solid{ background:#A3201A; color:#fff; }
-  .modal .mute-panel .mp-warn{ color:#8C1C16; line-height:1.45; margin-bottom:8px; }
-  .modal .muted-note{ margin:10px 0 4px; padding:8px 11px; border-radius:10px; background:var(--bg-warm); font-size:12.5px; color:var(--pine-soft); display:flex; justify-content:space-between; gap:8px; align-items:center; }
+  .modal .mute-panel, #bellAllPanel .mute-panel{ margin:-2px 0 6px; padding:9px 11px; border-radius:10px; background:var(--bg-warm); font-size:12.5px; }
+  .modal .mute-panel .mp-title, #bellAllPanel .mute-panel .mp-title{ font-weight:700; margin-bottom:7px; color:var(--pine-dark); }
+  .modal .mute-panel .mp-btns, #bellAllPanel .mute-panel .mp-btns{ display:flex; gap:6px; flex-wrap:wrap; }
+  .modal .mute-panel button, #bellAllPanel .mute-panel button{ font:inherit; font-size:12px; padding:6px 10px; border-radius:8px; border:1px solid var(--soil-line); background:#fff; cursor:pointer; }
+  .modal .mute-panel button.danger, #bellAllPanel .mute-panel button.danger{ border-color:#A3201A; color:#8C1C16; }
+  .modal .mute-panel button.danger.solid, #bellAllPanel .mute-panel button.danger.solid{ background:#A3201A; color:#fff; }
+  .modal .mute-panel .mp-warn, #bellAllPanel .mute-panel .mp-warn{ color:#8C1C16; line-height:1.45; margin-bottom:8px; }
+  .modal .muted-note{ margin:-2px 0 8px; padding:8px 11px; border-radius:10px; background:var(--bg-warm); font-size:12.5px; color:var(--pine-soft); display:flex; justify-content:space-between; gap:8px; align-items:center; }
   .modal .muted-note button{ font:inherit; font-size:12px; border:none; background:none; color:var(--green-accent); font-weight:700; cursor:pointer; padding:0; }
   .modal .row.temp-cold .v{ color:#155F94; } .modal .row.temp-hot .v{ color:#8C1C16; }
   @keyframes tempWarnPulse{ 0%,100%{ opacity:1; } 50%{ opacity:.55; } }
@@ -609,6 +621,9 @@
   .btn-clear{ background: #F5E4E1; color:#A0413A; }
   .btn-clear:hover{ background:#F0D2CD; }
   .btn-close{ background: var(--pine); color:#fff; }
+  .clear-confirm{ margin-top:4px; padding:12px; border-radius:12px; background:#FFF4F2; border:1.5px solid #F0CBC5; }
+  .clear-confirm .cc-t{ font-weight:800; color:#8C1C16; font-size:14px; margin-bottom:4px; }
+  .clear-confirm .cc-b{ font-size:12.5px; color:#5B3B36; line-height:1.45; margin-bottom:10px; }
   .btn-close:hover{ background: var(--pine-soft); }
 
   .toast{ position:fixed; bottom: 24px; left:50%; transform: translateX(-50%) translateY(20px); background: var(--pine); color:#fff; padding: 12px 18px; border-radius: 10px; font-size:13.5px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); opacity:0; pointer-events:none; transition: opacity .2s, transform .2s; z-index: 200; max-width:88vw; text-align:center; }
@@ -793,7 +808,7 @@
     <button type="button" class="danger-btn soft" id="resetCropsBtn">🌱 <span id="resetCropsL"></span></button><small class="set-hint" id="resetCropsHint"></small>
     <button type="button" class="danger-btn soft" id="resetPartsBtn">🧹 <span id="resetPartsL"></span></button><small class="set-hint" id="resetPartsHint"></small>
     <button type="button" class="danger-btn" id="resetFactoryBtn">⚠️ <span id="resetFactoryL"></span></button><small class="set-hint" id="resetFactoryHint"></small></div>
-  <div class="set-links"><a href="terms.html" target="_blank" rel="noopener" id="setTerms">Terms</a> · <a href="privacy.html" target="_blank" rel="noopener" id="setPrivacy">Privacy</a> · <span class="app-ver">v1.1</span></div>
+  <div class="set-links"><a href="terms.html" target="_blank" rel="noopener" id="setTerms">Terms</a> · <a href="privacy.html" target="_blank" rel="noopener" id="setPrivacy">Privacy</a> · <span class="app-ver">v1.2</span></div>
   <button id="settingsDone">OK</button>
 </div></div>
 <div class="consent-overlay" id="resetOverlay" role="alertdialog" aria-modal="true"><div class="consent-box reset-box">
@@ -1110,6 +1125,8 @@ const TRANSLATIONS = {
     setupQ:"How do you grow in your greenhouse?", setupSub:"This sets up your plan. You can change it later by tapping the greenhouse size.", layoutGround:"In the ground", layoutUp:"On raised beds", layoutBoth:"Ground and raised beds", layoutTitle:"Where you grow",
     wzSizeQ:"Your greenhouse size", wzLong:"Length", wzWide:"Width", wzRowsQ:"How many rows do you have?", wzGround:"Rows in the ground", wzUp:"Raised beds", wzCreate:"Create my plan", wzSkip:"I'll draw it myself", wzBack:"Back", wzMax:"Up to {n} rows fit with aisles in between.", wzRedo:"Set up the plan again", bedDrawG:"✏️ Draw row", toastNoRow:"This is an aisle. Tap ✏️ Draw row to plant here.", wzDone:"Your plan is ready 🌱", rowDrawHint:"Tap or drag over the blocks where your row is. Tap again to remove it.", setupPrompt:"Set up your greenhouse: size, rows and whether you grow in the ground or on raised beds.", setupBtn:"Set up",
     modalClose:"Close",
+    muteVegTitle:"Silence alerts for {name}", muteVegConfirm:"If you silence {name} forever, its alerts will not show again on any block, even if the temperature keeps going up or down. Are you sure?", mutedVegUntil:"{name} alerts silenced until {d}", mutedVegForever:"{name} alerts silenced", muteAllTitle:"Silence all greenhouse alerts", muteAllConfirm:"If you silence all alerts forever, you will not see cold or heat alerts for any crop until you turn them back on. Are you sure?", mutedAllUntil:"All alerts silenced until {d}", mutedAllForever:"All alerts silenced", mutedAllToast:"All alerts silenced", unmutedToast:"Alerts turned back on", bellAll:"Temperature alerts", bellTapOn:"Tap the bell to turn them back on",
+    clearConfirm:"Remove {name} from this block?", clearConfirmBody:"It has been growing for {d} days. This planting will be deleted and cannot be undone.", clearYes:"Yes, remove",
     boardTitle:'ORGANICS ONE BOARD', boardConnect:'Connect board', boardSave:'Connect', boardDisc:'Disconnect', boardForget:'Forget', boardServer:'Server (EMQX host)', boardUser:'User', boardPass:'Password', boardInv:'Greenhouse name', boardOff:'Not connected', boardOn:'Board online', boardNoBoard:'Board offline', boardUpdate:'Update firmware', boardTemp:'Temperature', boardHum:'Humidity', boardVpd:'VPD', boardSoil:'Soil', boardValveOpen:'watering', boardZone:'Zone', boardAlarm:'Alarm', boardConnecting:'Connecting…', boardLiveTemp:'Real sensor',
     useAutoLocation:'📍 Use automatic location', locationManualLabel:'Manual location',
     locationApprox:'Approximate location', locationPrecise:'Precise location',
@@ -1402,6 +1419,8 @@ const TRANSLATIONS = {
     setupQ:"¿Cómo cultivas en tu invernadero?", setupSub:"Así preparo tu plano. Lo puedes cambiar después tocando el tamaño del invernadero.", layoutGround:"En el suelo", layoutUp:"En bancales elevados", layoutBoth:"Suelo y bancales elevados", layoutTitle:"Dónde cultivas",
     wzSizeQ:"Medidas de tu invernadero", wzLong:"Largo", wzWide:"Ancho", wzRowsQ:"¿Cuántas hileras tienes?", wzGround:"Hileras en el suelo", wzUp:"Bancales elevados", wzCreate:"Crear mi plano", wzSkip:"Prefiero dibujarlo yo", wzBack:"Atrás", wzMax:"Caben hasta {n} hileras con pasillos entre ellas.", wzRedo:"Armar el plano de nuevo", bedDrawG:"✏️ Dibujar hilera", toastNoRow:"Aquí es pasillo. Toca ✏️ Dibujar hilera para sembrar aquí.", wzDone:"Tu plano está listo 🌱", rowDrawHint:"Toca o arrastra sobre los bloques donde está tu hilera. Toca de nuevo para quitarla.", setupPrompt:"Configura tu invernadero: medidas, hileras y si cultivas en el suelo o en bancales elevados.", setupBtn:"Configurar",
     modalClose:"Cerrar",
+    muteVegTitle:"Silenciar avisos de {name}", muteVegConfirm:"Si silencias {name} para siempre, sus avisos no volverán a mostrarse en ningún bloque, aunque la temperatura siga subiendo o bajando. ¿Estás seguro?", mutedVegUntil:"Avisos de {name} silenciados hasta {d}", mutedVegForever:"Avisos de {name} silenciados", muteAllTitle:"Silenciar todas las alertas del invernadero", muteAllConfirm:"Si silencias todas las alertas para siempre, no verás avisos de frío ni de calor en ningún cultivo hasta que las reactives. ¿Estás seguro?", mutedAllUntil:"Todas las alertas silenciadas hasta {d}", mutedAllForever:"Todas las alertas silenciadas", mutedAllToast:"Todas las alertas silenciadas", unmutedToast:"Avisos reactivados", bellAll:"Alertas de temperatura", bellTapOn:"Toca la campana para reactivarlas",
+    clearConfirm:"¿Quitar {name} de este bloque?", clearConfirmBody:"Lleva {d} días creciendo. Se borrará esta siembra y no se puede deshacer.", clearYes:"Sí, quitar",
     boardTitle:'TARJETA ORGANICS ONE', boardConnect:'Conectar tarjeta', boardSave:'Conectar', boardDisc:'Desconectar', boardForget:'Olvidar', boardServer:'Servidor (host de EMQX)', boardUser:'Usuario', boardPass:'Clave', boardInv:'Nombre del invernadero', boardOff:'Sin conexión', boardOn:'Tarjeta en línea', boardNoBoard:'Tarjeta desconectada', boardUpdate:'Actualizar firmware', boardTemp:'Temperatura', boardHum:'Humedad', boardVpd:'VPD', boardSoil:'Suelo', boardValveOpen:'regando', boardZone:'Zona', boardAlarm:'Alarma', boardConnecting:'Conectando…', boardLiveTemp:'Sensor real',
     useAutoLocation:'📍 Usar ubicación automática', locationManualLabel:'Ubicación manual',
     locationApprox:'Ubicación aproximada', locationPrecise:'Ubicación precisa',
@@ -1693,6 +1712,8 @@ const TRANSLATIONS = {
     setupQ:"Comment cultivez-vous dans votre serre ?", setupSub:"Cela prépare votre plan. Vous pourrez le changer en touchant la taille de la serre.", layoutGround:"En pleine terre", layoutUp:"Sur tables de culture", layoutBoth:"Sol et tables", layoutTitle:"Où vous cultivez",
     wzSizeQ:"Dimensions de votre serre", wzLong:"Longueur", wzWide:"Largeur", wzRowsQ:"Combien de rangs avez-vous ?", wzGround:"Rangs en pleine terre", wzUp:"Tables de culture", wzCreate:"Créer mon plan", wzSkip:"Je préfère le dessiner", wzBack:"Retour", wzMax:"Jusqu’à {n} rangs avec des allées entre eux.", wzRedo:"Refaire le plan", bedDrawG:"✏️ Dessiner un rang", toastNoRow:"Ici c’est une allée. Touchez ✏️ Dessiner un rang pour planter ici.", wzDone:"Votre plan est prêt 🌱", rowDrawHint:"Touchez ou glissez sur les blocs de votre rang. Touchez à nouveau pour le retirer.", setupPrompt:"Configurez votre serre : dimensions, rangs et culture en pleine terre ou sur tables.", setupBtn:"Configurer",
     modalClose:"Fermer",
+    muteVegTitle:"Couper les alertes de {name}", muteVegConfirm:"Si vous coupez {name} pour toujours, ses alertes ne s’afficheront plus sur aucun bloc, même si la température continue de monter ou de baisser. Êtes-vous sûr ?", mutedVegUntil:"Alertes de {name} coupées jusqu’au {d}", mutedVegForever:"Alertes de {name} coupées", muteAllTitle:"Couper toutes les alertes de la serre", muteAllConfirm:"Si vous coupez toutes les alertes pour toujours, vous ne verrez plus d’alertes de froid ou de chaleur jusqu’à les réactiver. Êtes-vous sûr ?", mutedAllUntil:"Toutes les alertes coupées jusqu’au {d}", mutedAllForever:"Toutes les alertes coupées", mutedAllToast:"Toutes les alertes coupées", unmutedToast:"Alertes réactivées", bellAll:"Alertes de température", bellTapOn:"Touchez la cloche pour les réactiver",
+    clearConfirm:"Retirer {name} de ce bloc ?", clearConfirmBody:"Cela pousse depuis {d} jours. Cette plantation sera supprimée, action irréversible.", clearYes:"Oui, retirer",
     boardTitle:'CARTE ORGANICS ONE',
     boardConnect:'Connecter la carte',
     boardSave:'Connecter',
@@ -2025,6 +2046,8 @@ const TRANSLATIONS = {
     setupQ:"Como você cultiva na sua estufa?", setupSub:"Assim preparo sua planta. Você pode mudar depois tocando no tamanho da estufa.", layoutGround:"No solo", layoutUp:"Em bancadas", layoutBoth:"Solo e bancadas", layoutTitle:"Onde você cultiva",
     wzSizeQ:"Medidas da sua estufa", wzLong:"Comprimento", wzWide:"Largura", wzRowsQ:"Quantas fileiras você tem?", wzGround:"Fileiras no solo", wzUp:"Bancadas", wzCreate:"Criar minha planta", wzSkip:"Prefiro desenhar", wzBack:"Voltar", wzMax:"Cabem até {n} fileiras com corredores entre elas.", wzRedo:"Montar a planta de novo", bedDrawG:"✏️ Desenhar fileira", toastNoRow:"Aqui é corredor. Toque em ✏️ Desenhar fileira para plantar aqui.", wzDone:"Sua planta está pronta 🌱", rowDrawHint:"Toque ou arraste sobre os blocos da sua fileira. Toque de novo para removê-la.", setupPrompt:"Configure sua estufa: medidas, fileiras e se cultiva no solo ou em bancadas.", setupBtn:"Configurar",
     modalClose:"Fechar",
+    muteVegTitle:"Silenciar avisos de {name}", muteVegConfirm:"Se silenciar {name} para sempre, os avisos não voltarão a aparecer em nenhum bloco, mesmo que a temperatura continue subindo ou descendo. Tem certeza?", mutedVegUntil:"Avisos de {name} silenciados até {d}", mutedVegForever:"Avisos de {name} silenciados", muteAllTitle:"Silenciar todos os alertas da estufa", muteAllConfirm:"Se silenciar todos os alertas para sempre, não verá avisos de frio ou calor em nenhum cultivo até reativá-los. Tem certeza?", mutedAllUntil:"Todos os alertas silenciados até {d}", mutedAllForever:"Todos os alertas silenciados", mutedAllToast:"Todos os alertas silenciados", unmutedToast:"Avisos reativados", bellAll:"Alertas de temperatura", bellTapOn:"Toque no sino para reativá-los",
+    clearConfirm:"Remover {name} deste bloco?", clearConfirmBody:"Está crescendo há {d} dias. Este plantio será apagado e não pode ser desfeito.", clearYes:"Sim, remover",
     boardTitle:'PLACA ORGANICS ONE',
     boardConnect:'Conectar placa',
     boardSave:'Conectar',
@@ -2357,6 +2380,8 @@ const TRANSLATIONS = {
     setupQ:"Wie baust du in deinem Gewächshaus an?", setupSub:"So wird dein Plan vorbereitet. Du kannst es später über die Gewächshausgröße ändern.", layoutGround:"Im Boden", layoutUp:"In Hochbeeten", layoutBoth:"Boden und Hochbeete", layoutTitle:"Wo du anbaust",
     wzSizeQ:"Maße deines Gewächshauses", wzLong:"Länge", wzWide:"Breite", wzRowsQ:"Wie viele Reihen hast du?", wzGround:"Reihen im Boden", wzUp:"Hochbeete", wzCreate:"Meinen Plan erstellen", wzSkip:"Ich zeichne selbst", wzBack:"Zurück", wzMax:"Es passen bis zu {n} Reihen mit Gängen dazwischen.", wzRedo:"Plan neu erstellen", bedDrawG:"✏️ Reihe zeichnen", toastNoRow:"Hier ist ein Gang. Tippe auf ✏️ Reihe zeichnen, um hier zu pflanzen.", wzDone:"Dein Plan ist fertig 🌱", rowDrawHint:"Tippe oder ziehe über die Blöcke deiner Reihe. Nochmal tippen zum Entfernen.", setupPrompt:"Richte dein Gewächshaus ein: Maße, Reihen und ob du im Boden oder in Hochbeeten anbaust.", setupBtn:"Einrichten",
     modalClose:"Schließen",
+    muteVegTitle:"Hinweise für {name} stummschalten", muteVegConfirm:"Wenn du {name} für immer stummschaltest, erscheinen die Hinweise auf keinem Block mehr, auch wenn die Temperatur weiter steigt oder fällt. Bist du sicher?", mutedVegUntil:"Hinweise für {name} stumm bis {d}", mutedVegForever:"Hinweise für {name} stumm", muteAllTitle:"Alle Gewächshaus-Hinweise stummschalten", muteAllConfirm:"Wenn du alle Hinweise für immer stummschaltest, siehst du keine Kälte- oder Hitzehinweise mehr, bis du sie wieder einschaltest. Bist du sicher?", mutedAllUntil:"Alle Hinweise stumm bis {d}", mutedAllForever:"Alle Hinweise stumm", mutedAllToast:"Alle Hinweise stumm", unmutedToast:"Hinweise wieder aktiv", bellAll:"Temperaturhinweise", bellTapOn:"Tippe auf die Glocke, um sie wieder einzuschalten",
+    clearConfirm:"{name} aus diesem Block entfernen?", clearConfirmBody:"Wächst seit {d} Tagen. Diese Pflanzung wird gelöscht und kann nicht rückgängig gemacht werden.", clearYes:"Ja, entfernen",
     boardTitle:'ORGANICS-ONE-PLATINE',
     boardConnect:'Platine verbinden',
     boardSave:'Verbinden',
@@ -2689,6 +2714,8 @@ const TRANSLATIONS = {
     setupQ:"你在温室里怎么种植？", setupSub:"这样可以准备你的布局。之后可点按温室尺寸进行更改。", layoutGround:"种在地面", layoutUp:"种在种植台", layoutBoth:"地面和种植台", layoutTitle:"种植方式",
     wzSizeQ:"温室尺寸", wzLong:"长度", wzWide:"宽度", wzRowsQ:"你有几行种植？", wzGround:"地面种植行", wzUp:"种植台", wzCreate:"生成我的布局", wzSkip:"我自己画", wzBack:"返回", wzMax:"最多可放 {n} 行，中间留出走道。", wzRedo:"重新设置布局", bedDrawG:"✏️ 绘制种植行", toastNoRow:"这里是走道。点按 ✏️ 绘制种植行即可在此种植。", wzDone:"布局已就绪 🌱", rowDrawHint:"点按或拖动经过种植行所在的方块，再次点按可移除。", setupPrompt:"设置你的温室：尺寸、种植行，以及种在地面还是种植台。", setupBtn:"设置",
     modalClose:"关闭",
+    muteVegTitle:"静音 {name} 的提醒", muteVegConfirm:"如果永久静音 {name}，即使温度继续升高或降低，任何方块都不会再显示它的提醒。确定吗？", mutedVegUntil:"{name} 的提醒已静音至 {d}", mutedVegForever:"{name} 的提醒已静音", muteAllTitle:"静音温室全部提醒", muteAllConfirm:"如果永久静音全部提醒，在重新开启之前你将看不到任何作物的冷热提醒。确定吗？", mutedAllUntil:"全部提醒已静音至 {d}", mutedAllForever:"全部提醒已静音", mutedAllToast:"全部提醒已静音", unmutedToast:"提醒已重新开启", bellAll:"温度提醒", bellTapOn:"点按铃铛重新开启",
+    clearConfirm:"要从这个方块移除{name}吗？", clearConfirmBody:"已生长 {d} 天。这次种植将被删除，且无法撤销。", clearYes:"是的，移除",
     boardTitle:'ORGANICS ONE 控制板',
     boardConnect:'连接控制板',
     boardSave:'连接',
@@ -3021,6 +3048,8 @@ const TRANSLATIONS = {
     setupQ:"आप अपने ग्रीनहाउस में कैसे उगाते हैं?", setupSub:"इससे आपका नक्शा तैयार होगा। बाद में ग्रीनहाउस के आकार पर टैप करके बदल सकते हैं।", layoutGround:"ज़मीन में", layoutUp:"ऊँची क्यारियों में", layoutBoth:"ज़मीन और ऊँची क्यारियाँ", layoutTitle:"आप कहाँ उगाते हैं",
     wzSizeQ:"आपके ग्रीनहाउस का माप", wzLong:"लंबाई", wzWide:"चौड़ाई", wzRowsQ:"आपकी कितनी कतारें हैं?", wzGround:"ज़मीन में कतारें", wzUp:"ऊँची क्यारियाँ", wzCreate:"मेरा नक्शा बनाएँ", wzSkip:"मैं खुद बनाऊँगा", wzBack:"वापस", wzMax:"बीच में रास्ते के साथ अधिकतम {n} कतारें आ सकती हैं।", wzRedo:"नक्शा फिर से बनाएँ", bedDrawG:"✏️ कतार बनाएँ", toastNoRow:"यह रास्ता है। यहाँ बोने के लिए ✏️ कतार बनाएँ पर टैप करें।", wzDone:"आपका नक्शा तैयार है 🌱", rowDrawHint:"जिन ब्लॉकों पर आपकी कतार है उन पर टैप करें या खींचें। हटाने के लिए फिर टैप करें।", setupPrompt:"अपना ग्रीनहाउस सेट करें: माप, कतारें और ज़मीन या ऊँची क्यारियों में उगाना।", setupBtn:"सेट करें",
     modalClose:"बंद करें",
+    muteVegTitle:"{name} के अलर्ट बंद करें", muteVegConfirm:"अगर आप {name} को हमेशा के लिए बंद करते हैं, तो तापमान बढ़ने या घटने पर भी किसी ब्लॉक में इसके अलर्ट नहीं दिखेंगे। क्या आप निश्चित हैं?", mutedVegUntil:"{name} के अलर्ट {d} तक बंद", mutedVegForever:"{name} के अलर्ट बंद", muteAllTitle:"ग्रीनहाउस के सभी अलर्ट बंद करें", muteAllConfirm:"अगर आप सभी अलर्ट हमेशा के लिए बंद करते हैं, तो दोबारा चालू करने तक किसी फसल के ठंड या गर्मी के अलर्ट नहीं दिखेंगे। क्या आप निश्चित हैं?", mutedAllUntil:"सभी अलर्ट {d} तक बंद", mutedAllForever:"सभी अलर्ट बंद", mutedAllToast:"सभी अलर्ट बंद", unmutedToast:"अलर्ट फिर चालू", bellAll:"तापमान अलर्ट", bellTapOn:"फिर चालू करने के लिए घंटी पर टैप करें",
+    clearConfirm:"इस ब्लॉक से {name} हटाएँ?", clearConfirmBody:"यह {d} दिनों से बढ़ रहा है। यह बुवाई मिट जाएगी और इसे वापस नहीं किया जा सकता।", clearYes:"हाँ, हटाएँ",
     boardTitle:'ORGANICS ONE बोर्ड',
     boardConnect:'बोर्ड कनेक्ट करें',
     boardSave:'कनेक्ट करें',
@@ -3353,6 +3382,8 @@ const TRANSLATIONS = {
     setupQ:"كيف تزرع في دفيئتك؟", setupSub:"بهذا أجهّز مخططك. يمكنك تغييره لاحقًا بالضغط على حجم الدفيئة.", layoutGround:"في الأرض", layoutUp:"على طاولات زراعة", layoutBoth:"الأرض والطاولات", layoutTitle:"أين تزرع",
     wzSizeQ:"مقاسات دفيئتك", wzLong:"الطول", wzWide:"العرض", wzRowsQ:"كم صفًا لديك؟", wzGround:"صفوف في الأرض", wzUp:"طاولات زراعة", wzCreate:"أنشئ مخططي", wzSkip:"أفضّل رسمه بنفسي", wzBack:"رجوع", wzMax:"يتسع حتى {n} صفوف مع ممرات بينها.", wzRedo:"أعد إعداد المخطط", bedDrawG:"✏️ ارسم صفًا", toastNoRow:"هذا ممر. اضغط ✏️ ارسم صفًا للزراعة هنا.", wzDone:"مخططك جاهز 🌱", rowDrawHint:"اضغط أو اسحب فوق مربعات الصف. اضغط مرة أخرى لإزالته.", setupPrompt:"اضبط دفيئتك: المقاسات والصفوف وهل تزرع في الأرض أو على طاولات.", setupBtn:"اضبط",
     modalClose:"إغلاق",
+    muteVegTitle:"كتم تنبيهات {name}", muteVegConfirm:"إذا كتمت {name} إلى الأبد، فلن تظهر تنبيهاته في أي مربع حتى لو استمرت الحرارة في الارتفاع أو الانخفاض. هل أنت متأكد؟", mutedVegUntil:"تنبيهات {name} مكتومة حتى {d}", mutedVegForever:"تنبيهات {name} مكتومة", muteAllTitle:"كتم كل تنبيهات الدفيئة", muteAllConfirm:"إذا كتمت كل التنبيهات إلى الأبد، فلن ترى تنبيهات البرد أو الحر لأي محصول حتى تعيد تفعيلها. هل أنت متأكد؟", mutedAllUntil:"كل التنبيهات مكتومة حتى {d}", mutedAllForever:"كل التنبيهات مكتومة", mutedAllToast:"تم كتم كل التنبيهات", unmutedToast:"أُعيد تفعيل التنبيهات", bellAll:"تنبيهات الحرارة", bellTapOn:"اضغط الجرس لإعادة تفعيلها",
+    clearConfirm:"هل تريد إزالة {name} من هذا المربع؟", clearConfirmBody:"ينمو منذ {d} يومًا. ستُحذف هذه الزراعة ولا يمكن التراجع عن ذلك.", clearYes:"نعم، أزل",
     boardTitle:'لوحة ORGANICS ONE',
     boardConnect:'ربط اللوحة',
     boardSave:'اتصال',
@@ -3685,6 +3716,8 @@ const TRANSLATIONS = {
     setupQ:"Come coltivi nella tua serra?", setupSub:"Così preparo la tua pianta. Puoi cambiarlo dopo toccando la dimensione della serra.", layoutGround:"In piena terra", layoutUp:"Su bancali rialzati", layoutBoth:"Terra e bancali", layoutTitle:"Dove coltivi",
     wzSizeQ:"Misure della tua serra", wzLong:"Lunghezza", wzWide:"Larghezza", wzRowsQ:"Quante file hai?", wzGround:"File in piena terra", wzUp:"Bancali rialzati", wzCreate:"Crea la mia pianta", wzSkip:"Preferisco disegnarla io", wzBack:"Indietro", wzMax:"Ci stanno fino a {n} file con corridoi in mezzo.", wzRedo:"Rifai la pianta", bedDrawG:"✏️ Disegna fila", toastNoRow:"Qui c’è un corridoio. Tocca ✏️ Disegna fila per piantare qui.", wzDone:"La tua pianta è pronta 🌱", rowDrawHint:"Tocca o trascina sui blocchi della tua fila. Tocca di nuovo per toglierla.", setupPrompt:"Configura la serra: misure, file e se coltivi in terra o su bancali.", setupBtn:"Configura",
     modalClose:"Chiudi",
+    muteVegTitle:"Silenzia avvisi di {name}", muteVegConfirm:"Se silenzi {name} per sempre, i suoi avvisi non compariranno più su nessun blocco, anche se la temperatura continua a salire o scendere. Sei sicuro?", mutedVegUntil:"Avvisi di {name} silenziati fino al {d}", mutedVegForever:"Avvisi di {name} silenziati", muteAllTitle:"Silenzia tutti gli avvisi della serra", muteAllConfirm:"Se silenzi tutti gli avvisi per sempre, non vedrai avvisi di freddo o caldo per nessuna coltura finché non li riattivi. Sei sicuro?", mutedAllUntil:"Tutti gli avvisi silenziati fino al {d}", mutedAllForever:"Tutti gli avvisi silenziati", mutedAllToast:"Tutti gli avvisi silenziati", unmutedToast:"Avvisi riattivati", bellAll:"Avvisi di temperatura", bellTapOn:"Tocca la campana per riattivarli",
+    clearConfirm:"Togliere {name} da questo blocco?", clearConfirmBody:"Cresce da {d} giorni. Questa semina verrà eliminata e non si può annullare.", clearYes:"Sì, togli",
     boardTitle:'SCHEDA ORGANICS ONE',
     boardConnect:'Collega scheda',
     boardSave:'Collega',
@@ -4017,6 +4050,8 @@ const TRANSLATIONS = {
     setupQ:"Как вы выращиваете в теплице?", setupSub:"Так я подготовлю план. Позже можно изменить, нажав на размер теплицы.", layoutGround:"В грунте", layoutUp:"На стеллажах", layoutBoth:"Грунт и стеллажи", layoutTitle:"Где вы выращиваете",
     wzSizeQ:"Размеры теплицы", wzLong:"Длина", wzWide:"Ширина", wzRowsQ:"Сколько у вас рядов?", wzGround:"Ряды в грунте", wzUp:"Стеллажи", wzCreate:"Создать план", wzSkip:"Нарисую сам", wzBack:"Назад", wzMax:"Помещается до {n} рядов с проходами между ними.", wzRedo:"Настроить план заново", bedDrawG:"✏️ Нарисовать ряд", toastNoRow:"Здесь проход. Нажмите ✏️ Нарисовать ряд, чтобы сажать здесь.", wzDone:"План готов 🌱", rowDrawHint:"Нажмите или проведите по блокам ряда. Нажмите ещё раз, чтобы убрать.", setupPrompt:"Настройте теплицу: размеры, ряды и где выращиваете — в грунте или на стеллажах.", setupBtn:"Настроить",
     modalClose:"Закрыть",
+    muteVegTitle:"Отключить оповещения: {name}", muteVegConfirm:"Если отключить {name} навсегда, оповещения не появятся ни на одном блоке, даже если температура продолжит расти или падать. Вы уверены?", mutedVegUntil:"Оповещения {name} отключены до {d}", mutedVegForever:"Оповещения {name} отключены", muteAllTitle:"Отключить все оповещения теплицы", muteAllConfirm:"Если отключить все оповещения навсегда, вы не увидите предупреждений о холоде или жаре ни для одной культуры, пока не включите их снова. Вы уверены?", mutedAllUntil:"Все оповещения отключены до {d}", mutedAllForever:"Все оповещения отключены", mutedAllToast:"Все оповещения отключены", unmutedToast:"Оповещения снова включены", bellAll:"Оповещения о температуре", bellTapOn:"Нажмите на колокольчик, чтобы включить их",
+    clearConfirm:"Убрать {name} из этого блока?", clearConfirmBody:"Растёт уже {d} дн. Эта посадка будет удалена, отменить нельзя.", clearYes:"Да, убрать",
     boardTitle:'ПЛАТА ORGANICS ONE',
     boardConnect:'Подключить плату',
     boardSave:'Подключить',
@@ -4320,7 +4355,7 @@ async function loadState(){
           gridSettingsCollapsed: typeof parsed.gridSettingsCollapsed === 'boolean' ? parsed.gridSettingsCollapsed : true,
           manualLocation: parsed.manualLocation || null,
           roomRotated: typeof parsed.roomRotated === 'boolean' ? parsed.roomRotated : false,
-          layout: parsed.layout === 'up' ? 'up' : (parsed.layout ? 'ground' : null), beds: parsed.beds || {}, gbeds: parsed.gbeds || {}, nRowsG: parsed.nRowsG || 0, nRowsU: parsed.nRowsU || 0, bedH: typeof parsed.bedH === 'number' ? parsed.bedH : 85, ghShape: parsed.ghShape === 'tunnel' ? 'tunnel' : 'gable'
+          layout: parsed.layout === 'up' ? 'up' : (parsed.layout ? 'ground' : null), beds: parsed.beds || {}, gbeds: parsed.gbeds || {}, nRowsG: parsed.nRowsG || 0, nRowsU: parsed.nRowsU || 0, bedH: typeof parsed.bedH === 'number' ? parsed.bedH : 85, ghShape: parsed.ghShape === 'tunnel' ? 'tunnel' : 'gable', vegMute: parsed.vegMute || {}, muteAll: parsed.muteAll || null
         };
       }
     }
@@ -4565,18 +4600,47 @@ function applyWoodEdges(cell, r, c, transposed){
 }
 
 let currentSensorTemp = null;
-function isTempMuted(key){
-  const p = state.plantings[key]; const m = p && p.tempMute;
-  if(!m) return false;
-  if(m.forever) return true;
-  return m.until > Date.now();
+/* Alerts can be silenced per crop (all blocks of that vegetable) or for the whole greenhouse, for 24 h or forever */
+const muteOn = m => !!(m && (m.forever || m.until > Date.now()));
+function muteSource(key){
+  const p = state.plantings[key]; if(!p) return null;
+  const vm = (state.vegMute || {})[p.vegId]; if(muteOn(vm)) return { kind:'veg', m: vm };
+  if(muteOn(p.tempMute)) return { kind:'veg', m: p.tempMute };   // older per-block silence
+  return null;
 }
-function muteTemp(key, ms){
-  const p = state.plantings[key]; if(!p) return;
-  p.tempMute = ms === 'forever' ? { forever:true } : { until: Date.now() + ms };
-  saveState(); applyTempWarnings(); refreshEnvIfLoaded();
+function isTempMuted(key){ return !!muteSource(key); }
+const muteValue = ms => ms === 'forever' ? { forever:true } : { until: Date.now() + ms };
+function afterMuteChange(){ saveState(); applyTempWarnings(); refreshEnvIfLoaded(); }
+function muteVeg(vegId, ms){ state.vegMute = state.vegMute || {}; state.vegMute[vegId] = muteValue(ms); afterMuteChange(); }
+function unmuteVeg(vegId){
+  if(state.vegMute) delete state.vegMute[vegId];
+  Object.values(state.plantings).forEach(p => { if(p.vegId === vegId) delete p.tempMute; });
+  afterMuteChange();
 }
-function unmuteTemp(key){ const p = state.plantings[key]; if(p){ delete p.tempMute; saveState(); applyTempWarnings(); refreshEnvIfLoaded(); } }
+function tempIssues(){ let raw = 0, live = 0; Object.entries(state.plantings).forEach(([k,p]) => { if(tempStatus(VEG_MAP[p.vegId])){ raw++; if(!isTempMuted(k)) live++; } }); return { raw, live }; }
+function bellSvg(muted){
+  return `<svg class="bell-ic" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 3a5 5 0 0 0-5 5v3.2c0 .9-.3 1.8-.9 2.5L5 15.2V17h14v-1.8l-1.1-1.5c-.6-.7-.9-1.6-.9-2.5V8a5 5 0 0 0-5-5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 19.5a2 2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>${muted ? '<path d="M4 4l16 16" stroke="#D23B2C" stroke-width="2.4" stroke-linecap="round"/>' : ''}</svg>`;
+}
+function mutedText(src, name){
+  if(!src) return '';
+  if(src.kind === 'all') return src.m.forever ? t('mutedAllForever') : t('mutedAllUntil', { d: fmtDateTime(src.m.until) });
+  return src.m.forever ? t('mutedVegForever', { name }) : t('mutedVegUntil', { name, d: fmtDateTime(src.m.until) });
+}
+/* the 24 h / forever chooser, used by a crop and by the whole greenhouse */
+function showMuteChooser(panel, title, confirmText, onPick){
+  const opts = () => {
+    panel.innerHTML = `<div class="mute-panel"><div class="mp-title">${title}</div><div class="mp-btns">
+      <button data-m="day">${t('mute24h')}</button><button class="danger" data-m="forever">${t('muteForever')}</button></div></div>`;
+    panel.querySelector('[data-m=day]').onclick = () => onPick(24*3600*1000);
+    panel.querySelector('[data-m=forever]').onclick = () => {
+      panel.innerHTML = `<div class="mute-panel"><div class="mp-warn">⚠️ ${confirmText}</div><div class="mp-btns">
+        <button class="danger solid" data-y="1">${t('muteConfirmYes')}</button><button data-b="1">${t('muteBack')}</button></div></div>`;
+      panel.querySelector('[data-y]').onclick = () => onPick('forever');
+      panel.querySelector('[data-b]').onclick = opts;
+    };
+  };
+  if(panel.innerHTML) panel.innerHTML = ''; else opts();
+}
 function fmtDateTime(ms){ return new Date(ms).toLocaleString(lang==='es'?'es-CL':lang, { weekday:'short', day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' }); }
 setInterval(() => applyTempWarnings(), 60000);
 function tempStatus(veg){
@@ -4794,15 +4858,14 @@ function openModal(r, c, layer){
   const daysLeft = veg.days - elapsed;
   const dayWord = daysLeft === 1 ? t('day') : t('days');
 
-  const tstRaw = tempStatus(veg), tmuted = isTempMuted(key), tst = tmuted ? null : tstRaw;
+  const tstRaw = tempStatus(veg), msrc = muteSource(key), tmuted = !!msrc, tst = tmuted ? null : tstRaw;
   const modal = document.getElementById('modalContent');
   modal.innerHTML = `
     <div class="head">
       <div class="icon-badge" style="background:${veg.light}">${veg.icon}</div>
       <div><h3>${getVegName(veg)}</h3><div class="block-pos">${t('blockPos',{ r:r+1, c:c+1 })}${layer === 'up' ? ' · ' + t('posUp') : ''}</div></div>
     </div>
-    ${tst ? `<div class="temp-alert ${tst.kind}"><span class="ta-text">${tst.kind==='cold'?'❄️':'🔥'} ${tempStatusText(tst)}</span><button class="mute-x" id="muteBtn" title="${t('muteTitle')}" aria-label="${t('muteTitle')}">🔕</button></div><div id="mutePanel"></div>` : ''}
-    ${tstRaw && tmuted ? `<div class="muted-note"><span>🔕 ${state.plantings[key].tempMute.forever ? t('mutedForever') : t('mutedUntil',{ d: fmtDateTime(state.plantings[key].tempMute.until) })}</span><button id="unmuteBtn">${t('unmute')}</button></div>` : ''}
+    ${tstRaw ? `<div class="temp-alert ${tstRaw.kind}${tmuted ? ' is-muted' : ''}"><span class="ta-text">${tstRaw.kind==='cold'?'❄️':'🔥'} ${tempStatusText(tstRaw)}</span><button class="mute-x${tmuted ? ' muted' : ''}" id="muteBtn" title="${tmuted ? t('bellTapOn') : t('muteVegTitle', { name: getVegName(veg) })}" aria-label="${tmuted ? t('bellTapOn') : t('muteVegTitle', { name: getVegName(veg) })}">${bellSvg(tmuted)}</button></div>${tmuted ? `<div class="muted-note"><span>${mutedText(msrc, getVegName(veg))}</span></div>` : ''}<div id="mutePanel"></div>` : ''}
     <div class="row"><span class="k">${t('modalPlantedOn')}</span><span class="v">${fmtDate(planting.plantedDate)}</span></div>
     <div class="row"><span class="k">${t('modalDaysGrowing')}</span><span class="v">${elapsed} ${elapsed===1?t('day'):t('days')}</span></div>
     <div class="row"><span class="k">${t('modalExpectedHarvest')}</span><span class="v">${fmtDate(harvestDate.toISOString().slice(0,10))}</span></div>
@@ -4810,35 +4873,31 @@ function openModal(r, c, layer){
     ${(() => { const l = cellNeedToday(key); return l != null ? `<div class="row"><span class="k">${t('irrModal')}</span><span class="v">≈ ${fmtL(l)}</span></div>` : ''; })()}
     <div class="progress-track"><div class="progress-fill" style="width:${pct}%; background:${veg.color}"></div></div>
     <div class="progress-label ${ready?'ready':''}">${ready ? t('modalReady') : `${pct}% ${t('grown')} · ${daysLeft} ${dayWord} ${t('toGo')}`}</div>
-    <div class="modal-actions">
+    <div id="clearPanel"></div>
+    <div class="modal-actions" id="modalActions">
       <button class="btn-clear" id="clearBlockBtn">${t('modalClear')}</button>
       <button class="btn-close" id="closeModalBtn">${t('modalClose')}</button>
     </div>
   `;
   document.getElementById('clearBlockBtn').addEventListener('click', () => {
+    // ask first: removing a block deletes its planting history
+    const cp = document.getElementById('clearPanel'), acts = document.getElementById('modalActions');
+    cp.innerHTML = `<div class="clear-confirm"><div class="cc-t">⚠️ ${t('clearConfirm', { name: getVegName(veg) })}</div><div class="cc-b">${t('clearConfirmBody', { d: elapsed })}</div>
+      <div class="modal-actions"><button class="btn-close" id="clearNo">${t('resetCancel')}</button><button class="btn-danger" id="clearYes">${t('clearYes')}</button></div></div>`;
+    acts.style.display = 'none';
+    document.getElementById('clearNo').addEventListener('click', () => { cp.innerHTML = ''; acts.style.display = ''; });
+    document.getElementById('clearYes').addEventListener('click', () => {
     delete state.plantings[key];
     saveState(); closeModal(); renderRoom(); renderHeaderPills(); renderRipenessAlerts(); refreshEnvIfLoaded();
     showToast(t('toastCleared'));
+    });
   });
   const muteBtn = document.getElementById('muteBtn');
   if(muteBtn) muteBtn.addEventListener('click', () => {
-    const panel = document.getElementById('mutePanel');
-    const done = ms => { muteTemp(key, ms); openModal(r, c, layer); showToast(t('mutedToast')); };
-    const showOptions = () => {
-      panel.innerHTML = `<div class="mute-panel"><div class="mp-title">${t('muteTitle')}</div><div class="mp-btns">
-        <button data-m="day">${t('mute24h')}</button><button class="danger" data-m="forever">${t('muteForever')}</button></div></div>`;
-      panel.querySelector('[data-m=day]').onclick = () => done(24*3600*1000);
-      panel.querySelector('[data-m=forever]').onclick = () => {
-        panel.innerHTML = `<div class="mute-panel"><div class="mp-warn">⚠️ ${t('muteConfirmText')}</div><div class="mp-btns">
-          <button class="danger solid" id="muteYes">${t('muteConfirmYes')}</button><button id="muteBack">${t('muteBack')}</button></div></div>`;
-        document.getElementById('muteYes').onclick = () => done('forever');
-        document.getElementById('muteBack').onclick = showOptions;
-      };
-    };
-    if(panel.innerHTML) panel.innerHTML = ''; else showOptions();
+    if(tmuted){ unmuteVeg(planting.vegId); openModal(r, c, layer); showToast(t('unmutedToast')); return; }
+    showMuteChooser(document.getElementById('mutePanel'), t('muteVegTitle', { name: getVegName(veg) }), t('muteVegConfirm', { name: getVegName(veg) }),
+      ms => { muteVeg(planting.vegId, ms); openModal(r, c, layer); showToast(t('mutedToast')); });
   });
-  const unmuteBtn = document.getElementById('unmuteBtn');
-  if(unmuteBtn) unmuteBtn.addEventListener('click', () => { unmuteTemp(key); openModal(r, c, layer); });
   document.getElementById('closeModalBtn').addEventListener('click', closeModal);
   document.getElementById('overlay').classList.add('show');
 }
@@ -6342,8 +6401,9 @@ function build3d(THREE){
 document.getElementById('view3dBtn').addEventListener('click', toggle3d);
 
 /* ---------- Layer bar: ground / raised bed (mesón) ---------- */
+const UP_ICON = '<svg class="lay-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4.5c0-1.6 1.2-2.6 2.3-2.6.3 1.4-.6 2.6-2.3 2.6zM9.5 4.5c0-1.9 1.4-3 2.7-3 .3 1.6-.8 3-2.7 3zM14 4.5c0-1.6 1.2-2.6 2.3-2.6.3 1.4-.6 2.6-2.3 2.6z" fill="#3E9B57"/><rect x="2.5" y="5" width="19" height="3.2" rx=".6" fill="#6B4A2E"/><rect x="2" y="8" width="20" height="2.6" rx=".8" fill="#A9784C"/><rect x="4" y="10.4" width="2.2" height="11" rx=".6" fill="#8A5E37"/><rect x="17.8" y="10.4" width="2.2" height="11" rx=".6" fill="#8A5E37"/><rect x="6.2" y="16" width="11.6" height="1.6" rx=".5" fill="#8A5E37"/></svg>';
 function layoutOpts(sel){
-  return [['ground','🟫','layoutGround'],['up','🪵','layoutUp']].map(([v,ic,k]) => `<button class="ws-opt lay-opt${sel === v ? ' on' : ''}" data-lay="${v}"><span>${ic}</span> ${t(k)}</button>`).join('');
+  return [['ground','🟫','layoutGround'],['up',UP_ICON,'layoutUp']].map(([v,ic,k]) => `<button class="ws-opt lay-opt${sel === v ? ' on' : ''}" data-lay="${v}"><span>${ic}</span> ${t(k)}</button>`).join('');
 }
 function setLayout(v){
   const first = !state.layout;
@@ -6356,21 +6416,26 @@ function renderLayerBar(){
   const el = document.getElementById('layerBar'); if(!el) return;
   const lay = state.layout;
   if(lay === 'up') curLayer = 'up'; else if(lay !== 'both') curLayer = 'ground';
+  const cfg = `<button class="lb-draw on" id="setupOpenBtn">⚙️ ${t('setupBtn')}</button>`;
   if(!lay){
-    el.innerHTML = `<div class="lay-setup"><div class="ls-q">🌱 ${t('setupPrompt')}</div><button class="lb-draw on" id="setupOpenBtn">⚙️ ${t('setupBtn')}</button></div>`;
+    el.innerHTML = `<div class="lay-setup"><div class="ls-q">🌱 ${t('setupPrompt')}</div><div class="lb-tools">${cfg}</div></div>`;
     document.getElementById('setupOpenBtn').addEventListener('click', openGridSettings);
     return;
   }
   const up = curLayer === 'up', nU = bedCount('up'), nG = bedCount('ground');
   el.innerHTML = `${lay === 'both' ? `<div class="lb-seg"><button class="lb-opt${!up ? ' on' : ''}" data-l="ground">🟫 ${t('layerGround')}</button><button class="lb-opt${up ? ' on' : ''}" data-l="up">🪵 ${t('layerUp')}</button></div>` : ''}
-    <div class="lb-tools"><button class="lb-draw${bedEdit ? ' on' : ''}" id="bedDrawBtn">${bedEdit ? t('bedDone') : t(up ? 'bedDraw' : 'bedDrawG')}</button></div>
-    ${bedEdit ? `<div class="lb-hint">${t(up ? 'bedDrawHint' : 'rowDrawHint')}</div>` : (up && !nU ? `<div class="lb-hint">${t('bedNoneHint')}</div>` : '')}`;
+    <div class="lb-tools">${bedEdit ? `<button class="lb-draw on" id="bedDrawBtn">${t('bedDone')}</button>` : cfg}</div>
+    ${bedEdit ? `<div class="lb-hint">${t(up ? 'bedDrawHint' : 'rowDrawHint')}</div>` : ''}`;
   el.querySelectorAll('.lb-opt').forEach(b => b.addEventListener('click', () => {
     curLayer = b.dataset.l; bedEdit = false; hideVegTooltip(); renderLayerBar(); renderRoom();
   }));
   const db = document.getElementById('bedDrawBtn');
-  if(db) db.addEventListener('click', () => { bedEdit = !bedEdit; if(bedEdit && waterMode) toggleWater(); renderLayerBar(); renderRoom(); });
+  if(db) db.addEventListener('click', () => { bedEdit = false; renderLayerBar(); renderRoom(); });
+  const so = document.getElementById('setupOpenBtn'); if(so) so.addEventListener('click', openGridSettings);
+  document.getElementById('roomPanel').classList.toggle('bed-ed', bedEdit);
 }
+/* drawing rows / raised beds by hand is a set-up step, so it starts from the settings panel */
+function startBedDrawing(){ closeGridSettings(); if(waterMode) toggleWater(); if(view3d) toggle3d(); bedEdit = true; renderLayerBar(); renderRoom(); }
 /* Rows run along the length; spread them across the width with aisles in between */
 function maxRowsFit(){ return Math.max(1, Math.floor((state.cols + 1) / 2)); }
 function layoutRows(){
@@ -6392,7 +6457,9 @@ function renderRowsSet(){
   const row = (k, key) => `<div class="dim-row"><span>${t(k)}</span><div class="stepper"><button data-rk="${key}" data-d="-1">−</button><div class="val">${state[key] || 0}</div><button data-rk="${key}" data-d="1">+</button></div></div>`;
   el.innerHTML = `<div class="ws-title">↕️ ${t('wzRowsQ')}</div>
     ${lay !== 'up' ? row('wzGround','nRowsG') : ''}${lay !== 'ground' ? row('wzUp','nRowsU') : ''}
-    <div class="ls-sub">${t('wzMax', { n: maxRowsFit() })}</div>`;
+    <div class="ls-sub">${t('wzMax', { n: maxRowsFit() })}</div>
+    <button class="ws-opt draw-from-set" id="drawFromSet">${t(lay === 'up' ? 'bedDraw' : 'bedDrawG')}</button>`;
+  document.getElementById('drawFromSet').addEventListener('click', startBedDrawing);
   el.querySelectorAll('[data-rk]').forEach(b => b.addEventListener('click', () => {
     const k = b.dataset.rk;
     const tot = (lay === 'up' ? 0 : (state.nRowsG || 0)) + (lay === 'ground' ? 0 : (state.nRowsU || 0));
