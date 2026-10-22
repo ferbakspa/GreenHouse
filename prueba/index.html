@@ -404,6 +404,8 @@
   /* Room */
   .room-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; gap:8px; flex-wrap:wrap; }
   .room-header-right{ display:flex; align-items:center; gap:8px; }
+  @keyframes libPulse{ 0%{ box-shadow:0 0 0 0 rgba(46,158,91,.55); } 100%{ box-shadow:0 0 0 14px rgba(46,158,91,0); } }
+  #libraryPanel.lib-pulse{ animation:libPulse .9s ease-out 2; }
   .view3d-btn{ height:30px; min-width:42px; padding:0 11px; border:none; border-radius:999px; background:var(--bg-warm); color:var(--pine-dark); font:800 12px 'Public Sans',sans-serif; letter-spacing:.5px; cursor:pointer; }
   .view3d-btn.on{ background:var(--pine-dark); color:#fff; }
   .room3d{ position:relative; width:100%; aspect-ratio:3/4; max-height:calc(100vh - 230px); max-height:calc(100dvh - 230px); border-radius:12px; overflow:hidden; background:linear-gradient(180deg,#BFDDF0 0%,#E6F0E8 70%); touch-action:none; }
@@ -4272,7 +4274,7 @@ const DAY_MS = 86400000;
 let state = { rows:6, cols:6, plantings:{}, irrZones:{}, units:'metric', unitsManual:false, customVeg:[], lang:'en', langManual:false, libraryCollapsed:true, gridSettingsCollapsed:true, manualLocation:null, roomRotated:false };
 let ALL_VEGETABLES = [...BASE_VEGETABLES];
 let VEG_MAP = {};
-let selectedVeg = null;
+let selectedVeg = null, pendingCell = null;
 let selectedCategory = 'all';
 let searchQuery = '';
 let lastWeatherData = null;
@@ -4443,8 +4445,26 @@ function renderVegList(){
     list.appendChild(card);
   });
 }
+/* tapping an empty block with no plant chosen opens the library; the chosen plant goes into that block */
+function openPlantLibrary(){
+  if(document.body.classList.contains('tabs-mode')){ openLibrarySheet(); return; }
+  if(state.libraryCollapsed){ state.libraryCollapsed = false; saveState(); applyLibraryCollapse(); }
+  const lp = document.getElementById('libraryPanel'); if(!lp) return;
+  lp.scrollIntoView({ behavior:'smooth', block:'start' });
+  lp.classList.remove('lib-pulse'); void lp.offsetWidth; lp.classList.add('lib-pulse');
+}
+function plantPendingCell(){
+  const pc = pendingCell; pendingCell = null;
+  if(!pc || !selectedVeg || Date.now() - pc.at > 120000 || pc.layer !== curLayer) return;
+  if(pc.r >= state.rows || pc.c >= state.cols || (layerRestricted() && !isBed(pc.r, pc.c))) return;
+  const key = LK(pc.r, pc.c); if(state.plantings[key]) return;
+  state.plantings[key] = { vegId: selectedVeg, plantedDate: todayStr() };
+  saveState(); renderRoom(); renderHeaderPills(); renderRipenessAlerts(); refreshEnvIfLoaded();
+  const veg = VEG_MAP[selectedVeg]; showToast(t('toastPlanted', { name: veg ? getVegName(veg) : '', r: pc.r + 1, c: pc.c + 1 }));
+}
 function selectVeg(id){ selectedVeg = (selectedVeg === id) ? null : id; renderVegList(); renderSelectedHint();
   if(typeof renderPlantBar === 'function') renderPlantBar();
+  if(selectedVeg) plantPendingCell();
   if(selectedVeg && document.body.classList.contains('sheet-open')) setTimeout(closeLibrarySheet, 180); }
 
 function renderSelectedHint(){
@@ -4665,7 +4685,7 @@ function plantCellDuringDrag(r,c){
 function startDrag(r,c){
   if(bedEdit){ dragging = true; dragKeys = new Set(); bedPaint = null; document.body.classList.add('dragging'); paintBed(r, c); return; }
   if(waterMode){ if(!zoneEdit){ waterTap(r, c); return; } dragging = true; dragKeys = new Set(); document.body.classList.add('dragging'); paintZone(r, c); return; }
-  if(!selectedVeg){ showToast(t('toastPickPlant')); return; }
+  if(!selectedVeg){ pendingCell = { r, c, layer: curLayer, at: Date.now() }; openPlantLibrary(); return; }
   dragging = true; dragKeys = new Set();
   document.body.classList.add('dragging');
   if(plantCellDuringDrag(r,c)){ renderRoom(); renderHeaderPills(); }
@@ -6452,7 +6472,7 @@ function applyTabsMode(){
   renderTabbar();
 }
 function openLibrarySheet(){ document.body.classList.add('sheet-open'); }
-function closeLibrarySheet(){ document.body.classList.remove('sheet-open'); if(typeof hideVegTooltip==='function') hideVegTooltip(); }
+function closeLibrarySheet(){ if(!selectedVeg) pendingCell = null; document.body.classList.remove('sheet-open'); if(typeof hideVegTooltip==='function') hideVegTooltip(); }
 function renderPlantBar(){
   const btn = document.getElementById('openLibraryBtn'); if(!btn) return;
   const veg = selectedVeg && VEG_MAP[selectedVeg];
