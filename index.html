@@ -4308,7 +4308,7 @@ async function loadState(){
           gridSettingsCollapsed: typeof parsed.gridSettingsCollapsed === 'boolean' ? parsed.gridSettingsCollapsed : true,
           manualLocation: parsed.manualLocation || null,
           roomRotated: typeof parsed.roomRotated === 'boolean' ? parsed.roomRotated : false,
-          layout: ['ground','up','both'].includes(parsed.layout) ? parsed.layout : null, beds: parsed.beds || {}, gbeds: parsed.gbeds || {}, nRowsG: parsed.nRowsG || 0, nRowsU: parsed.nRowsU || 0, bedH: typeof parsed.bedH === 'number' ? parsed.bedH : 85, ghShape: parsed.ghShape === 'tunnel' ? 'tunnel' : 'gable'
+          layout: parsed.layout === 'up' ? 'up' : (parsed.layout ? 'ground' : null), beds: parsed.beds || {}, gbeds: parsed.gbeds || {}, nRowsG: parsed.nRowsG || 0, nRowsU: parsed.nRowsU || 0, bedH: typeof parsed.bedH === 'number' ? parsed.bedH : 85, ghShape: parsed.ghShape === 'tunnel' ? 'tunnel' : 'gable'
         };
       }
     }
@@ -6309,7 +6309,7 @@ document.getElementById('view3dBtn').addEventListener('click', toggle3d);
 
 /* ---------- Layer bar: ground / raised bed (mesón) ---------- */
 function layoutOpts(sel){
-  return [['ground','🟫','layoutGround'],['up','🪵','layoutUp'],['both','🟫🪵','layoutBoth']].map(([v,ic,k]) => `<button class="ws-opt lay-opt${sel === v ? ' on' : ''}" data-lay="${v}"><span>${ic}</span> ${t(k)}</button>`).join('');
+  return [['ground','🟫','layoutGround'],['up','🪵','layoutUp']].map(([v,ic,k]) => `<button class="ws-opt lay-opt${sel === v ? ' on' : ''}" data-lay="${v}"><span>${ic}</span> ${t(k)}</button>`).join('');
 }
 function setLayout(v){
   const first = !state.layout;
