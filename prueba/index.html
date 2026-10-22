@@ -435,7 +435,8 @@
   .icon-btn.bell-all.muted{ color:var(--pine-soft); animation:none; box-shadow:none; }
   .bell-ic{ display:block; }
   .lb-tools .icon-btn{ flex:0 0 auto; }
-  #bellAllPanel .mute-panel{ margin-top:8px; }
+  .draw-from-set{ margin-top:10px; }
+  #roomPanel.bed-ed #tabPlantBar, #roomPanel.bed-ed #waterToggle, #roomPanel.bed-ed #view3dBtn{ display:none !important; }
   .modal .temp-alert.is-muted{ opacity:.75; }
   .modal .temp-alert .mute-x.muted{ background:#fff !important; }
   .layer-bar:empty{ display:none; }
@@ -4602,7 +4603,6 @@ let currentSensorTemp = null;
 /* Alerts can be silenced per crop (all blocks of that vegetable) or for the whole greenhouse, for 24 h or forever */
 const muteOn = m => !!(m && (m.forever || m.until > Date.now()));
 function muteSource(key){
-  if(muteOn(state.muteAll)) return { kind:'all', m: state.muteAll };
   const p = state.plantings[key]; if(!p) return null;
   const vm = (state.vegMute || {})[p.vegId]; if(muteOn(vm)) return { kind:'veg', m: vm };
   if(muteOn(p.tempMute)) return { kind:'veg', m: p.tempMute };   // older per-block silence
@@ -4610,15 +4610,13 @@ function muteSource(key){
 }
 function isTempMuted(key){ return !!muteSource(key); }
 const muteValue = ms => ms === 'forever' ? { forever:true } : { until: Date.now() + ms };
-function afterMuteChange(){ saveState(); applyTempWarnings(); refreshEnvIfLoaded(); renderBellAll(); }
+function afterMuteChange(){ saveState(); applyTempWarnings(); refreshEnvIfLoaded(); }
 function muteVeg(vegId, ms){ state.vegMute = state.vegMute || {}; state.vegMute[vegId] = muteValue(ms); afterMuteChange(); }
 function unmuteVeg(vegId){
   if(state.vegMute) delete state.vegMute[vegId];
   Object.values(state.plantings).forEach(p => { if(p.vegId === vegId) delete p.tempMute; });
   afterMuteChange();
 }
-function muteAllAlerts(ms){ state.muteAll = muteValue(ms); afterMuteChange(); }
-function unmuteAllAlerts(){ state.muteAll = null; afterMuteChange(); }
 function tempIssues(){ let raw = 0, live = 0; Object.entries(state.plantings).forEach(([k,p]) => { if(tempStatus(VEG_MAP[p.vegId])){ raw++; if(!isTempMuted(k)) live++; } }); return { raw, live }; }
 function bellSvg(muted){
   return `<svg class="bell-ic" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 3a5 5 0 0 0-5 5v3.2c0 .9-.3 1.8-.9 2.5L5 15.2V17h14v-1.8l-1.1-1.5c-.6-.7-.9-1.6-.9-2.5V8a5 5 0 0 0-5-5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 19.5a2 2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>${muted ? '<path d="M4 4l16 16" stroke="#D23B2C" stroke-width="2.4" stroke-linecap="round"/>' : ''}</svg>`;
@@ -4654,7 +4652,6 @@ function tempStatus(veg){
 function tempStatusText(st){ const f = v => Math.round(uT(v) * 10) / 10; return st.kind==='cold' ? t('tempCold',{ t:f(st.t), min:f(st.min) }) : t('tempHot',{ t:f(st.t), max:f(st.max) }); }
 function applyTempWarnings(){
   const room = document.getElementById('room'); if(!room) return;
-  if(typeof renderBellAll === 'function') try{ renderBellAll(); }catch(e){}
   const transposed = isTransposed();
   const warned = {};   // key -> vegId, only blocks currently showing a warning
   Object.entries(state.plantings).forEach(([k,p]) => {
@@ -4897,7 +4894,7 @@ function openModal(r, c, layer){
   });
   const muteBtn = document.getElementById('muteBtn');
   if(muteBtn) muteBtn.addEventListener('click', () => {
-    if(tmuted){ if(msrc.kind === 'all') unmuteAllAlerts(); else unmuteVeg(planting.vegId); openModal(r, c, layer); showToast(t('unmutedToast')); return; }
+    if(tmuted){ unmuteVeg(planting.vegId); openModal(r, c, layer); showToast(t('unmutedToast')); return; }
     showMuteChooser(document.getElementById('mutePanel'), t('muteVegTitle', { name: getVegName(veg) }), t('muteVegConfirm', { name: getVegName(veg) }),
       ms => { muteVeg(planting.vegId, ms); openModal(r, c, layer); showToast(t('mutedToast')); });
   });
@@ -6418,36 +6415,26 @@ function renderLayerBar(){
   const el = document.getElementById('layerBar'); if(!el) return;
   const lay = state.layout;
   if(lay === 'up') curLayer = 'up'; else if(lay !== 'both') curLayer = 'ground';
-  const cfg = `<button class="lb-draw on" id="setupOpenBtn">⚙️ ${t('setupBtn')}</button>`, bell = `<span id="bellAllWrap"></span>`;
+  const cfg = `<button class="lb-draw on" id="setupOpenBtn">⚙️ ${t('setupBtn')}</button>`;
   if(!lay){
-    el.innerHTML = `<div class="lay-setup"><div class="ls-q">🌱 ${t('setupPrompt')}</div><div class="lb-tools">${cfg}${bell}</div><div id="bellAllPanel"></div></div>`;
-    document.getElementById('setupOpenBtn').addEventListener('click', openGridSettings); renderBellAll();
+    el.innerHTML = `<div class="lay-setup"><div class="ls-q">🌱 ${t('setupPrompt')}</div><div class="lb-tools">${cfg}</div></div>`;
+    document.getElementById('setupOpenBtn').addEventListener('click', openGridSettings);
     return;
   }
   const up = curLayer === 'up', nU = bedCount('up'), nG = bedCount('ground');
   el.innerHTML = `${lay === 'both' ? `<div class="lb-seg"><button class="lb-opt${!up ? ' on' : ''}" data-l="ground">🟫 ${t('layerGround')}</button><button class="lb-opt${up ? ' on' : ''}" data-l="up">🪵 ${t('layerUp')}</button></div>` : ''}
-    <div class="lb-tools">${cfg}<button class="lb-draw${bedEdit ? ' on' : ''}" id="bedDrawBtn">${bedEdit ? t('bedDone') : t(up ? 'bedDraw' : 'bedDrawG')}</button>${bell}</div><div id="bellAllPanel"></div>
-    ${bedEdit ? `<div class="lb-hint">${t(up ? 'bedDrawHint' : 'rowDrawHint')}</div>` : (up && !nU ? `<div class="lb-hint">${t('bedNoneHint')}</div>` : '')}`;
+    <div class="lb-tools">${bedEdit ? `<button class="lb-draw on" id="bedDrawBtn">${t('bedDone')}</button>` : cfg}</div>
+    ${bedEdit ? `<div class="lb-hint">${t(up ? 'bedDrawHint' : 'rowDrawHint')}</div>` : ''}`;
   el.querySelectorAll('.lb-opt').forEach(b => b.addEventListener('click', () => {
     curLayer = b.dataset.l; bedEdit = false; hideVegTooltip(); renderLayerBar(); renderRoom();
   }));
   const db = document.getElementById('bedDrawBtn');
-  if(db) db.addEventListener('click', () => { bedEdit = !bedEdit; if(bedEdit && waterMode) toggleWater(); renderLayerBar(); renderRoom(); });
-  document.getElementById('setupOpenBtn').addEventListener('click', openGridSettings);
-  renderBellAll();
+  if(db) db.addEventListener('click', () => { bedEdit = false; renderLayerBar(); renderRoom(); });
+  const so = document.getElementById('setupOpenBtn'); if(so) so.addEventListener('click', openGridSettings);
+  document.getElementById('roomPanel').classList.toggle('bed-ed', bedEdit);
 }
-/* whole-greenhouse bell: only shown when some crop is out of its ideal temperature */
-function renderBellAll(){
-  const w = document.getElementById('bellAllWrap'); if(!w) return;
-  const iss = tempIssues(), allMuted = muteOn(state.muteAll);
-  if(!iss.raw){ w.innerHTML = ''; const pn = document.getElementById('bellAllPanel'); if(pn) pn.innerHTML = ''; return; }
-  w.innerHTML = `<button class="icon-btn bell-all${iss.live ? ' alerting' : ''}${allMuted ? ' muted' : ''}" id="bellAllBtn" title="${allMuted ? t('bellTapOn') : t('muteAllTitle')}" aria-label="${t('bellAll')}">${bellSvg(allMuted)}</button>`;
-  document.getElementById('bellAllBtn').addEventListener('click', () => {
-    const pn = document.getElementById('bellAllPanel');
-    if(allMuted){ unmuteAllAlerts(); if(pn) pn.innerHTML = ''; showToast(t('unmutedToast')); return; }
-    showMuteChooser(pn, t('muteAllTitle'), t('muteAllConfirm'), ms => { muteAllAlerts(ms); pn.innerHTML = ''; showToast(t('mutedAllToast')); });
-  });
-}
+/* drawing rows / raised beds by hand is a set-up step, so it starts from the settings panel */
+function startBedDrawing(){ closeGridSettings(); if(waterMode) toggleWater(); if(view3d) toggle3d(); bedEdit = true; renderLayerBar(); renderRoom(); }
 /* Rows run along the length; spread them across the width with aisles in between */
 function maxRowsFit(){ return Math.max(1, Math.floor((state.cols + 1) / 2)); }
 function layoutRows(){
@@ -6469,7 +6456,9 @@ function renderRowsSet(){
   const row = (k, key) => `<div class="dim-row"><span>${t(k)}</span><div class="stepper"><button data-rk="${key}" data-d="-1">−</button><div class="val">${state[key] || 0}</div><button data-rk="${key}" data-d="1">+</button></div></div>`;
   el.innerHTML = `<div class="ws-title">↕️ ${t('wzRowsQ')}</div>
     ${lay !== 'up' ? row('wzGround','nRowsG') : ''}${lay !== 'ground' ? row('wzUp','nRowsU') : ''}
-    <div class="ls-sub">${t('wzMax', { n: maxRowsFit() })}</div>`;
+    <div class="ls-sub">${t('wzMax', { n: maxRowsFit() })}</div>
+    <button class="ws-opt draw-from-set" id="drawFromSet">${t(lay === 'up' ? 'bedDraw' : 'bedDrawG')}</button>`;
+  document.getElementById('drawFromSet').addEventListener('click', startBedDrawing);
   el.querySelectorAll('[data-rk]').forEach(b => b.addEventListener('click', () => {
     const k = b.dataset.rk;
     const tot = (lay === 'up' ? 0 : (state.nRowsG || 0)) + (lay === 'ground' ? 0 : (state.nRowsU || 0));
