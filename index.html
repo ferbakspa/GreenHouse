@@ -435,6 +435,7 @@
   .bell-ic{ display:block; }
   .lb-tools .icon-btn{ flex:0 0 auto; }
   .draw-from-set{ margin-top:10px; }
+  .lay-ico{ width:1.25em; height:1.25em; vertical-align:-.25em; }
   #roomPanel.bed-ed #tabPlantBar, #roomPanel.bed-ed #waterToggle, #roomPanel.bed-ed #view3dBtn{ display:none !important; }
   .modal .temp-alert.is-muted{ opacity:.75; }
   .modal .temp-alert .mute-x.muted{ background:#fff !important; }
@@ -6400,8 +6401,9 @@ function build3d(THREE){
 document.getElementById('view3dBtn').addEventListener('click', toggle3d);
 
 /* ---------- Layer bar: ground / raised bed (mesón) ---------- */
+const UP_ICON = '<svg class="lay-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4.5c0-1.6 1.2-2.6 2.3-2.6.3 1.4-.6 2.6-2.3 2.6zM9.5 4.5c0-1.9 1.4-3 2.7-3 .3 1.6-.8 3-2.7 3zM14 4.5c0-1.6 1.2-2.6 2.3-2.6.3 1.4-.6 2.6-2.3 2.6z" fill="#3E9B57"/><rect x="2.5" y="5" width="19" height="3.2" rx=".6" fill="#6B4A2E"/><rect x="2" y="8" width="20" height="2.6" rx=".8" fill="#A9784C"/><rect x="4" y="10.4" width="2.2" height="11" rx=".6" fill="#8A5E37"/><rect x="17.8" y="10.4" width="2.2" height="11" rx=".6" fill="#8A5E37"/><rect x="6.2" y="16" width="11.6" height="1.6" rx=".5" fill="#8A5E37"/></svg>';
 function layoutOpts(sel){
-  return [['ground','🟫','layoutGround'],['up','🪵','layoutUp']].map(([v,ic,k]) => `<button class="ws-opt lay-opt${sel === v ? ' on' : ''}" data-lay="${v}"><span>${ic}</span> ${t(k)}</button>`).join('');
+  return [['ground','🟫','layoutGround'],['up',UP_ICON,'layoutUp']].map(([v,ic,k]) => `<button class="ws-opt lay-opt${sel === v ? ' on' : ''}" data-lay="${v}"><span>${ic}</span> ${t(k)}</button>`).join('');
 }
 function setLayout(v){
   const first = !state.layout;
