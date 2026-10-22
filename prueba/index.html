@@ -4381,7 +4381,7 @@ function applyLibraryCollapse(){
   libraryBody.style.display = state.libraryCollapsed ? 'none' : '';
   libraryToggle.classList.toggle('open', !state.libraryCollapsed);
 }
-libraryToggle.addEventListener('click', () => { state.libraryCollapsed = !state.libraryCollapsed; saveState(); applyLibraryCollapse(); });
+libraryToggle.addEventListener('click', () => { state.libraryCollapsed = !state.libraryCollapsed; saveState(); applyLibraryCollapse(); if(state.libraryCollapsed) dropSelection(); });
 
 function applyGridSettingsCollapse(){ /* grid settings now live in a pop-up */ }
 function openGridSettings(){ renderLayoutSet(); renderRowsSet(); renderGhShape(); renderWindowSettings(); document.getElementById('gridOverlay').classList.add('show'); }
@@ -4446,6 +4446,11 @@ function renderVegList(){
   });
 }
 /* tapping an empty block with no plant chosen opens the library; the chosen plant goes into that block */
+/* if the library is closed by hand, the chosen plant is let go, so a tap on an empty block opens the library again */
+function dropSelection(){
+  if(!selectedVeg && !pendingCell) return;
+  selectedVeg = null; pendingCell = null; renderVegList(); renderSelectedHint(); if(typeof renderPlantBar === 'function') renderPlantBar();
+}
 function openPlantLibrary(){
   if(document.body.classList.contains('tabs-mode')){ openLibrarySheet(); return; }
   if(state.libraryCollapsed){ state.libraryCollapsed = false; saveState(); applyLibraryCollapse(); }
@@ -6484,9 +6489,10 @@ function renderPlantBar(){
 document.querySelectorAll('#tabbar button').forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab)));
 document.getElementById('openLibraryBtn').addEventListener('click', openLibrarySheet);
 document.getElementById('pickCancelBtn').addEventListener('click', () => { selectedVeg = null; renderVegList(); renderSelectedHint(); renderPlantBar(); });
-document.getElementById('sheetClose').addEventListener('click', closeLibrarySheet);
-document.getElementById('sheetBackdrop').addEventListener('click', closeLibrarySheet);
-document.addEventListener('keydown', e => { if(e.key === 'Escape') closeLibrarySheet(); });
+const closeSheetByHand = () => { const was = document.body.classList.contains('sheet-open'); closeLibrarySheet(); if(was) dropSelection(); };
+document.getElementById('sheetClose').addEventListener('click', closeSheetByHand);
+document.getElementById('sheetBackdrop').addEventListener('click', closeSheetByHand);
+document.addEventListener('keydown', e => { if(e.key === 'Escape' && document.body.classList.contains('sheet-open')) closeSheetByHand(); });
 TABS_MQ.addEventListener ? TABS_MQ.addEventListener('change', applyTabsMode) : TABS_MQ.addListener(applyTabsMode);
 /* swipe left/right to change tab (not on the planting grid, sheets, pop-ups or inputs) */
 (() => {
