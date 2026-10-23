@@ -460,6 +460,7 @@
   .room .cell.row-empty{ background:#E3D3BA; }
   .room .cell.under-bed{ box-shadow:inset 0 0 0 2px rgba(201,161,109,.75); }
   .room .cell.bed-edit{ cursor:crosshair; }
+  .room .cell.bed-locked{ cursor:not-allowed; }
   .room .cell.bed-edit.bed-on{ background:#E2C99F; box-shadow:inset 0 0 0 2px #A67C45; }
   .room .cell .bed-mark{ font-size:16px; opacity:.9; }
   .room{ display:grid; gap:0; width:100%; padding: 8px; border-radius: 12px; overflow:hidden; touch-action:pan-y pinch-zoom; background: var(--bg-warm); }
@@ -4695,8 +4696,16 @@ function renderRoom(){
       cell.dataset.r = r; cell.dataset.c = c;
       const bedHere = isBed(r, c);
       if(bedEdit){
-        cell.className = 'cell bed-edit' + (bedHere ? ' bed-on' : '');
-        cell.innerHTML = bedHere ? '<span class="bed-mark">🪵</span>' : '<span class="cell-empty-mark">·</span>';
+        /* Drawing keeps the crops in view; a block with a crop stays as it is (it can't be erased by the brush). */
+        const lockVeg = planting && VEG_MAP[planting.vegId];
+        if(lockVeg){
+          cell.className = 'cell planted bed-edit bed-locked';
+          cell.innerHTML = `<div class="inner">${lockVeg.icon}</div>`;
+          applyWoodEdges(cell, r, c, mobile);
+        } else {
+          cell.className = 'cell bed-edit' + (bedHere ? ' bed-on' : '');
+          cell.innerHTML = bedHere ? '' : '<span class="cell-empty-mark">·</span>';
+        }
         cell.addEventListener('mousedown', (e) => { e.preventDefault(); startDrag(r, c); });
         cell.addEventListener('mouseenter', () => continueDrag(r, c));
         cell.addEventListener('touchstart', (e) => { if(!gridPaintMode()) return; e.preventDefault(); bindTouchDrag(e.target); startDrag(r, c); }, { passive:false });
@@ -4749,6 +4758,7 @@ function renderRoom(){
 
 function paintBed(r, c){
   const k = r + '-' + c; if(dragKeys.has(k)) return;
+  if(state.plantings[LK(r, c)]) return;   /* never add or remove a bed under a crop */
   dragKeys.add(k); const B = bedsOf();
   if(bedPaint === null) bedPaint = !B[k];
   if(bedPaint) B[k] = 1; else delete B[k];
