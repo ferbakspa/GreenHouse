@@ -462,7 +462,8 @@
   .room .cell.bed-edit{ cursor:crosshair; }
   .room .cell.bed-edit.bed-on{ background:#E2C99F; box-shadow:inset 0 0 0 2px #A67C45; }
   .room .cell .bed-mark{ font-size:16px; opacity:.9; }
-  .room{ display:grid; gap:0; width:100%; padding: 8px; border-radius: 12px; overflow:hidden; touch-action:none; background: var(--bg-warm); }
+  .room{ display:grid; gap:0; width:100%; padding: 8px; border-radius: 12px; overflow:hidden; touch-action:pan-y pinch-zoom; background: var(--bg-warm); }
+  .room.paint{ touch-action:none; }
   .cell{ position:relative; cursor:pointer; display:flex; align-items:center; justify-content:center; overflow:hidden; background: var(--bg); transition: transform .08s ease; box-sizing:border-box; }
   .cell:not(.planted){ box-shadow: inset 0 0 0 1px rgba(38,67,58,0.09); }
   .cell:hover{ transform: scale(1.04); z-index:2; }
@@ -808,7 +809,7 @@
     <button type="button" class="danger-btn soft" id="resetCropsBtn">🌱 <span id="resetCropsL"></span></button><small class="set-hint" id="resetCropsHint"></small>
     <button type="button" class="danger-btn soft" id="resetPartsBtn">🧹 <span id="resetPartsL"></span></button><small class="set-hint" id="resetPartsHint"></small>
     <button type="button" class="danger-btn" id="resetFactoryBtn">⚠️ <span id="resetFactoryL"></span></button><small class="set-hint" id="resetFactoryHint"></small></div>
-  <div class="set-links"><a href="terms.html" target="_blank" rel="noopener" id="setTerms">Terms</a> · <a href="privacy.html" target="_blank" rel="noopener" id="setPrivacy">Privacy</a> · <span class="app-ver">v1.2</span></div>
+  <div class="set-links"><a href="terms.html" target="_blank" rel="noopener" id="setTerms">Terms</a> · <a href="privacy.html" target="_blank" rel="noopener" id="setPrivacy">Privacy</a> · <span class="app-ver">v1.3</span></div>
   <button id="settingsDone">OK</button>
 </div></div>
 <div class="consent-overlay" id="resetOverlay" role="alertdialog" aria-modal="true"><div class="consent-box reset-box">
@@ -4516,7 +4517,7 @@ function selectVeg(id){ selectedVeg = (selectedVeg === id) ? null : id; renderVe
   if(selectedVeg) plantPendingCell();
   if(selectedVeg && document.body.classList.contains('sheet-open')) setTimeout(closeLibrarySheet, 180); }
 
-function renderSelectedHint(){
+function renderSelectedHint(){ syncGridTouch();
   const hint = document.getElementById('selectedHint');
   if(selectedVeg && VEG_MAP[selectedVeg]){
     const veg = VEG_MAP[selectedVeg];
@@ -4698,7 +4699,7 @@ function renderRoom(){
         cell.innerHTML = bedHere ? '<span class="bed-mark">🪵</span>' : '<span class="cell-empty-mark">·</span>';
         cell.addEventListener('mousedown', (e) => { e.preventDefault(); startDrag(r, c); });
         cell.addEventListener('mouseenter', () => continueDrag(r, c));
-        cell.addEventListener('touchstart', (e) => { e.preventDefault(); startDrag(r, c); }, { passive:false });
+        cell.addEventListener('touchstart', (e) => { if(!gridPaintMode()) return; e.preventDefault(); bindTouchDrag(e.target); startDrag(r, c); }, { passive:false });
         room.appendChild(cell); continue;
       }
       if(layerRestricted() && !bedHere && !planting){
@@ -4719,7 +4720,7 @@ function renderRoom(){
         if(waterMode){
           cell.addEventListener('mousedown', (e) => { e.preventDefault(); startDrag(r, c); });
           cell.addEventListener('mouseenter', () => continueDrag(r, c));
-          cell.addEventListener('touchstart', (e) => { e.preventDefault(); startDrag(r, c); }, { passive:false });
+          cell.addEventListener('touchstart', (e) => { if(!gridPaintMode()) return; e.preventDefault(); bindTouchDrag(e.target); startDrag(r, c); }, { passive:false });
         } else {
           cell.addEventListener('mouseenter', () => showVegTooltip(cell, veg, key));
           cell.addEventListener('mouseleave', () => hideVegTooltip());
@@ -4730,7 +4731,7 @@ function renderRoom(){
         cell.innerHTML = `<span class="cell-empty-mark">·</span>`;
         cell.addEventListener('mousedown', (e) => { e.preventDefault(); startDrag(r, c); });
         cell.addEventListener('mouseenter', () => continueDrag(r, c));
-        cell.addEventListener('touchstart', (e) => { e.preventDefault(); startDrag(r, c); }, { passive:false });
+        cell.addEventListener('touchstart', (e) => { if(!gridPaintMode()) return; e.preventDefault(); bindTouchDrag(e.target); startDrag(r, c); }, { passive:false });
       }
       if(curLayer === 'ground' && isBed(r, c, 'up') && planting) cell.classList.add('under-bed');
       if(waterMode) decorateZoneCell(cell, key);
@@ -4738,6 +4739,7 @@ function renderRoom(){
     }
   }
   room.classList.toggle('layer-up', curLayer === 'up');
+  syncGridTouch();
   room.classList.toggle('bed-editing', bedEdit);
   room.classList.toggle('water-mode', waterMode);
   room.classList.toggle('zone-edit', waterMode && zoneEdit);
@@ -4760,6 +4762,10 @@ function plantCellDuringDrag(r,c){
   dragKeys.add(key);
   return true;
 }
+/* Touch: the grid only grabs the finger while painting (crop chosen, drawing beds or editing zones).
+   Otherwise the page scrolls over the grid and a tap opens the block (via the normal click). */
+function gridPaintMode(){ return bedEdit || (waterMode ? zoneEdit : !!selectedVeg); }
+function syncGridTouch(){ const rm = document.getElementById('room'); if(rm) rm.classList.toggle('paint', gridPaintMode()); }
 function startDrag(r,c){
   if(bedEdit){ dragging = true; dragKeys = new Set(); bedPaint = null; document.body.classList.add('dragging'); paintBed(r, c); return; }
   if(waterMode){ if(!zoneEdit){ waterTap(r, c); return; } dragging = true; dragKeys = new Set(); document.body.classList.add('dragging'); paintZone(r, c); return; }
@@ -4799,14 +4805,23 @@ function endDrag(){
 document.addEventListener('mouseup', endDrag);
 document.addEventListener('touchend', endDrag);
 document.addEventListener('touchcancel', endDrag);
-document.addEventListener('touchmove', (e) => {
+function onTouchDragMove(e){
   if(!dragging) return;
   e.preventDefault();
   const touch = e.touches[0];
   const el = document.elementFromPoint(touch.clientX, touch.clientY);
   const cellEl = el && el.closest('.cell');
   if(cellEl && cellEl.dataset.r !== undefined) continueDrag(parseInt(cellEl.dataset.r,10), parseInt(cellEl.dataset.c,10));
-}, { passive:false });
+}
+document.addEventListener('touchmove', onTouchDragMove, { passive:false });
+/* The grid is redrawn while painting, so the cell the finger started on leaves the page and its touch
+   events stop reaching the document. Listen on that cell directly so the drag keeps going. */
+function bindTouchDrag(el){
+  if(!el || !el.addEventListener) return;
+  el.addEventListener('touchmove', onTouchDragMove, { passive:false });
+  el.addEventListener('touchend', endDrag);
+  el.addEventListener('touchcancel', endDrag);
+}
 
 
 let _mobileViewState = isMobileView();
