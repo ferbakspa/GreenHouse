@@ -1,6 +1,6 @@
 # Contrato tarjeta y app (Organics One + Greenhouse Planner)
 
-**Versión 1.2, 2026-10-21.** Corresponde a: firmware del Gateway v1.05, firmware del nodo v1.01, módulo de audio v1.00.
+**Versión 1.3, 2026-10-23.** Corresponde a: firmware del Gateway v1.06, firmware del nodo v1.01, módulo de audio v1.00.
 
 Este documento es la única fuente de verdad de cómo conversan la tarjeta y la app. Lo mantiene el proyecto de hardware (Organics One), a partir del firmware real.
 
@@ -60,6 +60,9 @@ Todos bajo `greenhouse/{id}/`. `{n}` = número de zona (1, 2...) o de ventana (1
 | `ambient/leaf_wetness` | % | Hoja mojada (0 seca, 100 mojada) |
 | `ambient/leaf_wetness_mv` | mV | Valor crudo, para calibrar |
 | `water/source` | `mains` / `tank` | Fuente de agua. `mains`: red (tubería), sin bomba. `tank`: tanque (agua lluvia) con bomba |
+| `water/ph` | pH | **Opcional.** Solo si hay sonda de pH en el tanque |
+| `water/ec` | mS/cm | **Opcional.** Conductividad: cantidad total de nutrientes disueltos. Solo si hay sonda de EC |
+| `water/temperature` | °C | **Opcional.** Temperatura del agua del tanque (la entrega la sonda de EC o la de pH) |
 | `tank/level` | % | Nivel de tanque |
 | `tank/level_mv` | mV | Valor crudo, para calibrar |
 | `tank/float` | `ok` / `low` | Flotador de nivel crítico |
@@ -92,6 +95,9 @@ Todos bajo `greenhouse/{id}/`. `{n}` = número de zona (1, 2...) o de ventana (1
 | `pump_dry_run` | Bomba en seco. Queda bloqueada hasta `pump/reset` |
 | `pump_overcurrent` | Sobrecorriente de bomba. Queda bloqueada hasta `pump/reset` |
 | `tank_low` | Tanque bajo. Se rearma sola cuando vuelve el agua. Con fuente `mains` queda siempre en `0` |
+| `water_ph_probe` / `water_ec_probe` | La sonda de pH o de EC no responde (solo si está configurada) |
+| `water_ph` | pH fuera del rango configurado en la tarjeta |
+| `water_ec_high` | EC sobre el máximo configurado en la tarjeta |
 | `irrigation_stop` | Paro de riego físico activado |
 | `tamper` | Puerta del gabinete abierta |
 | `io_outputs` / `io_inputs` | Falla de salidas o entradas de la tarjeta |
@@ -126,6 +132,16 @@ QoS 1, **no retenidas**, bajo `greenhouse/{id}/`.
 **Lo manual manda:** una orden manual (riego, ventana, ventilador o luz de cultivo) pausa por 60 minutos la regla automática de ese equipo.
 
 Órdenes de instalación, que la app de uso diario no debe ofrecer: `gateway/config/set` (JSON, la tarjeta se reinicia; respuesta en `gateway/config/result`) y `gateway/restart`.
+
+## Calidad de agua del tanque (opcional)
+
+Accesorio opcional: sondas de pH y EC dentro del tanque, conectadas al bus RS-485. Si no están instaladas, sus topics no existen y la app no muestra la sección. Rangos de referencia para mostrar en la app (la persona decide si los usa):
+
+| Dato | Referencia general para hortalizas |
+|---|---|
+| pH | 5,5 a 6,8 |
+| EC | 0,8 a 2,5 mS/cm según cultivo y etapa (agua de lluvia sola: cerca de 0) |
+| Temperatura del agua | 18 a 24 °C |
 
 ## Fuente de agua
 
@@ -227,5 +243,6 @@ c.publish(P + 'zone/1/irrigation/set', '600', { qos: 1, retain: false });
 | Versión | Fecha | Cambio |
 |---|---|---|
 | 1.0 | 2026-10-19 | Primera versión: Gateway v1.03, nodo v1.01, audio v1.00 |
+| 1.3 | 2026-10-23 | Gateway v1.06: calidad de agua del tanque, opcional (`water/ph`, `water/ec`, `water/temperature` y sus alarmas) |
 | 1.2 | 2026-10-21 | Gateway v1.05: J25 es la luz de conexión de la carcasa; `spare` deja de publicarse por defecto |
 | 1.1 | 2026-10-20 | Fuente de agua seleccionable (`water/source`, `water/source/set`), Gateway v1.04 |

@@ -24,7 +24,7 @@ def pub(sub, v, ret=True):
 
 def publicar_todo():
     pub("gateway/status", "online")
-    pub("gateway/info", json.dumps({"fw": "1.04", "ip": "192.168.1.40", "network": "ethernet", "uptime_s": 120, "free_heap": 120000, "zones": 2, "time": "2026-10-19 16:40", "auto": 1, "water": fuente["v"]}))
+    pub("gateway/info", json.dumps({"fw": "1.06", "ip": "192.168.1.40", "network": "ethernet", "uptime_s": 120, "free_heap": 120000, "zones": 2, "time": "2026-10-19 16:40", "auto": 1, "water": fuente["v"]}))
     for z, (s1, s2) in {1: ("31.5", "33.1"), 2: ("48.0", "null")}.items():
         pub(f"zone/{z}/online", "1"); pub(f"zone/{z}/soil1", s1); pub(f"zone/{z}/soil2", s2)
         pub(f"zone/{z}/valve", estado.get(f"zone/{z}/valve", "0")); pub(f"zone/{z}/flags", "0")
@@ -33,6 +33,9 @@ def publicar_todo():
     for k, v in {"temperature": "23.4", "humidity": "71.0", "vpd": "0.84", "co2": "612", "light": "15400", "leaf_wetness": "12"}.items():
         pub("ambient/" + k, v)
     pub("water/source", fuente["v"])
+    pub("water/ph", "6.42"); pub("water/ec", "1.35"); pub("water/temperature", "19.2")
+    for a in ["water_ph_probe", "water_ph", "water_ec_probe", "water_ec_high"]:
+        pub("alarm/" + a, "0")
     pub("tank/level", "80"); pub("tank/float", "ok"); pub("pump/state", "off"); pub("flow/main", "0.00"); pub("flow/main_volume", "40.2")
     for n in range(1, 6):
         pub(f"window/{n}/position", estado.get(f"window/{n}/position", "0")); pub(f"window/{n}/state", "stopped"); pub(f"window/{n}/alarm", "none")

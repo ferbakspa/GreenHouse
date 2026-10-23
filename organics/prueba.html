@@ -84,6 +84,7 @@
       <button id="btnRed" data-f="mains">Red (tubería)</button><button id="btnTanque" data-f="tank">Tanque (agua lluvia)</button></div>
     <div class="sub" style="margin-bottom:8px">Tanque requiere la bomba instalada. No se puede cambiar con un riego en curso.</div>
     <div class="grilla" id="agua"></div>
+    <div class="grilla" id="calidad" style="margin-top:8px"></div>
     <div class="fila" style="margin-top:8px"><button id="btnRearmar">Rearmar bomba</button></div>
     <div class="error" id="errAgua"></div>
   </section>
@@ -224,6 +225,13 @@
       ['Tanque', fmt(w.tanque, 0, ' %')], ['Flotador', w.flotador === 'low' ? 'BAJO' : (w.flotador || '-')], ['Bomba', w.bomba || '-'],
       ['Corriente', fmt(w.corrienteBomba, 2, ' A')]] : []).concat([['Caudal', fmt(w.caudal, 2, ' L/min')], ['Volumen', fmt(w.volumen, 1, ' L')]
     ]).map(function (d) { return '<div class="dato"><div class="n">' + d[0] + '</div><div class="v">' + d[1] + '</div></div>'; }).join('');
+
+    var q = O.calidadAgua();
+    $('calidad').innerHTML = q ? [
+      ['pH del tanque', q.sondaPhOk === false ? 'sin sonda' : fmt(q.ph, 2, '') + (q.phFueraDeRango ? ' (fuera de rango)' : '')],
+      ['EC del tanque', q.sondaEcOk === false ? 'sin sonda' : fmt(q.ec, 2, ' mS/cm') + (q.ecAlta ? ' (alta)' : '')],
+      ['Temp. del agua', fmt(q.temperatura, 1, ' °C')]
+    ].map(function (d) { return '<div class="dato"><div class="n">' + d[0] + '</div><div class="v">' + d[1] + '</div></div>'; }).join('') : '';
 
     var vs = O.ventanas();
     var est = { stopped:'detenida', opening:'abriendo', closing:'cerrando' };

@@ -1,6 +1,6 @@
 # Capa de conexión con la tarjeta Organics One
 
-Esta carpeta conecta la app con la tarjeta según [CONTRATO.md](../CONTRATO.md) (v1.1). La mantiene el proyecto de hardware. El proyecto de la app la **usa** y no la modifica: si falta algo, se pide en el contrato.
+Esta carpeta conecta la app con la tarjeta según [CONTRATO.md](../CONTRATO.md) (v1.3). La mantiene el proyecto de hardware. El proyecto de la app la **usa** y no la modifica: si falta algo, se pide en el contrato.
 
 | Archivo | Para qué |
 |---|---|
@@ -33,6 +33,7 @@ OrganicsOne.on('alarm/#', () => pintarAlarmas(OrganicsOne.alarmasActivas()));
 | `ventanas()` | `[{ventana, posicion, estado, alarma}]` |
 | `salidas()` | `{extractor, fan, grow_light, work_light, spare}` en `true` / `false` |
 | `agua()` | `{fuente, conTanque, tanque, flotador, bomba, corrienteBomba, caudal, volumen}`. `fuente`: `mains` (red) o `tank` (tanque). Con `conTanque` en `false`, la app oculta tanque, flotador y bomba |
+| `calidadAgua()` | `{ph, ec, temperatura, sondaPhOk, sondaEcOk, phFueraDeRango, ecAlta}`, o `null` si el tanque no tiene sondas (accesorio opcional). EC en mS/cm |
 | `alarmasActivas()` | nombres de las alarmas en 1 (ver contrato) |
 | `reglasAutomaticas()` | las reglas vigentes (JSON del contrato) |
 | `audio.estado()` | `{enLinea, sonando, habilitado, volumen, escena, pista, error, config, escenas}` |

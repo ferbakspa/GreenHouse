@@ -1,5 +1,5 @@
 /*
- * Organics One: capa de conexión de la app con la tarjeta (contrato v1.1, ver CONTRATO.md).
+ * Organics One: capa de conexión de la app con la tarjeta (contrato v1.3, ver CONTRATO.md).
  *
  * La mantiene el proyecto de hardware. El proyecto de la app la USA, no la modifica: si la
  * app necesita algo que no está aquí, se pide en CONTRATO.md.
@@ -18,7 +18,7 @@
 (function (global) {
   'use strict';
 
-  var CONTRATO = '1.1';
+  var CONTRATO = '1.3';
   var FW_MIN = { gateway: '1.04', audio: '1.00' };
   var MQTT_CDN = 'https://unpkg.com/mqtt@5.15.2/dist/mqtt.min.js';
   var CLAVE_CFG = 'organics.conexion.v1';
@@ -327,6 +327,18 @@
         tanque: aNumero(valor('tank/level')), flotador: valor('tank/float') || null,
         bomba: valor('pump/state') || null, corrienteBomba: aNumero(valor('pump/current')),
         caudal: aNumero(valor('flow/main')), volumen: aNumero(valor('flow/main_volume'))
+      };
+    },
+    /* calidad de agua del tanque (accesorio opcional): null si no hay sondas */
+    calidadAgua: function () {
+      var hayPh = valor('water/ph') !== undefined || valor('alarm/water_ph_probe') !== undefined;
+      var hayEc = valor('water/ec') !== undefined || valor('alarm/water_ec_probe') !== undefined;
+      if (!hayPh && !hayEc) return null;
+      return {
+        ph: hayPh ? aNumero(valor('water/ph')) : null, ec: hayEc ? aNumero(valor('water/ec')) : null,
+        temperatura: aNumero(valor('water/temperature')),
+        sondaPhOk: hayPh ? valor('alarm/water_ph_probe') !== '1' : null, sondaEcOk: hayEc ? valor('alarm/water_ec_probe') !== '1' : null,
+        phFueraDeRango: valor('alarm/water_ph') === '1', ecAlta: valor('alarm/water_ec_high') === '1'
       };
     },
     alarmasActivas: function () {

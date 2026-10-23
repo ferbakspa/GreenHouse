@@ -45,7 +45,7 @@ with sync_playwright() as p:
     # conexión correcta
     pg.fill("#clave", "clave-app"); pg.click("#btnConectar")
     pg.wait_for_selector("text=Tarjeta en línea", timeout=15000)
-    pg.wait_for_selector("text=Firmware 1.04", timeout=5000)
+    pg.wait_for_selector("text=Firmware 1.06", timeout=5000)
     time.sleep(0.6)
     check("23.4 °C" in pg.text_content("#ambiente"), "temperatura en tarjeta de ambiente")
     check("612 ppm" in pg.text_content("#ambiente"), "CO2 en ambiente")
@@ -56,6 +56,12 @@ with sync_playwright() as p:
     info = pg.evaluate("OrganicsOne.info()")
     check(info["compatible"] is True and info["invernadero"] == "invernadero1", "info de conexión")
     check(pg.evaluate("localStorage.getItem('organics.conexion.v1') !== null"), "configuración recordada")
+
+    # calidad de agua del tanque (accesorio opcional)
+    cal = pg.text_content("#calidad")
+    check("6.42" in cal and "1.35 mS/cm" in cal and "19.2" in cal, "calidad de agua en pantalla: " + cal)
+    q = pg.evaluate("OrganicsOne.calidadAgua()")
+    check(q and abs(q["ph"] - 6.42) < 1e-6 and q["sondaPhOk"] is True and q["phFueraDeRango"] is False, "calidadAgua(): " + str(q))
 
     # órdenes
     pg.click("button[data-z='1'][data-s='60']")
